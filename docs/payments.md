@@ -15,6 +15,8 @@
 4. Eventos de expiração/falha/reembolso e seus nomes.
 5. Modo dev/sandbox: como simular pagamento.
 6. Limites e expiração padrão de uma cobrança PIX.
+7. Reembolso: como é solicitado (painel/API), qual evento chega, prazos.
+8. **Comparativo AbacatePay × Cakto** (ADR-016): taxas PIX/cartão, métodos, API e webhooks (assinatura), repasse/saque, área de membros própria (concorre com nossa plataforma?), facilidade de integração. Recomendação: manter ou trocar.
 
 ## Desenho
 
@@ -39,6 +41,7 @@ Aluno ──▶ /checkout/pedido/[id] ── polling do status do próprio pedid
 - Usuário que já tem acesso não pode iniciar checkout (409 amigável → "Você já possui este curso").
 - Página de sucesso/retorno **nunca** concede acesso.
 - CPF/telefone: validados (dígito verificador do CPF), salvos em `profiles` apenas do próprio usuário.
-- Reembolso (`checkout.refunded`): marca `orders.status='refunded'` e revoga a matrícula de origem `purchase` daquele pedido (decisão a confirmar com produto).
+- Reembolso (`checkout.refunded`): marca `orders.status='refunded'` e revoga a matrícula de origem `purchase` daquele pedido (ADR-017). Regra dos "10 minutos" pendente (MASTER_PLAN §9 Q8b); respeitar CDC art. 49 (7 dias).
+- MVP: **somente PIX**. Domínio: URL padrão Vercel (webhook e callbacks mudam quando houver domínio).
 - Admin: botão "Reconsultar pagamento" (reconciliação manual) e job de expiração de pendentes antigos (pós-MVP: Vercel Cron).
 - Logs sem CPF completo nem payload bruto com dados pessoais.

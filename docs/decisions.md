@@ -12,7 +12,7 @@ Status: `aceita`, `proposta` (aguardando validação do responsável do produto)
 - **Consequências**: mais trabalho inicial na fundação; elimina dívida de segurança na origem.
 
 ### ADR-002 — Next.js 16 (App Router) + TypeScript
-`proposta` · 2026-10-08
+`aceita` (produto confirmou em 2026-10-08) · 2026-10-08
 - **Contexto**: o antigo usa Next 16 em JS. Como estamos recomeçando, o custo de TS é baixo e os tipos gerados do Supabase (`supabase gen types`) evitam erros de coluna/RLS em toda a base.
 - **Decisão**: Next.js 16 App Router, React 19, **TypeScript strict**. Server Components por padrão; Server Actions para mutações; Route Handlers só para webhooks/arquivos.
 - **Consequências**: agentes devem ler `node_modules/next/dist/docs/` (Next 16 tem breaking changes — ex.: `middleware` → `proxy.ts`, `params` assíncronos).
@@ -54,13 +54,13 @@ Status: `aceita`, `proposta` (aguardando validação do responsável do produto)
 - **Decisão**: buckets `course-covers` (público) e `course-content` (privado). Servidor checa `has_course_access` e emite signed URL (≤ 10 min), `Cache-Control: private, no-store` em respostas que dependam de sessão.
 - **Consequências**: corrige S4.
 
-### ADR-010 — HTML interativo (slides) fora do MVP; quando entrar, origem isolada
-`proposta` · 2026-10-08
+### ADR-010 — HTML interativo (slides) fora do escopo; se um dia entrar, origem isolada
+`aceita` (produto: "pode esquecer") · 2026-10-08
 - **Decisão**: material tipo `html_bundle` fica no backlog pós-MVP (`STUDENT-010`). Implementação futura em iframe `sandbox` sem `allow-same-origin` servido de domínio separado.
 - **Consequências**: corrige S5 por omissão. **Validar com o produto** se slides HTML são essenciais no lançamento.
 
 ### ADR-011 — Vídeo no MVP: embed de provedor externo (YouTube não listado / Vimeo / Bunny)
-`proposta` · 2026-10-08
+`aceita` (produto aceitou o risco de vazamento de link) · 2026-10-08
 - **Contexto**: hospedagem de vídeo própria é cara e complexa. YouTube não listado **não é proteção real** (link vaza).
 - **Decisão**: material `video` guarda `provider` + `external_id`; o player monta o embed. Só é entregue ao cliente se `has_course_access` (ou aula preview). Migração futura para Bunny Stream / Mux com URLs assinadas.
 - **Consequências**: risco de compartilhamento de link aceito para o MVP — **validar com o produto**.
@@ -76,3 +76,19 @@ Status: `aceita`, `proposta` (aguardando validação do responsável do produto)
 ### ADR-014 — Idioma e nomenclatura
 `aceita` · 2026-10-08
 - UI e documentação em **pt-BR**. Código, nomes de tabelas, colunas e rotas internas em **inglês**; URLs públicas em pt-BR (`/cursos`, `/entrar`, `/minha-biblioteca`).
+
+### ADR-015 — Ambiente: Supabase novo, sem migração de dados, domínio Vercel padrão
+`aceita` · 2026-10-08
+- **Contexto**: o Learn antigo não tem usuários nem vendas reais.
+- **Decisão**: criar um **projeto Supabase novo**; **não** haverá migração de dados (REL-002 cancelada); usar o domínio padrão `*.vercel.app` até haver domínio próprio.
+- **Consequências**: `NEXT_PUBLIC_SITE_URL` aponta para a URL Vercel; trocar quando houver domínio (callbacks do Supabase Auth e URL do webhook precisam ser atualizados juntos).
+
+### ADR-016 — Pagamento apenas PIX via AbacatePay no MVP; avaliar Cakto
+`aceita` · 2026-10-08
+- **Decisão**: MVP só com PIX pelo AbacatePay. `PAY-001` inclui um estudo comparativo **AbacatePay × Cakto** (taxas, métodos, API/webhooks, repasse, área de membros própria vs. integração). Troca só com nova ADR.
+- **Consequências**: código de pagamento isolado em `src/lib/payments/` com interface pequena (`createCheckout`, `getPaymentStatus`, `verifyWebhook`) para que uma troca de provedor fique contida — sem criar abstração multi-provedor antecipada.
+
+### ADR-017 — Reembolso revoga o acesso automaticamente
+`aceita` · 2026-10-08 (regra de prazo **pendente de esclarecimento**, ver MASTER_PLAN §9 Q8b)
+- **Decisão**: evento de reembolso → `orders.status='refunded'` e revogação da matrícula `purchase` daquele pedido.
+- **Pendente**: o produto pediu "reembolso somente após 10 minutos da compra". Atenção: o CDC (art. 49) garante ao consumidor **direito de arrependimento de 7 dias** em compras online — não podemos negar reembolso solicitado nesse prazo. Interpretação a confirmar antes de `PAY-003`.

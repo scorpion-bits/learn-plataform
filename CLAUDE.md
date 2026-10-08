@@ -22,7 +22,7 @@ Next.js 16 (App Router) · React 19 · TypeScript strict · CSS Modules + tokens
 > **Next 16 tem breaking changes** (ex.: `middleware.ts` → `src/proxy.ts`, `params`/`searchParams` assíncronos). Consulte `node_modules/next/dist/docs/` antes de usar APIs de roteamento/cache.
 
 ## Estado atual
-Ver `MASTER_PLAN.md` §0. (Em 2026-10-08: auditoria e plano concluídos; código ainda não iniciado.)
+Ver `MASTER_PLAN.md` §0. (Em 2026-10-08: plano aprovado; Onda 1 — ARCH-001 e PAY-001 — em andamento.)
 
 ## Regras de segurança (inegociáveis)
 1. **Autorização mora no banco.** Toda tabela com RLS. Frontend nunca decide permissão (`if (role === 'admin')` na UI é só UX).

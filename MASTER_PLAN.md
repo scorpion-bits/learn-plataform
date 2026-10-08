@@ -2,7 +2,7 @@
 
 > Documento central de execução. **Sempre reflete o estado real do projeto.**
 > Mantido pelo Tech Lead/orquestrador. Agentes leem, não editam status (exceto quando instruídos).
-> Última atualização: **2026-10-08** — PHASE 0 concluída; aguardando aprovação do plano para iniciar a Onda 1.
+> Última atualização: **2026-10-08** — PHASE 0 concluída e aprovada; Onda 1 em andamento.
 
 Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `docs/*` relevantes à tarefa.
 
@@ -12,10 +12,10 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 
 | item | estado |
 |---|---|
-| Fase atual | **PHASE 0 — AUDIT ✅** → PHASE 1 aguardando aprovação |
-| Próximas tarefas READY | `ARCH-001`, `PAY-001` |
-| Em andamento | — |
-| Bloqueios | Respostas do produto em §9 (não bloqueiam a Onda 1) |
+| Fase atual | **PHASE 1 — FOUNDATION** |
+| Próximas tarefas READY | — |
+| Em andamento | `ARCH-001` (A01, Sonnet 5.5), `PAY-001` (A07, Opus 5.5) |
+| Bloqueios | Q8b (regra de reembolso de 10 min) — bloqueia só PAY-003 |
 
 ---
 
@@ -123,7 +123,7 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Prioridade**: P0 · **Fase**: 1 · **Dependências**: —
 - **Arquivos**: `package.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `.prettierrc`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/lib/env.ts`, `.env.example`, `.gitignore`
 - **Critérios de aceitação**: `npm run build`, `lint`, `typecheck` passam; nenhuma dependência além de next/react/react-dom/zod/server-only + dev tooling; `env.ts` falha com mensagem clara se variável obrigatória faltar (server) sem quebrar o build quando a var é só de runtime; README atualizado com setup.
-- **Status**: READY · **Agente**: A01 Foundation · **Modelo**: Sonnet 5.5 · **Esforço**: médio
+- **Status**: IN PROGRESS · **Agente**: A01 Foundation · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
 #### ARCH-002 — Supabase CLI, clients e tipos
 - **Descrição**: `supabase init` (config.toml), pastas `migrations/`, `tests/`, `scripts/`, `seed.sql` vazio; `src/lib/supabase/{browser,server,service}.ts` (service com `import 'server-only'`), script `db:types`, `src/types/database.ts` placeholder; `docs/development.md` revisado.
@@ -336,11 +336,11 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 ### PAYMENTS
 
 #### PAY-001 — Spike: API AbacatePay
-- **Descrição**: pesquisar documentação oficial atual e responder as 6 perguntas de `docs/payments.md`; atualizar o doc com endpoints, payloads de exemplo, verificação de assinatura e plano de testes em devMode. **Sem código de produção.**
+- **Descrição**: pesquisar documentação oficial atual e responder as 6 perguntas de `docs/payments.md`; atualizar o doc com endpoints, payloads de exemplo, verificação de assinatura e plano de testes em devMode. **Incluir estudo comparativo AbacatePay × Cakto (ADR-016)** com recomendação. **Sem código de produção.**
 - **Prioridade**: P0 · **Fase**: 1 (paralelo) · **Dependências**: —
 - **Arquivos**: `docs/payments.md`
 - **Critérios**: cada pergunta respondida com link da fonte; incertezas explícitas.
-- **Status**: READY · **Agente**: A07 Payments · **Modelo**: Opus 5.5 · **Esforço**: médio
+- **Status**: IN PROGRESS · **Agente**: A07 Payments · **Modelo**: Opus 5.5 · **Esforço**: médio
 
 #### PAY-002 — Cliente AbacatePay + `startCheckout`
 - **Descrição**: `src/lib/payments/abacatepay.ts` (server-only, tipado, timeouts, erros mapeados); Server Action `startCheckout(courseSlug, taxId, phone)` conforme `docs/architecture.md` §4; página `/checkout/[slug]`.
@@ -391,7 +391,7 @@ Agente: A08 QA & Security.
 | ID | Título | Prior. | Dep. | Modelo | Esforço | Status |
 |---|---|---|---|---|---|---|
 | REL-001 | Setup de produção (Supabase prod, migrations, admin bootstrap, envs Vercel, webhook URL, domínio) | P0 | QA-002 | Haiku 5.5 + **humano** | baixo | BACKLOG |
-| REL-002 | Migração de dados do Learn antigo (se houver dados reais — ver §9) | P1? | DB-005 | Sonnet 5.5 | médio | BACKLOG |
+| REL-002 | ~~Migração de dados do Learn antigo~~ | — | — | — | — | CANCELADA (Q1) |
 | REL-003 | Checklist de lançamento e desativação do app antigo | P1 | REL-001 | Haiku 5.5 | baixo | BACKLOG |
 
 ---
@@ -465,7 +465,7 @@ Modelo: Opus 5.5 (QA-002) · Sonnet 5.5 (demais)
 Esforço: alto (QA-002), médio (demais)
 Justificativa: revisão de segurança exige o modelo mais capaz; testes são mecânicos.
 
-A01 também executa REL-001/003 (Haiku) e A02 executa REL-002 (Sonnet).
+A01 também executa REL-001/003 (Haiku).
 ```
 
 ---
@@ -604,28 +604,29 @@ EXPECTED OUTPUT:
 
 ---
 
-## 9. Perguntas em aberto para o produto
+## 9. Perguntas ao produto
 
-| # | Pergunta | Impacta | Default se não houver resposta |
+| # | Pergunta | Resposta (2026-10-08) | Efeito |
 |---|---|---|---|
-| Q1 | O Learn antigo tem **usuários/vendas reais** em produção a migrar? | REL-002 | Sem migração; começar do zero |
-| Q2 | Usar o **mesmo projeto Supabase** do Learn antigo ou um novo? | ARCH-004, REL-001 | **Novo projeto** (schema limpo) |
-| Q3 | TypeScript ok? (ADR-002) | tudo | Sim |
-| Q4 | Vídeos em YouTube não listado são aceitáveis no MVP? (ADR-011) | STUDENT-006 | Sim, com risco documentado |
-| Q5 | Slides HTML interativos são essenciais no lançamento? (ADR-010) | escopo | Não (pós-MVP) |
-| Q6 | Métodos de pagamento: só PIX ou também cartão? | PAY-002 | PIX (+ cartão se a API permitir sem custo extra de integração) |
-| Q7 | Domínio (ex.: `learn.scorpionbits.com`)? | REL-001 | a definir |
-| Q8 | Reembolso deve revogar acesso automaticamente? | PAY-003 | Sim |
-
----
+| Q1 | Dados reais do Learn antigo a migrar? | **Não** | REL-002 cancelada (ADR-015) |
+| Q2 | Supabase novo ou antigo? | **Novo** | ADR-015 |
+| Q3 | TypeScript? | **Sim** | ADR-002 aceita |
+| Q4 | YouTube não listado no MVP? | **Sim** | ADR-011 aceita |
+| Q5 | Slides HTML interativos? | **Esquecer** | ADR-010 aceita; fora do escopo |
+| Q6 | Métodos de pagamento? | **Só PIX (AbacatePay)**; estudar **Cakto** | ADR-016; estudo incluído em PAY-001 |
+| Q7 | Domínio? | **Padrão Vercel** por enquanto | ADR-015 |
+| Q8 | Reembolso revoga acesso? | **Sim** | ADR-017 |
+| Q8b | "Reembolso somente após 10 minutos da compra" — significa (a) a revogação só é aplicada após 10 min, (b) reembolso só pode ser pedido depois de 10 min, ou (c) só até 10 min? **Obs.: o CDC garante 7 dias de arrependimento em compras online.** | **EM ABERTO** | bloqueia apenas PAY-003 (regra de reembolso) |
 
 ## 10. Registro de progresso
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-08 | Respostas do produto Q1–Q8 | Orquestrador | registrado | ADR-002/010/011 aceitas; ADR-015/016/017 criadas; REL-002 cancelada. Onda 1 delegada. |
 | 2026-10-08 | PHASE 0 — Auditoria e plano | Orquestrador (Opus 5.5) | DONE | `docs/audit.md`, `docs/*`, `CLAUDE.md`, este plano. 9 falhas de segurança catalogadas no sistema antigo (S1–S9), todas endereçadas por ADRs 005–010. |
 
 ## 11. Problemas conhecidos / riscos
+- **R5** Regra de reembolso pedida pode conflitar com o CDC (7 dias de arrependimento) — Q8b.
 - **R1** API AbacatePay em transição v1→v2 — mitigado por PAY-001 antes de qualquer código.
 - **R2** Next 16 tem breaking changes vs. conhecimento dos modelos — agentes devem ler `node_modules/next/dist/docs/`.
 - **R3** Supabase local exige Docker; ambientes de agentes na nuvem podem não ter — usar projeto Supabase de dev remoto e/ou rodar pgTAP no CI.
