@@ -15,7 +15,7 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 | Fase atual | **PHASE 1 — FOUNDATION** (+ PHASE 3 iniciada) |
 | Próximas tarefas READY | — |
 | Em andamento | `PAY-001` (A07, Opus 5.5), `ARCH-002` (A01, Sonnet 5.5), `ARCH-003` (A01, Haiku 5.5), `UI-001` (A03, Sonnet 5.5) |
-| Bloqueios | Q8b (regra de reembolso de 10 min) — bloqueia só PAY-003 |
+| Bloqueios | — |
 
 ---
 
@@ -616,7 +616,7 @@ EXPECTED OUTPUT:
 | Q6 | Métodos de pagamento? | **Só PIX (AbacatePay)**; estudar **Cakto** | ADR-016; estudo incluído em PAY-001 |
 | Q7 | Domínio? | **Padrão Vercel** por enquanto | ADR-015 |
 | Q8 | Reembolso revoga acesso? | **Sim** | ADR-017 |
-| Q8b | "Reembolso somente após 10 minutos da compra" — significa (a) a revogação só é aplicada após 10 min, (b) reembolso só pode ser pedido depois de 10 min, ou (c) só até 10 min? **Obs.: o CDC garante 7 dias de arrependimento em compras online.** | **EM ABERTO** | bloqueia apenas PAY-003 (regra de reembolso) |
+| Q8b | Prazo de reembolso? | **Seguir o CDC: até 7 dias da compra**; regra de 10 min descartada | ADR-017 atualizada; PAY-003 desbloqueado |
 
 ## 10. Registro de progresso
 
@@ -627,7 +627,6 @@ EXPECTED OUTPUT:
 | 2026-10-08 | PHASE 0 — Auditoria e plano | Orquestrador (Opus 5.5) | DONE | `docs/audit.md`, `docs/*`, `CLAUDE.md`, este plano. 9 falhas de segurança catalogadas no sistema antigo (S1–S9), todas endereçadas por ADRs 005–010. |
 
 ## 11. Problemas conhecidos / riscos
-- **R5** Regra de reembolso pedida pode conflitar com o CDC (7 dias de arrependimento) — Q8b.
 - **R1** API AbacatePay em transição v1→v2 — mitigado por PAY-001 antes de qualquer código.
 - **R2** Next 16 tem breaking changes vs. conhecimento dos modelos — agentes devem ler `node_modules/next/dist/docs/`.
 - **R3** Supabase local exige Docker; ambientes de agentes na nuvem podem não ter — usar projeto Supabase de dev remoto e/ou rodar pgTAP no CI.

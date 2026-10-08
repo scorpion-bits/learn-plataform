@@ -89,6 +89,7 @@ Status: `aceita`, `proposta` (aguardando validação do responsável do produto)
 - **Consequências**: código de pagamento isolado em `src/lib/payments/` com interface pequena (`createCheckout`, `getPaymentStatus`, `verifyWebhook`) para que uma troca de provedor fique contida — sem criar abstração multi-provedor antecipada.
 
 ### ADR-017 — Reembolso revoga o acesso automaticamente
-`aceita` · 2026-10-08 (regra de prazo **pendente de esclarecimento**, ver MASTER_PLAN §9 Q8b)
-- **Decisão**: evento de reembolso → `orders.status='refunded'` e revogação da matrícula `purchase` daquele pedido.
-- **Pendente**: o produto pediu "reembolso somente após 10 minutos da compra". Atenção: o CDC (art. 49) garante ao consumidor **direito de arrependimento de 7 dias** em compras online — não podemos negar reembolso solicitado nesse prazo. Interpretação a confirmar antes de `PAY-003`.
+`aceita` · 2026-10-08
+- **Decisão**: seguir o CDC (art. 49): o aluno pode pedir reembolso **a qualquer momento dentro de 7 dias** da compra, sem precisar justificar. Quando o reembolso é confirmado pelo provedor (evento de reembolso), `orders.status='refunded'` e a matrícula `purchase` daquele pedido é revogada automaticamente (`revoke_reason='refund'`). Depois de 7 dias, reembolso só por decisão manual do admin.
+- **Descartado**: a regra de "10 minutos" proposta inicialmente (produto optou por seguir o CDC).
+- **Consequências**: PAY-003 trata o evento de reembolso; a interface de pedido do aluno mostra até quando o reembolso pode ser pedido (pedido feito pelo canal de suporte/admin no MVP, a menos que PAY-001 mostre reembolso simples via API).
