@@ -1,0 +1,190 @@
+/* ==========================================================================
+   IsoCube — cubo isométrico paramétrico. Cores por tom via custom properties
+   locais (derivadas de tokens) e por estado via classes.
+
+   Tokens locais (sugestão de promoção para tokens.css):
+     --face-top-a / --face-top-b : extremos do gradiente da face de cima
+                                    (#6a8dff -> #41b8ff, o `--face-top` é um
+                                    gradient inteiro e não dá para usar em SVG).
+   ========================================================================== */
+
+.cube {
+  display: inline-block;
+  flex: none;
+  overflow: visible; /* o traço mínimo em cubos pequenos pode passar do viewBox */
+  vertical-align: middle;
+  transition: filter var(--dur) var(--ease);
+}
+
+/* ------------------------------------------------------------------ tons -- */
+.cyan {
+  --tone: var(--cyan);
+  --c-top-a: #6a8dff; /* = início de --face-top */
+  --c-top-b: #41b8ff; /* = fim de --face-top */
+  --c-left: var(--face-left);
+  --c-right: var(--face-right);
+}
+
+.mint {
+  --tone: var(--mint);
+  --c-top-a: color-mix(in srgb, var(--mint) 70%, var(--cyan));
+  --c-top-b: color-mix(in srgb, var(--mint) 80%, white);
+  --c-left: color-mix(in srgb, var(--mint) 88%, white);
+  --c-right: color-mix(in srgb, var(--mint) 52%, var(--ink-900));
+}
+
+.amber {
+  --tone: var(--amber);
+  --c-top-a: color-mix(in srgb, var(--amber) 70%, var(--coral));
+  --c-top-b: color-mix(in srgb, var(--amber) 78%, white);
+  --c-left: color-mix(in srgb, var(--amber) 88%, white);
+  --c-right: color-mix(in srgb, var(--amber) 55%, var(--ink-900));
+}
+
+.violet {
+  --tone: var(--violet);
+  --c-top-a: color-mix(in srgb, var(--violet) 70%, var(--indigo));
+  --c-top-b: color-mix(in srgb, var(--violet) 72%, white);
+  --c-left: color-mix(in srgb, var(--violet) 70%, white);
+  --c-right: color-mix(in srgb, var(--violet) 55%, var(--ink-900));
+}
+
+.stopA {
+  stop-color: var(--c-top-a);
+}
+
+.stopB {
+  stop-color: var(--c-top-b);
+}
+
+/* ----------------------------------------------------------------- faces -- */
+.left {
+  fill: var(--c-left);
+  transition: fill var(--dur) var(--ease);
+}
+
+.right {
+  fill: var(--c-right);
+  transition: fill var(--dur) var(--ease);
+}
+
+.top {
+  transition: fill var(--dur) var(--ease);
+}
+
+/* reflexos do desenho da logo: arco claro no topo e sombras curvas nas laterais */
+.sheen {
+  fill: white;
+  opacity: 0.2;
+}
+
+.shade {
+  fill: var(--outline);
+  opacity: 0.16;
+}
+
+.outline {
+  fill: none;
+  stroke: var(--outline);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: stroke var(--dur) var(--ease);
+}
+
+.lock {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- estados -- */
+.active {
+  filter: drop-shadow(0 0 0.4em color-mix(in srgb, var(--tone) 60%, transparent));
+}
+
+.active .sheen {
+  animation: sheen 2.8s var(--ease-io) infinite alternate;
+}
+
+@keyframes sheen {
+  from {
+    opacity: 0.2;
+  }
+
+  to {
+    opacity: 0.5;
+  }
+}
+
+/* vazio: só contorno e faces translúcidas (a malha do fundo aparece) */
+.empty .top {
+  fill: color-mix(in srgb, var(--tone) 16%, transparent);
+}
+
+.empty .left {
+  fill: color-mix(in srgb, var(--tone) 9%, transparent);
+}
+
+.empty .right {
+  fill: color-mix(in srgb, var(--tone) 4%, transparent);
+}
+
+.empty .outline {
+  stroke: color-mix(in srgb, var(--tone) 50%, transparent);
+}
+
+.empty .sheen,
+.empty .shade,
+.locked .sheen,
+.locked .shade {
+  opacity: 0;
+}
+
+/* bloqueado: faces apagadas em tinta, contorno discreto e cadeado na face direita */
+.locked .top {
+  fill: var(--ink-700);
+}
+
+.locked .left {
+  fill: var(--ink-800);
+}
+
+.locked .right {
+  fill: var(--ink-850);
+}
+
+.locked .outline {
+  stroke: var(--hair-lit);
+}
+
+.locked .lock {
+  display: inline;
+  fill: var(--text-dim);
+  stroke: var(--text-dim);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.locked .lock path {
+  fill: none;
+}
+
+/* ---------------------------------------------------- menos movimento / leve */
+@media (prefers-reduced-motion: reduce) {
+  .active .sheen {
+    animation: none;
+    opacity: 0.35;
+  }
+}
+
+:global([data-lite]) .active {
+  filter: none;
+}
+
+:global([data-lite]) .active .sheen {
+  animation: none;
+  opacity: 0.35;
+}
+
+:global([data-lite]) .cube,
+:global([data-lite]) .cube * {
+  transition: none;
+}

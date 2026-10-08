@@ -1,0 +1,268 @@
+/* ==========================================================================
+   Dock — pílula flutuante com blur (do .dock/.dock-inner do site).
+   Mobile (<= 860px): a navegação vira folha em tela cheia, links de 56px,
+   ações no rodapé (alcance do polegar), áreas seguras com env().
+
+   ATENÇÃO: o vidro (backdrop-filter) vive no ::before de .inner. Um
+   backdrop-filter num ancestral viraria o bloco de contenção do painel
+   `position: fixed` (ele deixaria de cobrir a tela).
+
+   Tokens locais (sugestão de promoção): --dock-top (respiro do topo, 12px).
+   ========================================================================== */
+
+.sentinel {
+  height: 1px;
+  margin-bottom: -1px;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.dock {
+  --dock-top: var(--space-3);
+
+  position: sticky;
+  top: max(var(--dock-top), env(safe-area-inset-top));
+  z-index: var(--z-dock);
+  margin-top: var(--dock-top);
+  padding-inline: max(var(--gutter), env(safe-area-inset-left))
+    max(var(--gutter), env(safe-area-inset-right));
+}
+
+.inner {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: min(var(--wrap), 100%);
+  min-height: var(--dock-h);
+  margin-inline: auto;
+  padding: 0 var(--space-2) 0 var(--space-4);
+}
+
+/* vidro */
+.inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-float);
+  transition:
+    border-color var(--dur-slow),
+    background-color var(--dur-slow);
+}
+
+.dock[data-stuck='true'] .inner::before,
+.dock[data-open='true'] .inner::before {
+  border-color: var(--hair-lit);
+  background: var(--glass-bg-solid);
+}
+
+.brand {
+  position: relative;
+  z-index: 2;
+  margin-right: auto;
+}
+
+/* ------------------------------------------------------- painel (desktop) -- */
+.panel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 13px;
+  border-radius: var(--r-pill);
+  font-size: 0.89rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  transition: color var(--dur);
+}
+
+.link:hover,
+.link[data-active] {
+  color: var(--text);
+}
+
+/* pílula do item ativo (aria-current) */
+.link[data-active]::before {
+  content: '';
+  position: absolute;
+  inset: var(--space-1) 0;
+  z-index: -1;
+  border: 1px solid var(--hair-lit);
+  border-radius: inherit;
+  background: var(--tint-cyan);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--hair);
+}
+
+.trailing {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.toggle {
+  display: none;
+}
+
+@media (min-width: 861px) and (max-width: 1000px) {
+  .link {
+    padding-inline: var(--space-2);
+    font-size: 0.85rem;
+  }
+}
+
+/* ---------------------------------------------------------- mobile (folha) -- */
+@media (max-width: 860px) {
+  .inner {
+    padding-right: var(--space-2);
+  }
+
+  .toggle {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    order: 3;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--hair);
+    border-radius: 50%;
+    color: var(--text);
+    transition:
+      background-color var(--dur-fast),
+      border-color var(--dur-fast);
+  }
+
+  .toggle:active,
+  .dock[data-open='true'] .toggle {
+    border-color: var(--hair-lit);
+    background: var(--tint-cyan);
+  }
+
+  .toggle svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+
+  .trailing {
+    order: 2;
+  }
+
+  /* folha em tela cheia por trás da pílula (que fica por cima: marca e botão) */
+  .panel {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-5);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-top: calc(
+      var(--dock-h) + var(--dock-top) * 2 + max(0px, env(safe-area-inset-top)) + var(--space-3)
+    );
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
+    padding-bottom: max(var(--space-5), env(safe-area-inset-bottom));
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
+    background:
+      radial-gradient(circle at 80% 0%, var(--glow-blue), transparent 55%), var(--ink-950);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(var(--space-3));
+    transition:
+      opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease),
+      visibility var(--dur);
+  }
+
+  .dock[data-open='true'] .panel {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+
+    /* visível já no 1º quadro: o foco programático ao abrir precisa funcionar */
+    transition:
+      opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease),
+      visibility 0s;
+  }
+
+  .nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-1);
+  }
+
+  .link {
+    min-height: 56px;
+    padding: 0 var(--space-4);
+    border-radius: var(--r);
+    font-family: var(--font-display);
+    font-size: var(--s-1);
+    font-weight: 600;
+    letter-spacing: var(--tracking-display);
+    color: var(--text-soft);
+  }
+
+  .link[data-active]::before {
+    inset: 0;
+  }
+
+  /* ações no rodapé da folha, ao alcance do polegar */
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+    margin-top: auto;
+    padding-top: var(--space-5);
+    padding-left: 0;
+    border-top: 1px solid var(--hair);
+    border-left: 0;
+  }
+
+  .actions > * {
+    min-height: 48px;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    transform: none;
+  }
+}
+
+:global([data-lite]) .panel,
+:global([data-lite]) .inner::before {
+  transition: none;
+}

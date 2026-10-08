@@ -1,0 +1,145 @@
+/* ==========================================================================
+   IsoCover — capa de curso como bloco isométrico (projeção oblíqua).
+   Frente = imagem 16:9. Profundidade (--depth) cresce com a largura do
+   contêiner; o topo e a lateral são paralelogramos com a inclinação de 30°
+   da malha (tan 30° ≈ 0.577).
+
+   Tokens locais (sugestão de promoção): --iso-slope: 0.577 (tan 30°).
+   ========================================================================== */
+
+.root {
+  --iso-slope: 0.577;
+  --edge: 2px; /* espessura do contorno navy */
+  --face-a: #6a8dff; /* extremos do gradiente do topo (= --face-top) */
+  --face-b: #41b8ff;
+  --side: var(--face-right);
+
+  container-type: inline-size;
+  margin: 0;
+  min-width: 0;
+}
+
+.mint {
+  --face-a: color-mix(in srgb, var(--mint) 70%, var(--cyan));
+  --face-b: color-mix(in srgb, var(--mint) 80%, white);
+  --side: color-mix(in srgb, var(--mint) 52%, var(--ink-900));
+}
+
+.amber {
+  --face-a: color-mix(in srgb, var(--amber) 70%, var(--coral));
+  --face-b: color-mix(in srgb, var(--amber) 78%, white);
+  --side: color-mix(in srgb, var(--amber) 55%, var(--ink-900));
+}
+
+.violet {
+  --face-a: color-mix(in srgb, var(--violet) 70%, var(--indigo));
+  --face-b: color-mix(in srgb, var(--violet) 72%, white);
+  --side: color-mix(in srgb, var(--violet) 55%, var(--ink-900));
+}
+
+.stage {
+  --depth: clamp(14px, 7cqw, 44px);
+  --rise: calc(var(--depth) * var(--iso-slope));
+
+  position: relative;
+  padding: var(--rise) var(--depth) 0 0;
+  filter: drop-shadow(0 var(--space-4) var(--space-5) rgba(0, 0, 0, 0.55));
+}
+
+/* faces laterais: o fundo é o contorno; o ::before é o preenchimento */
+.face {
+  position: absolute;
+  background: var(--outline);
+}
+
+.face::before {
+  content: '';
+  position: absolute;
+  inset: var(--edge);
+  clip-path: inherit;
+}
+
+.topFace {
+  inset: 0 0 auto 0;
+  height: calc(var(--rise) + var(--edge));
+  clip-path: polygon(0 100%, var(--depth) 0, 100% 0, calc(100% - var(--depth)) 100%);
+}
+
+.topFace::before {
+  background: linear-gradient(90deg, var(--face-a), var(--face-b));
+}
+
+.sideFace {
+  inset: 0 0 0 auto;
+  width: var(--depth);
+  clip-path: polygon(0 var(--rise), 100% 0, 100% calc(100% - var(--rise)), 0 100%);
+}
+
+.sideFace::before {
+  background: var(--side);
+}
+
+.front {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: var(--edge) solid var(--outline);
+  border-radius: 0 0 0 var(--space-1);
+  background: var(--ink-800);
+}
+
+.image {
+  object-fit: cover;
+}
+
+/* ---------------------------------------------------------------- fallback -- */
+.fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background:
+    repeating-linear-gradient(
+      30deg,
+      transparent 0 calc(var(--space-6) - 1px),
+      var(--grid-line-near) calc(var(--space-6) - 1px) var(--space-6)
+    ),
+    repeating-linear-gradient(
+      -30deg,
+      transparent 0 calc(var(--space-6) - 1px),
+      var(--grid-line-near) calc(var(--space-6) - 1px) var(--space-6)
+    ),
+    radial-gradient(circle at 25% 40%, var(--glow-blue), transparent 60%),
+    linear-gradient(135deg, var(--ink-800), var(--ink-850));
+}
+
+.fallbackCube {
+  width: clamp(36px, 14cqw, 72px);
+  height: auto;
+}
+
+.fallbackTitle {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 4.4cqw, 1.5rem);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-display);
+  color: var(--text);
+}
+
+/* sem título (ou muito estreito) o cubo fica centralizado */
+.root[data-fallback]:not(:has(.fallbackTitle)) .fallback {
+  grid-template-columns: auto;
+  justify-content: center;
+}
+
+:global([data-lite]) .stage {
+  filter: none;
+}

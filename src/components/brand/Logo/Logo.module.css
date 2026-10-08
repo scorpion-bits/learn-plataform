@@ -1,0 +1,55 @@
+/* Logo — estilo .dock-brand do site da marca. */
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px; /* alvo de toque quando é link */
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.sm {
+  gap: var(--space-2);
+  font-size: 0.875rem;
+}
+
+.lg {
+  gap: var(--space-3);
+  font-size: 1.5rem;
+}
+
+.glyph {
+  flex: none;
+  transition: transform var(--dur-slow) var(--ease);
+}
+
+.word em {
+  font-style: normal;
+  color: var(--cyan);
+}
+
+@media (hover: hover) {
+  a.logo:hover .glyph {
+    transform: rotate(-12deg) scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a.logo:hover .glyph {
+    transform: none;
+  }
+}
+
+:global([data-lite]) .glyph {
+  transition: none;
+}
+
+:global([data-lite]) a.logo:hover .glyph {
+  transform: none;
+}

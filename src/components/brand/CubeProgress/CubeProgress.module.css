@@ -1,0 +1,72 @@
+/* CubeProgress — trilha de cubos + percentual. Compacta por padrão: cubos
+   quebram de linha em vez de gerar rolagem horizontal (360px). */
+
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.trail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+  gap: var(--gap, var(--space-1));
+}
+
+.sm {
+  --gap: 3px;
+}
+
+.md {
+  --gap: var(--space-1);
+}
+
+.lg {
+  --gap: var(--space-2);
+}
+
+.slot {
+  display: inline-flex;
+}
+
+/* "ignição": cubos concluídos acendem em sequência na primeira pintura */
+.slot[data-lit] {
+  animation: ignite var(--dur-slow) var(--ease) both;
+  animation-delay: calc(var(--i) * 40ms);
+}
+
+@keyframes ignite {
+  from {
+    opacity: 0.35;
+    transform: translateY(3px) scale(0.85);
+  }
+}
+
+.percent {
+  flex: none;
+  min-width: 3.4ch; /* evita o salto de largura entre 9% e 100% */
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.lg .percent {
+  font-size: var(--s-0);
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot[data-lit] {
+    animation: none;
+  }
+}
+
+:global([data-lite]) .slot[data-lit] {
+  animation: none;
+}

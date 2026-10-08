@@ -63,6 +63,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: '#05090f', // = --ink-950 (CSS vars não existem aqui)
   colorScheme: 'dark',
+  viewportFit: 'cover', // habilita env(safe-area-inset-*) no iOS (ADR-019)
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

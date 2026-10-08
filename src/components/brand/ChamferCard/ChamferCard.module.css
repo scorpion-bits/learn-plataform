@@ -1,0 +1,165 @@
+/* ==========================================================================
+   ChamferCard — topo chanfrado (técnica .why-card).
+   root  : sem clip-path; foco, elevação, drop-shadow que segue a silhueta.
+   frame : padding 1px + clip-path + gradiente = a borda (inclui a diagonal).
+   ::before: preenchimento, `clip-path: inherit`.
+   O hover do site aplicava drop-shadow no elemento já recortado (cortava a
+   sombra); aqui a sombra fica no root e acompanha o recorte do filho.
+   ========================================================================== */
+
+.root {
+  --slope: var(--chamfer);
+  --pad: var(--space-5);
+  --angle: 150deg;
+  --clip: polygon(0 var(--slope), 100% 0, 100% 100%, 0 100%);
+
+  position: relative;
+  display: block;
+  min-width: 0;
+  color: inherit;
+  transition:
+    transform var(--dur-slow) var(--ease),
+    filter var(--dur-slow) var(--ease);
+}
+
+.root[data-tilt='left'] {
+  --angle: 210deg;
+  --clip: polygon(0 0, 100% var(--slope), 100% 100%, 0 100%);
+}
+
+.root[data-shape='face'] {
+  --clip: polygon(0 var(--slope), 100% 0, 100% calc(100% - var(--slope)), 0 100%);
+}
+
+.root[data-shape='face'][data-tilt='left'] {
+  --clip: polygon(0 0, 100% var(--slope), 100% 100%, 0 calc(100% - var(--slope)));
+}
+
+.frame {
+  position: relative;
+  display: block;
+  height: 100%;
+  padding: 1px;
+  clip-path: var(--clip);
+  background: linear-gradient(var(--angle), var(--hair-lit), var(--hair) 55%);
+}
+
+.frame::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+  clip-path: inherit;
+  background:
+    linear-gradient(
+      var(--angle),
+      var(--tint-cyan),
+      color-mix(in srgb, var(--ink-900) 55%, transparent) 60%
+    ),
+    var(--ink-850);
+}
+
+/* folga vertical: as diagonais comem altura nas pontas, o texto nunca é cortado */
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: calc(var(--pad) + var(--slope) * 0.7) var(--pad) var(--pad);
+}
+
+.root[data-shape='face'] .inner {
+  padding-bottom: calc(var(--pad) + var(--slope) * 0.7);
+}
+
+.root[data-padding='none'] .inner {
+  padding: 0;
+}
+
+/* ------------------------------------------------------------ interativo -- */
+.interactive {
+  cursor: pointer;
+}
+
+/* dica permanente de que é clicável: seta num selo de cubo, no rodapé */
+.cue {
+  display: inline-grid;
+  align-self: flex-end;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-top: var(--space-3);
+  border: 1px solid var(--hair-lit);
+  border-radius: var(--r-pill);
+  background: var(--tint-cyan);
+  color: var(--cyan);
+  transition:
+    transform var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+}
+
+.cue svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (hover: hover) {
+  .interactive:hover {
+    transform: translateY(-4px);
+    filter: drop-shadow(var(--shadow-card));
+  }
+
+  .interactive:hover .frame {
+    background: linear-gradient(var(--angle), var(--cyan), var(--hair-lit) 60%);
+  }
+
+  .interactive:hover .cue {
+    transform: translateX(2px);
+    background: var(--cyan);
+    color: var(--on-accent);
+  }
+}
+
+/* feedback imediato ao toque/clique (<= 100ms) */
+.interactive:active {
+  transform: translateY(0) scale(0.99);
+  transition-duration: var(--dur-fast);
+}
+
+.interactive:active .frame {
+  background: linear-gradient(var(--angle), var(--cyan), var(--hair-lit) 60%);
+}
+
+/* foco no root (sem clip) ou em um filho do card: o anel nunca é recortado */
+.root:focus-visible,
+.interactive:has(:focus-visible) {
+  outline: var(--focus-outline);
+  outline-offset: var(--space-1);
+}
+
+.interactive:has(:focus-visible) .frame {
+  background: linear-gradient(var(--angle), var(--cyan), var(--hair-lit) 60%);
+}
+
+:global([data-lite]) .root {
+  transition: none;
+}
+
+:global([data-lite]) .interactive:hover {
+  filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive:hover,
+  .interactive:active {
+    transform: none;
+  }
+
+  .interactive:hover .cue {
+    transform: none;
+  }
+}

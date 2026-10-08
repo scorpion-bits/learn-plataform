@@ -14,7 +14,7 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 |---|---|
 | Fase atual | **PHASE 1 — FOUNDATION** (+ PHASE 3 iniciada) |
 | Próximas tarefas READY | — |
-| Em andamento | `UI-004` (A03, Sonnet 5.5), `DB-003` (A02, Opus 5.5) |
+| Em andamento | `UI-003` + `UI-006` (A03, Sonnet 5.5), `DB-003` (A02, Opus 5.5) |
 | Bloqueios | — |
 
 ---
@@ -217,18 +217,18 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Descrição**: `IsoCube` (SVG), `CubeProgress`, `ChamferCard`, `IsoCover`, `Logo`, `Dock` (§4).
 - **Prioridade**: P1 · **Fase**: 3 · **Dependências**: UI-001 (paralelo a UI-002)
 - **Critérios**: SVG leve (sem imagens raster para cubos); `CubeProgress` com `role="progressbar"` e `aria-valuenow`; animações desligadas em reduced-motion; responsivo até 360px.
-- **Status**: IN PROGRESS · **Agente**: A03 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
+- **Status**: DONE ✅ · **Agente**: A03 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
 
 #### UI-003 — Shells de layout
 - **Descrição**: `PublicShell` (Dock + footer), `StudentShell` (Dock com menu do usuário), `PlayerShell` (topo/ementa/drawer), `AdminShell` (sidebar colapsável/drawer + breadcrumbs).
 - **Prioridade**: P0 · **Fase**: 3 · **Dependências**: UI-002, UI-004
 - **Critérios**: mover `IsoBackdrop` do root layout para os layouts dos route groups (`full` em público/aluno, `subtle` no admin); landmarks corretos; skip-link; menus acessíveis; funcionam em 360/768/1024/1440.
-- **Status**: BACKLOG · **Agente**: A03 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
+- **Status**: IN PROGRESS · **Agente**: A03 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
 #### UI-006 — Ícones de app e manifest
 - **Descrição**: PWA instalável (ADR-019): ícones quadrados 180/192/512 + maskable a partir do glyph, `manifest.webmanifest` (`display: standalone`, `start_url: /inicio`, cores da marca), apple-touch-icon, `viewport-fit=cover` + safe-area. Sem service worker offline no MVP.
 - **Prioridade**: P1 · **Fase**: 3 · **Dependências**: UI-001
-- **Status**: BACKLOG · **Agente**: A03 · **Modelo**: Haiku 5.5 · **Esforço**: baixo
+- **Status**: IN PROGRESS · **Agente**: A03 · **Modelo**: Haiku 5.5 · **Esforço**: baixo
 
 #### UI-005 — Vitrine `/dev/ui`
 - **Descrição**: página (somente em dev/preview) mostrando todos os componentes e estados.
@@ -648,6 +648,7 @@ EXPECTED OUTPUT:
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-08 | UI-004 | A03 (Sonnet 5.5) | DONE | IsoCube SVG (4 estados × 4 tons, < 1,1 KB), CubeProgress (agrupa > 12 itens, progressbar acessível), ChamferCard (topo chanfrado, foco visível, seta permanente p/ toque), IsoCover (bloco 3D por container query), Logo, Dock (sticky com IntersectionObserver, menu mobile tela cheia com foco preso). Vitrine `/dev/brand` (404 em produção). Revisão visual 1440/390 — aprovada. Orquestrador adicionou `viewportFit: 'cover'`. Follow-ups: promover tokens `--face-top-a/b`, `--iso-slope` (UI-003); `images.remotePatterns` p/ Storage (ADMIN-002); leitor de tela no Dock (UX-002). |
 | 2026-10-08 | UI-002 | A03 (Sonnet 5.5) | DONE | 21 primitivas acessíveis em `src/components/ui` (Button com `pending`, Field com aria, Dialog/Drawer nativos com bottom-sheet mobile, Toast aria-live, Table empilhada < 720px, Tabs/DropdownMenu com teclado), alvos ≥ 44px, inputs ≥ 16px. Vitest + Testing Library configurados (12 testes). Revisão: testes/typecheck/lint verificados — aprovado. Pendências menores: sem animação de saída no Dialog, Table empilhada pode perder semântica em leitor de tela (rever em UX-002), sem testes de Table/DropdownMenu. `next dev` pode gerar `AGENTS.md` com regras do Next 16 — pode ser commitado. |
 | 2026-10-08 | DB-001 + DB-002 | A02 (Opus 5.5) | DONE | 11 tabelas, enums, triggers (sync de `course_id` + FKs compostas, `published_at`, pedido imutável, matrícula só revogável e `purchase` só com pedido pago), checks por tipo de material (sem `pdf`) e antiinjeção, RLS ligada e tudo revogado de anon/authenticated (policies no DB-003). Validado em PG16 local: 109 asserções. Revisão do orquestrador: triggers e guards conferidos — aprovado. Achado: exclusão de conta de comprador bloqueada (→ DB-008). Docker indisponível no ambiente (R3). |
 | 2026-10-08 | UI-001 | A03 (Sonnet 5.5) | DONE | Assets em `public/brand`, Grotesk/Inter via `next/font/local`, `tokens.css` (+ tokens extras), `base.css` em `@layer base`, `IsoBackdrop` estático, modo leve, metadata/OG, home "em construção" com identidade SB. Revisado visualmente (1440/390/360) — aprovado. Zero requisições externas. Follow-ups: backdrop por route group (UI-003), ícones quadrados/manifest (UI-006), estilo de link e spinner sem rotação (UI-002), CSP com nonce p/ script inline (QA-002). |
