@@ -35,3 +35,6 @@ Criar `/entrar`, `/cadastro`, `/recuperar-senha` e `/redefinir-senha` com Server
 
 ## Relatório final
 Arquivos · decisões · testes · caminhos dos screenshots · configurações que o humano precisa fazer no Supabase (redirect URLs, templates de email).
+
+## Retomada (2026-10-09)
+O agente anterior parou por limite de uso logo antes do build/screenshots. Já existem (não revisados): `src/app/(auth)/{entrar,cadastro,recuperar-senha,redefinir-senha}/`, `src/app/(auth)/layout.module.css` (alterado), `src/features/auth/{actions.ts,actions.test.ts,schemas.ts,schemas.test.ts,messages.ts,components/}`. Revise contra os critérios, complete o que faltar, rode lint/typecheck/test/build e tire os screenshots.
