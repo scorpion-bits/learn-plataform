@@ -14,7 +14,7 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 |---|---|
 | Fase atual | **PHASE 1 — FOUNDATION** (+ PHASE 3 iniciada) |
 | Próximas tarefas READY | — |
-| Em andamento | `UI-003` + `UI-006` (A03, Sonnet 5.5), `DB-003` (A02, Opus 5.5) |
+| Em andamento | `UI-003` + `UI-006` (A03, Sonnet 5.5), `DB-004` + `DB-005` (A02) |
 | Bloqueios | — |
 
 ---
@@ -167,20 +167,20 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Prioridade**: P0 · **Fase**: 2 · **Dependências**: DB-001, DB-002
 - **Arquivos**: `supabase/migrations/20261008000003_rls_functions.sql`, `supabase/scripts/grant-admin.sql`
 - **Critérios**: matriz de RLS implementada 1:1; todas as `security definer` com `search_path=''`; Supabase advisor (lint) sem alertas de segurança.
-- **Status**: IN PROGRESS · **Agente**: A02 · **Modelo**: Opus 5.5 · **Esforço**: alto
+- **Status**: DONE ✅ · **Agente**: A02 · **Modelo**: Opus 5.5 · **Esforço**: alto
 
 #### DB-004 — Storage buckets e policies
 - **Descrição**: buckets `course-covers` (público, 5 MB, imagens) e `course-content` (privado, 200 MB, zip/imagens/áudio/arquivos de projeto), policies admin-only de escrita; helper server-side `getSignedMaterialUrl(materialId)` que checa acesso.
 - **Prioridade**: P0 · **Fase**: 2 · **Dependências**: DB-003
 - **Arquivos**: `supabase/migrations/20261008000004_storage.sql`, `src/features/materials/storage.ts`
 - **Critérios**: student não lista nem baixa `course-content` direto; signed URL ≤ 10 min; respostas com `private, no-store`.
-- **Status**: BACKLOG · **Agente**: A02 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
+- **Status**: IN PROGRESS · **Agente**: A02 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
 
 #### DB-005 — Testes de RLS (pgTAP)
 - **Descrição**: suíte em `supabase/tests/` cobrindo anon / student sem acesso / student com acesso / student com acesso revogado / admin para cada tabela, bucket e função; inclui tentativas de ataque (auto-promoção, inserir enrollment, ler materiais pagos, alterar pedido, chamar `fulfill_order`).
 - **Prioridade**: P0 · **Fase**: 2 · **Dependências**: DB-003, DB-004
 - **Critérios**: `npm run db:test` verde; cada linha da matriz tem ao menos 1 teste; ataques S1/S2/S8 do audit falham.
-- **Status**: BACKLOG · **Agente**: A02 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
+- **Status**: IN PROGRESS · **Agente**: A02 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
 
 #### DB-006 — Métricas do admin
 - **Descrição**: `admin_dashboard_metrics(from, to)` (receita, nº vendas, ticket médio, alunos totais/novos, matrículas por origem, top 5 cursos) + `admin_revenue_by_day(from,to)` + view `admin_students`; todas checam `is_admin()`.
@@ -648,6 +648,7 @@ EXPECTED OUTPUT:
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-08 | DB-003 | A02 (Opus 5.5) | DONE | RLS + grants por coluna em 11 tabelas; `is_admin`, `has_course_access` (curso rascunho não dá acesso), `handle_new_user` (sempre student — S1 corrigido), `fulfill_order`/`refund_order` (service_role, lock + idempotência + códigos de resultado), `request_refund` (7 dias, antiabuso, grava % consumido), `admin_record_manual_sale`, `admin_students`, `reorder_*`; views `course_catalog`/`course_outline`/`my_library`; `supabase/scripts/grant-admin.sql`. 174 asserções por papel + teste de concorrência em PG16. Revisão do orquestrador: `has_course_access`, `handle_new_user`, `fulfill_order` conferidos — aprovado. Contratos para PAY-003 em `docs/database.md` §4. |
 | 2026-10-08 | UI-004 | A03 (Sonnet 5.5) | DONE | IsoCube SVG (4 estados × 4 tons, < 1,1 KB), CubeProgress (agrupa > 12 itens, progressbar acessível), ChamferCard (topo chanfrado, foco visível, seta permanente p/ toque), IsoCover (bloco 3D por container query), Logo, Dock (sticky com IntersectionObserver, menu mobile tela cheia com foco preso). Vitrine `/dev/brand` (404 em produção). Revisão visual 1440/390 — aprovada. Orquestrador adicionou `viewportFit: 'cover'`. Follow-ups: promover tokens `--face-top-a/b`, `--iso-slope` (UI-003); `images.remotePatterns` p/ Storage (ADMIN-002); leitor de tela no Dock (UX-002). |
 | 2026-10-08 | UI-002 | A03 (Sonnet 5.5) | DONE | 21 primitivas acessíveis em `src/components/ui` (Button com `pending`, Field com aria, Dialog/Drawer nativos com bottom-sheet mobile, Toast aria-live, Table empilhada < 720px, Tabs/DropdownMenu com teclado), alvos ≥ 44px, inputs ≥ 16px. Vitest + Testing Library configurados (12 testes). Revisão: testes/typecheck/lint verificados — aprovado. Pendências menores: sem animação de saída no Dialog, Table empilhada pode perder semântica em leitor de tela (rever em UX-002), sem testes de Table/DropdownMenu. `next dev` pode gerar `AGENTS.md` com regras do Next 16 — pode ser commitado. |
 | 2026-10-08 | DB-001 + DB-002 | A02 (Opus 5.5) | DONE | 11 tabelas, enums, triggers (sync de `course_id` + FKs compostas, `published_at`, pedido imutável, matrícula só revogável e `purchase` só com pedido pago), checks por tipo de material (sem `pdf`) e antiinjeção, RLS ligada e tudo revogado de anon/authenticated (policies no DB-003). Validado em PG16 local: 109 asserções. Revisão do orquestrador: triggers e guards conferidos — aprovado. Achado: exclusão de conta de comprador bloqueada (→ DB-008). Docker indisponível no ambiente (R3). |

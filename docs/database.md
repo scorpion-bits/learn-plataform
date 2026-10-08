@@ -1,7 +1,7 @@
 # Banco de dados
 
 > Postgres (Supabase). Toda mudança via `supabase/migrations/*.sql`. Nunca editar schema pelo dashboard.
-> Status: §1–3 **implementados** em `supabase/migrations/20261008000001_core_schema.sql` (DB-001) e `20261008000002_access_commerce.sql` (DB-002); §4–6 serão materializados em `DB-003..DB-004`. Ajustes durante implementação devem atualizar este arquivo.
+> Status: §1–3 **implementados** em `supabase/migrations/20261008000001_core_schema.sql` (DB-001) e `20261008000002_access_commerce.sql` (DB-002); §4–5 em `20261008000003_rls_functions.sql` (DB-003); §6 (storage) será materializado em `DB-004` e `admin_dashboard_metrics` em `DB-006`. Ajustes durante implementação devem atualizar este arquivo.
 
 ## 1. Convenções
 - `snake_case`, tabelas no plural, PK `id uuid default gen_random_uuid()` (exceto tabelas de junção/progresso com PK composta).
@@ -149,22 +149,31 @@ PK `(user_id, lesson_id)`; `course_id` (denormalizado por trigger + FK composta 
 - **`orders`** (trigger `orders_guard_immutable`): `user_id`, `course_id`, `amount_cents`, `currency`, `source`, `provider`, `created_by` são imutáveis; `provider_billing_id` só pode ir de nulo para um valor. `currency = 'BRL'`, `amount_cents > 0`.
 - **`enrollments`** (trigger `enrollments_guard`): nasce ativa; `purchase` só com pedido `paid` (então `fulfill_order` marca o pedido como pago **antes** de inserir a matrícula); a única alteração permitida é revogar; matrícula revogada é definitiva (novo acesso = nova linha, histórico preservado).
 ## 4. Funções
-| função | tipo | uso |
-|---|---|---|
-| `is_admin()` | stable, security definer | policies, guards |
-| `has_course_access(p_course_id uuid)` | stable, security definer | policies de lessons/materials/progress; inclui admin |
-| `handle_new_user()` | trigger security definer | cria profile + role student; **ignora metadata.role** |
-| `fulfill_order(p_order_id, p_provider_billing_id, p_amount_cents, p_event_id)` | security definer, **executável só pelo service role** | transação idempotente: valida valor, marca pago, cria enrollment |
-| `admin_dashboard_metrics(p_from, p_to)` | security definer com checagem `is_admin()` | receita, vendas, alunos, matrículas, top cursos |
-| `reorder_modules(course_id, ids[])` / `reorder_lessons(module_id, ids[])` / `reorder_materials(lesson_id, ids[])` | invoker | reordenação atômica |
+Implementadas em `supabase/migrations/20261008000003_rls_functions.sql` (DB-003). Todas as `SECURITY DEFINER` têm `set search_path = ''`; toda função tem `revoke all ... from public, anon, authenticated` seguido de grants explícitos.
 
-`revoke execute on function ... from public, anon` em tudo que não for para anon.
+| função | tipo | quem executa | uso |
+|---|---|---|---|
+| `is_admin()` | stable, security definer | authenticated, service_role | policies, guards; lê `user_roles` (nunca metadata) |
+| `has_course_access(p_course_id)` | stable, security definer | anon (sempre `false`), authenticated, service_role | admin → true; aluno → matrícula ativa **e** curso `published`/`archived` (rascunho nunca, mesmo com `admin_grant`) |
+| `handle_new_user()` | trigger security definer em `auth.users` | — | cria `profiles` (só `full_name`/`name` do metadata, sem caracteres de controle, espaços colapsados, ≤ 120) + `user_roles('student')`; **ignora metadata.role** |
+| `fulfill_order(p_order_id, p_provider_billing_id, p_amount_cents, p_event_id)` | security definer | **só service_role** | `select … for update` no pedido; aceita `pending`/`expired` → `paid` (+`paid_at`); valida valor e cobrança; cria `enrollment(purchase)` (`on conflict` na matrícula ativa); marca `payment_events`. Retorna `fulfilled` · `paid_already_enrolled` (pagamento em duplicidade: reembolsar) · `already_paid` · `order_not_found` · `invalid_status` · `amount_mismatch` · `billing_mismatch` |
+| `refund_order(p_order_id, p_event_id)` | security definer | **só service_role** | reembolso confirmado / disputa perdida: `paid` → `refunded` (+`refunded_at`) e revoga a matrícula do pedido (`revoke_reason='refund'`, `revoked_by` nulo). Retorna `refunded` · `already_refunded` · `order_not_found` · `invalid_status` |
+| `request_refund(p_order_id)` | security definer | authenticated | aluno pede reembolso do **próprio** pedido `checkout` pago em até `paid_at + 7 dias`; grava `refund_requested_at` e `refund_requested_progress` (% de aulas concluídas). Antiabuso: recusa se o mesmo usuário já reembolsou (ou pediu) o mesmo curso em outro pedido. Retorna `requested` · `already_requested` · `already_refunded` · `not_found` · `not_paid` · `not_eligible` (venda manual) · `window_expired` · `previously_refunded` |
+| `admin_record_manual_sale(p_user_id, p_course_id, p_amount_cents default preço)` | security definer + `is_admin()` | authenticated | cria `orders(manual, paid)` + `enrollment(purchase)` atomicamente. Exceções: `42501`, `P0002` curso inexistente, `22023` não publicado/valor inválido, `23505` já tem compra ativa |
+| `admin_students(p_search, p_limit, p_offset)` | stable, security definer + `is_admin()` | authenticated | substitui a view `admin_students` (não expõe `auth.users`): perfil + email + `is_admin` + matrículas ativas + total gasto (`paid`) + último pedido + `total_count`. Busca literal (sem curingas) em email/nome; `limit` 1–200 |
+| `reorder_modules(p_course_id, ids[])` / `reorder_lessons(p_module_id, ids[])` / `reorder_materials(p_lesson_id, ids[])` | security invoker + `is_admin()` | authenticated | recebe a lista **completa** na nova ordem (positions `0..n-1`); `22023` se faltar/repetir/for de outro pai |
+| `admin_dashboard_metrics(p_from, p_to)` | security definer com checagem `is_admin()` | authenticated | **DB-006** |
+
+Erros de regra de negócio nas funções chamadas pelo app (`request_refund`, `fulfill_order`, `refund_order`) são **códigos de resultado** (text), não exceções — a action/webhook mapeia para pt-BR e `fulfill_order`/`refund_order` gravam `payment_events.processing_error`.
+
+Ajustes de schema no DB-003: `lesson_progress.user_id default auth.uid()`; `orders.refund_requested_progress smallint` (0–100, exige `refund_requested_at`).
 
 ## 5. Views
-- `course_catalog` (security_invoker): cursos publicados + categoria + `lesson_count` + `total_duration_seconds`.
-- `course_outline` (security_invoker): módulos/aulas (títulos, duração, `is_preview`) de cursos publicados — ementa pública.
-- `my_library` (security_invoker): matrículas ativas do usuário + origem + progresso agregado + último acesso.
-- `admin_students` (acesso só admin): perfis + email + contagem de matrículas + total gasto.
+Todas `security_invoker = true` (a RLS de quem consulta se aplica). Grants: `course_catalog`/`course_outline` → anon e authenticated; `my_library` → authenticated.
+- `course_catalog`: cursos `published` (filtro explícito, inclusive para admin) + categoria (`category_slug/name/position`) + `module_count`, `lesson_count`, `total_duration_seconds`.
+- `course_outline`: uma linha por aula (`course_id`, `module_*`, `lesson_*`, `duration_seconds`, `is_preview`), sem conteúdo. **Sem filtro de status**: a RLS decide (anon/sem acesso → publicados; com acesso → também arquivados; admin → todos), para o player de curso arquivado reutilizá-la.
+- `my_library`: uma linha por curso com matrícula ativa do `auth.uid()` (mesmo para admin): `sources` (`{purchase,admin_grant}`), `has_purchase`, `has_admin_grant`, `first_granted_at`, `lesson_count`, `completed_count`, `progress_percent`, `is_completed`, `last_accessed_at`, `last_lesson_id` (“continuar”). Curso em rascunho não aparece.
+- `admin_students`: **virou função** (ver §4).
 
 ## 6. Storage
 | bucket | público | leitura | escrita |
