@@ -176,11 +176,21 @@ Todas `security_invoker = true` (a RLS de quem consulta se aplica). Grants: `cou
 - `admin_students`: **virou função** (ver §4).
 
 ## 6. Storage
-| bucket | público | leitura | escrita |
-|---|---|---|---|
-| `course-covers` | sim | todos | admin (policy `is_admin()`) |
-| `course-content` | não | **ninguém via client** — signed URL gerada no servidor após `has_course_access` | admin |
-| `avatars` | sim | todos | dono (pasta `{user_id}/`) — pós-MVP |
+Implementado em `supabase/migrations/20261008000004_storage.sql` (DB-004); testes em `supabase/tests/07_storage.test.sql`.
+
+| bucket | público | limite | tipos aceitos | leitura | escrita |
+|---|---|---|---|---|---|
+| `course-covers` | sim | 5 MB | `image/jpeg`, `image/png`, `image/webp`, `image/avif` | todos, pela URL pública do bucket (não passa por RLS; sem policy de SELECT, então a API não **lista** o bucket) | admin |
+| `course-content` | não | 200 MB | lista explícita: zip/7z/rar/tar/gzip, `application/octet-stream` (assets de engine/arte), json/txt/md/csv, imagens raster, áudio, vídeo mp4/webm, fontes, glTF/obj | **ninguém via client** (nem aluno com acesso) — signed URL gerada no servidor | admin |
+| `avatars` | sim | — | — | todos | dono (pasta `{user_id}/`) — pós-MVP |
+
+- **Sem conteúdo ativo**: nenhum bucket aceita `text/html`, `image/svg+xml` nem JavaScript (o Storage serve o objeto com o `content-type` do upload; HTML/SVG na origem do Storage seria XSS — audit S5). O Supabase só aceita lista de permitidos, então os tipos são listados um a um, **sem curingas** (`image/*`, `text/*` incluiriam svg/html).
+- **Policies** em `storage.objects`, todas `to authenticated` e `(select public.is_admin())`: `course_storage_{select,insert,update,delete}_admin`, restritas aos dois buckets. O admin precisa de SELECT para `upsert` e para o painel. **Não há policy para `anon`** (uma policy de SELECT só acrescentaria listagem de capas de cursos em rascunho) **nem SELECT de `course-content` para aluno**.
+- **Download**: `getMaterialDownloadUrl(materialId)` (`src/features/materials/storage.ts`) lê o material com o client do usuário (a RLS de `lesson_materials` decide: preview, matrícula ativa ou admin) e só então usa o service client para `createSignedUrl` (≤ 600 s, `download: file_name`). Material inexistente e material sem acesso voltam como o mesmo erro `not_found`. Quem entrega a URL ao navegador responde com `Cache-Control: private, no-store`.
+- **Capas**: `getCoverPublicUrl(path)` monta a URL pública sem consultar o banco.
+- **Caminho dos arquivos**: `{course_id}/{lesson_id}/{uuid}-{nome}`; `lesson_materials.storage_path` é validado no banco (sem `..` nem caminho absoluto).
+- **Limite do plano**: o Supabase também tem um limite global de upload por projeto (plano Free: 50 MB); o de 200 MB do bucket só vale se o plano/`file_size_limit` global permitir.
+- **Testes locais**: `storage.objects` tem o trigger `storage.protect_delete`; testes que fazem `DELETE` direto precisam de `set local storage.allow_delete_query = 'true'` (o que o próprio Storage API faz).
 
 ## 7. Migração de dados do projeto antigo
 Ver `REL-002` (só se houver dados reais). Mapeamento: `user_courses` (assigned_by null) → `enrollments(purchase)` com `orders(manual)` sintético; `assigned_by` não nulo → `admin_grant`; `sales` → `orders(status='paid')`.

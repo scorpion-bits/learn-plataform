@@ -26,7 +26,7 @@ Anônimo: catálogo e páginas de curso publicados, ementa pública, materiais d
 | orders | — | SELECT próprios. **Sem escrita direta**: pedidos são criados/atualizados apenas pelo servidor (Server Action `startCheckout` com service client em módulo `server-only`, após `requireUser` + zod; preço lido do banco) e pelo webhook | SELECT todos; venda manual via `admin_record_manual_sale()` (Server Action admin). Pedido de reembolso do aluno via `request_refund()` (até 7 dias, antiabuso) |
 | payment_events | — | — | SELECT |
 | lesson_progress | — | ALL nas próprias linhas **se** `has_course_access(course_id)` | SELECT todos |
-| storage `course-covers` | SELECT | SELECT | ALL |
+| storage `course-covers` | leitura pela URL pública do bucket (sem policy SELECT; não lista) | idem | ALL |
 | storage `course-content` | — | — (signed URL do servidor) | ALL |
 
 Implementação: `supabase/migrations/20261008000003_rls_functions.sql` (grants mínimos por tabela/coluna + policies por papel; funções em `docs/database.md` §4). Pontos que um atacante tentaria e o banco bloqueia: escrita em `user_roles` (só service role/`grant-admin.sql`), `role` no metadata do cadastro (ignorado), UPDATE de colunas de `profiles` fora de `full_name/avatar_url/tax_id/phone`, qualquer escrita em `orders`/`payment_events` por `authenticated`, `fulfill_order`/`refund_order` (só `service_role`), progresso em curso sem acesso ou em nome de outro usuário.

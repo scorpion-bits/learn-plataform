@@ -8,7 +8,7 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `DB-004`+`DB-005` (A02) · `AUTH-003` (A04) |
+| Em andamento | `AUTH-003` (A04) |
 | Próximas | `ADMIN-002` · `DB-006`/`DB-007` |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
@@ -40,8 +40,8 @@
 | DB-001 | Schema de conteúdo e identidade | P0 | DONE ✅ | A02 | Opus 5.5 |
 | DB-002 | Schema de acesso, comércio e progresso | P0 | DONE ✅ | A02 | Opus 5.5 |
 | DB-003 | RLS, funções de segurança e trigger de cadastro | P0 | DONE ✅ | A02 | Opus 5.5 |
-| DB-004 | Storage buckets e policies | P0 | IN PROGRESS | A02 | Sonnet 5.5 |
-| DB-005 | Testes de RLS (pgTAP) | P0 | IN PROGRESS | A02 | Sonnet 5.5 |
+| DB-004 | Storage buckets e policies | P0 | DONE ✅ | A02 | Sonnet 5.5 |
+| DB-005 | Testes de RLS (pgTAP) | P0 | DONE ✅ | A02 | Sonnet 5.5 |
 | DB-006 | Métricas do admin | P1 | BACKLOG | A02 | Sonnet 5.5 |
 | DB-007 | Seed de desenvolvimento | P2 | BACKLOG | A02 | Haiku 5.5 |
 | DB-008 | Exclusão de conta e anonimização (LGPD) | P2 | BACKLOG | A02 | Sonnet 5.5 |
