@@ -216,3 +216,153 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* Pedido: PIX, estados (PAY-004) ----------------------------------------------- */
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.stateBox,
+.pix {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.stateTitle {
+  font-family: var(--font-display);
+  font-size: var(--s-1);
+  line-height: var(--lh-tight);
+}
+
+.countdown {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  position: relative;
+}
+
+.countdownLabel {
+  color: var(--text-soft);
+  font-size: var(--s--1);
+}
+
+.countdownValue {
+  font-family: var(--font-display);
+  font-size: var(--s-2);
+  font-variant-numeric: tabular-nums;
+  color: var(--amber);
+}
+
+/* Mobile: copia-e-cola antes do QR (ordem do DOM). Desktop: QR à esquerda. */
+.pixGrid {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.copyBox,
+.qrBox {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+}
+
+.pixLabel {
+  color: var(--text-soft);
+  font-size: var(--s--1);
+}
+
+.codeField {
+  width: 100%;
+  min-height: 9rem;
+  padding: var(--space-3);
+  resize: none;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-sm);
+  background: var(--ink-900);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.codeField:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.qrBox {
+  justify-items: center;
+}
+
+.qr {
+  width: min(100%, 14rem);
+  height: auto;
+  padding: var(--space-3);
+  border-radius: var(--r-sm);
+  background: #fff; /* hex literal: QR precisa de fundo claro para ser lido */
+}
+
+.steps {
+  display: grid;
+  gap: var(--space-2);
+  padding-inline-start: 1.25rem;
+  list-style: decimal;
+  color: var(--text-soft);
+  font-size: var(--s--1);
+  line-height: var(--lh-body);
+}
+
+.cubes {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.cube {
+  display: inline-flex;
+  opacity: 0;
+  transform: translateY(6px) scale(0.9);
+  animation: cubeOn 480ms ease-out forwards;
+}
+
+@keyframes cubeOn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cube {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
+:global([data-lite]) .cube {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+@media (min-width: 720px) {
+  .pixGrid {
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .qrBox {
+    order: -1;
+  }
+}

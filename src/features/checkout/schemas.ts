@@ -36,6 +36,9 @@ export type StartCheckoutInput = z.output<typeof startCheckoutSchema>;
 /** Id do pedido na URL `/checkout/pedido/[orderId]`. */
 export const orderIdSchema = z.uuid();
 
+/** Input de `getOrderStatus` (polling da página do pedido). */
+export const orderStatusInputSchema = z.object({ orderId: orderIdSchema });
+
 /** Validade da cobrança PIX pedida ao provedor (docs/payments.md §2). */
 export const PIX_EXPIRES_IN_SECONDS = 3600;
 

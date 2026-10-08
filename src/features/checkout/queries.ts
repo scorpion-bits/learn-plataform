@@ -7,6 +7,7 @@ import { requireUser } from '@/lib/auth/dal';
 import { formatBrPhone, formatCpf } from '@/lib/payments/tax-id';
 import { createClient } from '@/lib/supabase/server';
 
+import { toQrSrc } from './model';
 import type { CheckoutPrefill, MyOrder } from './model';
 import { orderIdSchema, REUSE_MIN_REMAINING_MS } from './schemas';
 
@@ -72,7 +73,9 @@ export async function getMyOrder(orderId: string): Promise<MyOrder | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('orders')
-    .select('id, status, amount_cents, expires_at, created_at, course_id, pix_br_code')
+    .select(
+      'id, status, amount_cents, expires_at, created_at, course_id, pix_br_code, pix_br_code_base64',
+    )
     .eq('id', parsed.data)
     .eq('user_id', user.id)
     .maybeSingle();
@@ -93,6 +96,8 @@ export async function getMyOrder(orderId: string): Promise<MyOrder | null> {
     expiresAt: data.expires_at,
     createdAt: data.created_at,
     hasPix: Boolean(data.pix_br_code),
+    pixBrCode: data.status === 'pending' ? data.pix_br_code : null,
+    pixQrSrc: data.status === 'pending' ? toQrSrc(data.pix_br_code_base64) : null,
     course: { slug: course?.slug ?? null, title: course?.title ?? 'Curso' },
   };
 }

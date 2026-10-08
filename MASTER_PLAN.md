@@ -76,7 +76,7 @@
 | PAY-001 | Spike: API AbacatePay | P0 | DONE ✅ | A07 | Opus 5.5 |
 | PAY-002 | Cliente AbacatePay + `startCheckout` | P0 | DONE ✅ | A07 | Opus 5.5 |
 | PAY-003 | Webhook e concessão | P0 | DONE ✅ | A07 | Opus 5.5 |
-| PAY-004 | Página de status do pedido | P0 | IN PROGRESS | A07 | Sonnet 5.5 |
+| PAY-004 | Página de status do pedido | P0 | DONE ✅ | A07 | Sonnet 5.5 |
 | PAY-005 | Reconciliação e expiração | P2 | BACKLOG | A07 | Sonnet 5.5 |
 | PAY-006 | Solicitação e execução de reembolso | P1 | BACKLOG | A07 | Sonnet 5.5 |
 | UX-001 | `loading.tsx`/skeletons por segmento, `error.tsx`, `not-found.tsx`, prefetch e transições | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |

@@ -14,8 +14,10 @@ import {
 import { createClient } from '@/lib/supabase/server';
 import { createServiceClient } from '@/lib/supabase/service';
 
+import type { OrderStatusSnapshot } from './model';
 import {
   IN_FLIGHT_GRACE_MS,
+  orderStatusInputSchema,
   PIX_EXPIRES_IN_SECONDS,
   REUSE_MIN_REMAINING_MS,
   startCheckoutSchema,
@@ -240,4 +242,25 @@ export const startCheckout = userAction(startCheckoutSchema, async (input, { use
 
   // 7. Página do pedido (QR em PAY-004).
   redirect(`/checkout/pedido/${order.id}`);
+});
+
+/**
+ * Polling da página do pedido: devolve só status e validade. Nunca concede
+ * acesso (isso é do webhook → `fulfill_order()`); filtra pelo `user_id` da sessão
+ * porque a RLS deixaria o admin ler pedidos de qualquer um.
+ */
+export const getOrderStatus = userAction(orderStatusInputSchema, async ({ orderId }, { user }) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('orders')
+    .select('status, expires_at')
+    .eq('id', orderId)
+    .eq('user_id', user.id)
+    .maybeSingle();
+  if (error) {
+    logCheckoutError('read order status', orderId, error);
+    throw new ActionError(GENERIC_ERROR);
+  }
+  if (!data) throw new ActionError('Pedido não encontrado.');
+  return { status: data.status, expiresAt: data.expires_at } satisfies OrderStatusSnapshot;
 });

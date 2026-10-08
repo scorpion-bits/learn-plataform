@@ -5,8 +5,8 @@ import { OrderStatusView } from '@/features/checkout/components/OrderStatusView'
 import { getMyOrder } from '@/features/checkout/queries';
 
 /*
- * Placeholder (PAY-002): só confirma que o pedido é do aluno (RLS + filtro por
- * user_id) e mostra o status. QR, copia-e-cola e polling: PAY-004.
+ * Página do pedido (PAY-004): QR PIX, copia-e-cola e acompanhamento do status.
+ * Confirma que o pedido é do aluno (RLS + filtro por user_id); nunca concede acesso.
  * Pedido de outro usuário ou id inválido -> 404 (não revela existência).
  */
 
