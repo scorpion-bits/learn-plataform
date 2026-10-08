@@ -67,12 +67,8 @@ export async function getStudentProfile(id: string): Promise<StudentProfile | nu
       .select('course_id')
       .eq('user_id', id)
       .not('completed_at', 'is', null),
-    // Email só existe em auth.users: a única leitura admin é a função de busca.
-    supabase.rpc('admin_students', {
-      p_search: profile.full_name || undefined,
-      p_limit: 200,
-      p_offset: 0,
-    }),
+    // Email só existe em auth.users: leitura admin-only por id.
+    supabase.rpc('admin_student_by_id', { p_user_id: id }),
   ]);
   if (enrollRes.error || orderRes.error || progressRes.error) {
     throw new Error('Não foi possível carregar o aluno.');
@@ -121,7 +117,7 @@ export async function getStudentProfile(id: string): Promise<StudentProfile | nu
     };
   });
 
-  const email = (emailRes.data ?? []).find((r) => r.user_id === id)?.email ?? null;
+  const email = emailRes.data?.[0]?.email ?? null;
 
   return {
     id: profile.id,

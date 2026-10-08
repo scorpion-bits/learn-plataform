@@ -656,6 +656,19 @@ export type Database = {
           sales: number
         }[]
       }
+      admin_student_by_id: {
+        Args: { p_user_id: string }
+        Returns: {
+          active_enrollments: number
+          created_at: string
+          email: string
+          full_name: string
+          is_admin: boolean
+          last_order_at: string
+          total_spent_cents: number
+          user_id: string
+        }[]
+      }
       admin_students: {
         Args: {
           p_limit?: number

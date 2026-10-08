@@ -8,7 +8,7 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `PAY-002` (A07) · `DB-009` (A02) |
+| Em andamento | `PAY-002` (A07) |
 | Próximas | `PAY-002` → `PAY-003` → `PAY-004` (pagamentos) · `STUDENT-001` (landing) · `STUDENT-008` (páginas legais) |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
@@ -45,7 +45,7 @@
 | DB-006 | Métricas do admin | P1 | DONE ✅ | A02 | Sonnet 5.5 |
 | DB-007 | Seed de desenvolvimento | P2 | DONE ✅ | A02 | Haiku 5.5 |
 | DB-008 | Exclusão de conta e anonimização (LGPD) | P2 | BACKLOG | A02 | Sonnet 5.5 |
-| DB-009 | Função `admin_student_by_id` (email no perfil do aluno) | P1 | IN PROGRESS | A02 | Sonnet 5.5 |
+| DB-009 | Função `admin_student_by_id` (email no perfil do aluno) | P1 | DONE ✅ | A02 | Sonnet 5.5 |
 | UI-001 | Tokens, fontes, base e assets de marca | P0 | DONE ✅ | A03 | Sonnet 5.5 |
 | UI-002 | Primitivas de UI | P0 | DONE ✅ | A03 | Sonnet 5.5 |
 | UI-003 | Shells de layout | P0 | DONE ✅ | A03 | Sonnet 5.5 |
