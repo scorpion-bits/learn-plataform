@@ -8,8 +8,8 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `AUTH-003` (A04) |
-| Próximas | `ADMIN-002` · `DB-006`/`DB-007` |
+| Em andamento | `AUTH-003` (A04) · `ADMIN-002` (A05) · `DB-007` (A02) |
+| Próximas | `ADMIN-003` · `DB-006` · `STUDENT-002/003` |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
 
@@ -43,7 +43,7 @@
 | DB-004 | Storage buckets e policies | P0 | DONE ✅ | A02 | Sonnet 5.5 |
 | DB-005 | Testes de RLS (pgTAP) | P0 | DONE ✅ | A02 | Sonnet 5.5 |
 | DB-006 | Métricas do admin | P1 | BACKLOG | A02 | Sonnet 5.5 |
-| DB-007 | Seed de desenvolvimento | P2 | BACKLOG | A02 | Haiku 5.5 |
+| DB-007 | Seed de desenvolvimento | P2 | IN PROGRESS | A02 | Haiku 5.5 |
 | DB-008 | Exclusão de conta e anonimização (LGPD) | P2 | BACKLOG | A02 | Sonnet 5.5 |
 | UI-001 | Tokens, fontes, base e assets de marca | P0 | DONE ✅ | A03 | Sonnet 5.5 |
 | UI-002 | Primitivas de UI | P0 | DONE ✅ | A03 | Sonnet 5.5 |
@@ -56,7 +56,7 @@
 | AUTH-003 | Telas de autenticação | P0 | IN PROGRESS | A04 | Sonnet 5.5 |
 | AUTH-004 | Página "Minha conta" | P2 | BACKLOG | A04 | Haiku 5.5 |
 | ADMIN-001 | Dashboard | P1 | BACKLOG | A05 | Sonnet 5.5 |
-| ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | BACKLOG | A05 | Sonnet 5.5 |
+| ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | IN PROGRESS | A05 | Sonnet 5.5 |
 | ADMIN-003 | Editor de ementa (módulos e aulas) | P0 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-004 | Editor de materiais da aula | P0 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-005 | Alunos: lista e busca | P1 | BACKLOG | A05 | Sonnet 5.5 |
