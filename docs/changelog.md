@@ -5,6 +5,7 @@ Uma linha por tarefa concluída: resumo, decisões, arquivos. Mais recente prime
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-09 | STUDENT-008 | A06 (Haiku 5.5) | DONE | `/termos` (reembolso 7 dias CDC, foro Araraquara/SP) e `/privacidade` (LGPD, operadores, direitos) com dados de `company.ts`; aviso de revisão jurídica só em comentário. Orquestrador trocou tamanhos fixos pelos tokens de escala. Pendente: revisão jurídica (REL-003). |
 | 2026-10-09 | DB-009 | A02 (Sonnet 5.5) | DONE | Migration 0006 `admin_student_by_id` (admin-only) + pgTAP 09 (8); `getStudentProfile` usa a RPC (fallback por nome removido). Suíte pgTAP: 295 testes verdes. |
 | 2026-10-09 | STUDENT-007 + STUDENT-004 | A06 (Sonnet 5.5) | DONE | Concluir/desfazer aula (`setLessonCompleted`, `PlayerFrame` com `useOptimistic`, rollback + toast, anúncio `role=status`, "Curso concluído" com cubos mint); `src/features/library/` + `/inicio` (continuar de onde parou) e `/minha-biblioteca` (abas por link, selo Comprado/Atribuído). 445 testes; build verde. Revisão visual — aprovado. Follow-up cosmético: alinhar botão dos cards da biblioteca ao rodapé (UX-003). |
 | 2026-10-09 | ADMIN-005 + ADMIN-006 | A05 (Sonnet 5.5) | DONE | `src/features/students/` + `/admin/alunos` (busca GET com debounce, paginação 20) e `/admin/alunos/[id]` (matrículas com origem/estado/progresso, pedidos, atribuir, remover atribuição só `admin_grant`, revogar compra só `purchase`, motivo obrigatório, `granted_by` da sessão). 17 testes. Aprovado. Achado: email por id → DB-009. |
