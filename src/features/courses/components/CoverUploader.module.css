@@ -1,0 +1,28 @@
+.root {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 28rem;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 1.5rem;
+  font-size: var(--s--1);
+}
+.progress {
+  flex: 1;
+  height: 8px;
+  accent-color: var(--cyan);
+}
+.hint {
+  color: var(--text-dim);
+}
+.error {
+  color: var(--danger);
+}

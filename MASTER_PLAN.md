@@ -8,8 +8,8 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `AUTH-003` (A04) · `ADMIN-002` (A05) |
-| Próximas | `ADMIN-003` · `DB-006` · `STUDENT-002/003` |
+| Em andamento | `AUTH-003` (A04) · `ADMIN-003` (A05) · `STUDENT-002`+`003` (A06) |
+| Próximas | `ADMIN-004` · `STUDENT-005` · `DB-006` |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
 
@@ -56,16 +56,16 @@
 | AUTH-003 | Telas de autenticação | P0 | IN PROGRESS | A04 | Sonnet 5.5 |
 | AUTH-004 | Página "Minha conta" | P2 | BACKLOG | A04 | Haiku 5.5 |
 | ADMIN-001 | Dashboard | P1 | BACKLOG | A05 | Sonnet 5.5 |
-| ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | IN PROGRESS | A05 | Sonnet 5.5 |
-| ADMIN-003 | Editor de ementa (módulos e aulas) | P0 | BACKLOG | A05 | Sonnet 5.5 |
+| ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | DONE ✅ | A05 | Sonnet 5.5 |
+| ADMIN-003 | Editor de ementa (módulos e aulas) | P0 | IN PROGRESS | A05 | Sonnet 5.5 |
 | ADMIN-004 | Editor de materiais da aula | P0 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-005 | Alunos: lista e busca | P1 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-006 | Perfil do aluno e atribuições | P0 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-007 | Pedidos | P1 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-008 | Alunos do curso | P2 | BACKLOG | A05 | Haiku 5.5 |
 | STUDENT-001 | Landing page | P1 | BACKLOG | A06 | Sonnet 5.5 |
-| STUDENT-002 | Catálogo público | P0 | BACKLOG | A06 | Sonnet 5.5 |
-| STUDENT-003 | Página pública do curso | P0 | BACKLOG | A06 | Sonnet 5.5 |
+| STUDENT-002 | Catálogo público | P0 | IN PROGRESS | A06 | Sonnet 5.5 |
+| STUDENT-003 | Página pública do curso | P0 | IN PROGRESS | A06 | Sonnet 5.5 |
 | STUDENT-004 | Início e biblioteca do aluno | P0 | BACKLOG | A06 | Sonnet 5.5 |
 | STUDENT-005 | Player: estrutura e navegação | P0 | BACKLOG | A06 | Sonnet 5.5 |
 | STUDENT-006 | Renderizadores de materiais | P0 | BACKLOG | A06 | Sonnet 5.5 |

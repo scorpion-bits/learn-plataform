@@ -1,0 +1,40 @@
+.page {
+  display: grid;
+  gap: var(--space-5);
+}
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.title {
+  font-size: var(--s-2);
+}
+.titleCell {
+  display: grid;
+  gap: var(--space-1);
+}
+.link {
+  font-weight: 600;
+}
+.slug {
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}
+.back {
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}
+.layout {
+  display: grid;
+  gap: var(--space-5);
+}
+.skel {
+  display: grid;
+  gap: var(--space-3);
+}
+.statusBox {
+  max-width: 44rem;
+}
