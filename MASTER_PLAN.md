@@ -323,8 +323,10 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Descrição**: `/termos` (inclui política de reembolso de 7 dias), `/privacidade` (LGPD: dados coletados, CPF para pagamento), rodapé com razão social e **CNPJ** (exigência da AbacatePay para produção). Texto-base gerado e marcado para revisão jurídica.
 - **Prioridade**: P0 (bloqueia produção) · **Fase**: 6 · **Dependências**: UI-003
 - **Dados da empresa (recebidos 2026-10-08, cartão CNPJ)**: razão social **60.345.144 THALES MIGUEL HAJES** · CNPJ **60.345.144/0001-01** · empresário individual (ME) · CNAE principal 85.92-9-99 (ensino de arte e cultura), secundária 85.99-6-03 (treinamento em informática). Nome fantasia não registrado (exibir "Scorpion Bits" como marca + razão social). Centralizar em `src/config/company.ts`.
-- **Pendente do produto**: (a) endereço físico a publicar (Decreto 7.962/2013 art. 2º exige endereço físico e eletrônico — confirmar se usa o endereço do cartão CNPJ ou outro); (b) email público de contato/suporte; (c) revisão jurídica dos termos.
-- **Status**: BACKLOG · **Agente**: A06 · **Modelo**: Haiku 5.5 · **Esforço**: baixo · **Requer humano**: itens pendentes acima
+- **Endereço físico (Decreto 7.962/2013, art. 2º)**: Av. Paulino Rodella, 1234 — Parque Laranjeiras — Araraquara/SP — CEP 14801-515 (confirmado pelo produto para publicação).
+- **Email público de contato/suporte**: scorpionbits.contato@gmail.com (confirmado pelo produto).
+- **Termos/privacidade**: gerar texto-base (termos com reembolso de 7 dias — ADR-017; privacidade/LGPD com uso de CPF/telefone no pagamento) com aviso visível "pendente de revisão jurídica" no repositório (comentário/arquivo), **não** na página publicada; revisão por advogado antes do lançamento (REL-003).
+- **Status**: BACKLOG · **Agente**: A06 · **Modelo**: Haiku 5.5 · **Esforço**: baixo · **Requer humano**: revisão jurídica antes do lançamento
 
 #### STUDENT-004 — Início e biblioteca do aluno
 - **Descrição**: `/inicio` (continuar último curso + recomendações) e `/minha-biblioteca` (abas Em andamento/Concluídos/Todos, selo Comprado/Atribuído, `CubeProgress`).
@@ -411,7 +413,7 @@ Agente: A08 QA & Security.
 |---|---|---|---|---|---|---|
 | REL-001 | Setup de produção (Supabase prod, migrations, admin bootstrap, envs Vercel, webhook URL, domínio) | P0 | QA-002 | Haiku 5.5 + **humano** | baixo | BACKLOG |
 | REL-002 | ~~Migração de dados do Learn antigo~~ | — | — | — | — | CANCELADA (Q1) |
-| REL-003 | Checklist de lançamento e desativação do app antigo | P1 | REL-001 | Haiku 5.5 | baixo | BACKLOG |
+| REL-003 | Checklist de lançamento (inclui revisão jurídica de termos/privacidade) e desativação do app antigo | P1 | REL-001 | Haiku 5.5 | baixo | BACKLOG |
 
 ---
 
