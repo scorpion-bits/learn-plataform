@@ -1,0 +1,5 @@
+.textarea {
+  composes: input from '../Input/Input.module.css';
+  min-height: 6rem;
+  resize: vertical;
+}

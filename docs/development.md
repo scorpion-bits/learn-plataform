@@ -16,13 +16,15 @@ npm run dev
 ```
 
 ## Scripts
-`test` (Vitest) e `test:e2e` (Playwright) ainda não existem; entram em tarefas futuras.
+`test:e2e` (Playwright) ainda não existe; entra em tarefa futura.
 
 | script | faz |
 |---|---|
 | `dev` / `build` / `start` | Next |
 | `lint` | ESLint |
 | `typecheck` | `tsc --noEmit` |
+| `test` | Vitest (`vitest run`, jsdom; testes em `src/**/*.test.tsx`) |
+| `test:watch` | Vitest em modo watch |
 | `format` | Prettier |
 | `db:types` | `supabase gen types typescript --local > src/types/database.ts` |
 | `db:start` / `db:stop` | `supabase start` / `supabase stop` (Docker) |

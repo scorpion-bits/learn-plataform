@@ -1,0 +1,117 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: 0 var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  font-family: var(--font-display);
+  font-size: var(--s-0);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: var(--lh-snug);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button:disabled,
+.button[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* pending mantém a aparência (não "apaga" o botão): só desliga o clique */
+.pending:disabled,
+.pending[aria-disabled='true'] {
+  opacity: 1;
+  cursor: progress;
+}
+
+.label {
+  min-width: 0;
+}
+
+.spinner {
+  color: currentColor;
+}
+
+/* ---- tamanhos: md e lg mantêm alvo >= 44px; sm é para áreas com mouse/denso */
+.sm {
+  min-height: 36px;
+  padding: 0 var(--space-4);
+  font-size: var(--s--1);
+}
+@media (pointer: coarse) {
+  .sm {
+    min-height: var(--tap);
+  }
+}
+.md {
+  min-height: var(--tap);
+}
+.lg {
+  min-height: 52px;
+  padding: 0 var(--space-6);
+  font-size: var(--s-1);
+}
+.full {
+  display: flex;
+  width: 100%;
+}
+
+/* ---- variantes */
+.primary {
+  background: var(--gradient-brand);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-glow);
+}
+.primary:hover:not(:disabled):not([aria-disabled='true']) {
+  filter: brightness(1.08);
+}
+
+.secondary {
+  background: var(--tint-cyan);
+  border-color: var(--hair-lit);
+  color: var(--text);
+}
+.secondary:hover:not(:disabled):not([aria-disabled='true']) {
+  border-color: var(--cyan);
+  background: var(--ink-700);
+}
+
+.ghost {
+  color: var(--text-soft);
+}
+.ghost:hover:not(:disabled):not([aria-disabled='true']) {
+  color: var(--text);
+  background: var(--tint-cyan);
+}
+
+.danger {
+  background: var(--coral);
+  color: var(--on-accent);
+}
+.danger:hover:not(:disabled):not([aria-disabled='true']) {
+  filter: brightness(1.08);
+}
+
+@media (forced-colors: active) {
+  .button {
+    border-color: ButtonText;
+  }
+}

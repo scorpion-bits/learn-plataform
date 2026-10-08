@@ -42,7 +42,7 @@
   --ease:cubic-bezier(.22,1,.36,1); --dur-fast:120ms; --dur:220ms; --dur-slow:420ms;
 }
 ```
-Implementação real: `src/styles/tokens.css` (fonte da verdade; inclui tokens adicionais do UI-001: `--on-accent`, `--gradient-brand`, `--tint-*`, `--glow-*`, `--glass-*`, `--shadow-*`, `--lh-*`, `--tracking-*`, `--wrap`, `--measure`, `--dock-h`, `--z-*`, `--focus-outline/offset`). `--font-display/--font-body` derivam de `--font-grotesk/--font-inter` (`next/font/local`). Estilos de elemento ficam em `@layer base` — CSS Modules sempre vencem. `--text-faint` **não é AA**: só decorativo. `--violet/--indigo` como texto só sobre ink-950/900.
+Implementação real: `src/styles/tokens.css` (fonte da verdade; inclui tokens adicionais do UI-001: `--on-accent`, `--gradient-brand`, `--tint-*`, `--glow-*`, `--glass-*`, `--shadow-*`, `--lh-*`, `--tracking-*`, `--wrap`, `--measure`, `--dock-h`, `--z-*`, `--focus-outline/offset`; UI-002: `--tint-violet`, `--scrim`, `--tap` = 44px alvo mínimo). `--font-display/--font-body` derivam de `--font-grotesk/--font-inter` (`next/font/local`). Estilos de elemento ficam em `@layer base` — CSS Modules sempre vencem. `--text-faint` **não é AA**: só decorativo. `--violet/--indigo` como texto só sobre ink-950/900.
 
 Tema: **somente escuro** no MVP (a marca é escura). Contraste mínimo AA verificado para `--text-dim` sobre `--ink-900` em texto ≥ 14px.
 
@@ -64,7 +64,7 @@ Tema: **somente escuro** no MVP (a marca é escura). Contraste mínimo AA verifi
 
 Modo leve: `<html data-lite="1">` definido antes da pintura (`src/app/lite-mode-script.ts`; `?leve=1|0`, ≤2 núcleos/≤2 GB, saveData). Reduced-motion zera animações globalmente — loaders devem funcionar sem animação (ex.: pulso de opacidade vira estático, com texto/`aria-busy`).
 
-## 5. Primitivas (`src/components/ui/`)
+## 5. Primitivas (`src/components/ui/`) — implementadas no UI-002, importar de `@/components/ui`
 Link de prosa (sublinhado, o reset remove), Button (variantes primary/secondary/ghost/danger; estado `pending` com spinner e `aria-busy`, desabilita clique duplo), IconButton, Field (label + input + hint + erro, `aria-describedby`), Input, Textarea, Select nativo estilizado, Checkbox/Switch, Badge (origem: Comprado/Atribuído; estado: Rascunho/Publicado), Tabs, Dialog (`<dialog>`), Drawer (mobile), Toast (região `aria-live`), Skeleton, Spinner, EmptyState (ilustração com cubos), ErrorState (com "Tentar novamente"), Pagination, Table (admin, vira lista de cards < 720px), DropdownMenu.
 
 ## 6. Layouts

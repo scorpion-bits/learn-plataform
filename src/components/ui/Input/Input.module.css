@@ -1,0 +1,33 @@
+/* Base compartilhada por Input, Textarea e Select (importada via composes). */
+.input {
+  width: 100%;
+  min-height: var(--tap);
+  padding: var(--space-2) var(--space-4);
+  background: var(--ink-900);
+  color: var(--text);
+  border: 1px solid var(--text-faint); /* >= 3:1 (WCAG 1.4.11) */
+  border-radius: var(--r-sm);
+  font-size: max(16px, var(--s-0)); /* >= 16px evita zoom do iOS */
+  line-height: var(--lh-snug);
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+.input:hover:not(:disabled) {
+  border-color: var(--text-dim);
+}
+.input:focus-visible {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: var(--focus-ring);
+}
+.input[aria-invalid='true'] {
+  border-color: var(--coral);
+}
+.input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.input[type='file'] {
+  padding-block: var(--space-2);
+}

@@ -14,7 +14,7 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 |---|---|
 | Fase atual | **PHASE 1 — FOUNDATION** (+ PHASE 3 iniciada) |
 | Próximas tarefas READY | — |
-| Em andamento | `UI-002` + `UI-004` (A03, Sonnet 5.5), `DB-003` (A02, Opus 5.5) |
+| Em andamento | `UI-004` (A03, Sonnet 5.5), `DB-003` (A02, Opus 5.5) |
 | Bloqueios | — |
 
 ---
@@ -211,7 +211,7 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Descrição**: componentes de `docs/design-system.md` §5 com CSS Modules, acessíveis, com estados (hover/focus/active/disabled/pending/error).
 - **Prioridade**: P0 · **Fase**: 3 · **Dependências**: UI-001
 - **Critérios**: navegação por teclado completa; foco visível; `Button` com `pending` evita clique duplo; `Toast` com `aria-live`; testes Vitest básicos de comportamento (Dialog/Toast/Button).
-- **Status**: IN PROGRESS · **Agente**: A03 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
+- **Status**: DONE ✅ · **Agente**: A03 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
 #### UI-004 — Componentes de assinatura isométricos
 - **Descrição**: `IsoCube` (SVG), `CubeProgress`, `ChamferCard`, `IsoCover`, `Logo`, `Dock` (§4).
@@ -405,7 +405,7 @@ Agente: A06 (UX-001/003/004) e A03 (UX-002). Critério comum: checklist de estad
 
 | ID | Título | Prior. | Dep. | Modelo | Esforço | Status |
 |---|---|---|---|---|---|---|
-| QA-001 | Setup Vitest + Playwright + integração no CI | P1 | ARCH-003 | Sonnet 5.5 | baixo | BACKLOG |
+| QA-001 | Setup Playwright + integração no CI (Vitest já configurado no UI-002) | P1 | ARCH-003 | Sonnet 5.5 | baixo | BACKLOG |
 | QA-002 | Revisão de segurança adversarial (actions, rotas, RLS, storage, headers, secrets) | P0 | PAY-003, ADMIN-006 | **Opus 5.5** | alto | BACKLOG |
 | QA-003 | E2E dos fluxos críticos (cadastro→compra mock→acesso→progresso; admin cria curso; admin atribui/revoga) — rodando também em perfis de celular (Pixel/iPhone) | P0 | Fase 7 | Sonnet 5.5 | médio | BACKLOG |
 | QA-004 | Teste de pagamento real em devMode/sandbox (roteiro manual + evidências) | P0 | PAY-004 | Sonnet 5.5 + humano | médio | BACKLOG |
@@ -648,6 +648,7 @@ EXPECTED OUTPUT:
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-08 | UI-002 | A03 (Sonnet 5.5) | DONE | 21 primitivas acessíveis em `src/components/ui` (Button com `pending`, Field com aria, Dialog/Drawer nativos com bottom-sheet mobile, Toast aria-live, Table empilhada < 720px, Tabs/DropdownMenu com teclado), alvos ≥ 44px, inputs ≥ 16px. Vitest + Testing Library configurados (12 testes). Revisão: testes/typecheck/lint verificados — aprovado. Pendências menores: sem animação de saída no Dialog, Table empilhada pode perder semântica em leitor de tela (rever em UX-002), sem testes de Table/DropdownMenu. `next dev` pode gerar `AGENTS.md` com regras do Next 16 — pode ser commitado. |
 | 2026-10-08 | DB-001 + DB-002 | A02 (Opus 5.5) | DONE | 11 tabelas, enums, triggers (sync de `course_id` + FKs compostas, `published_at`, pedido imutável, matrícula só revogável e `purchase` só com pedido pago), checks por tipo de material (sem `pdf`) e antiinjeção, RLS ligada e tudo revogado de anon/authenticated (policies no DB-003). Validado em PG16 local: 109 asserções. Revisão do orquestrador: triggers e guards conferidos — aprovado. Achado: exclusão de conta de comprador bloqueada (→ DB-008). Docker indisponível no ambiente (R3). |
 | 2026-10-08 | UI-001 | A03 (Sonnet 5.5) | DONE | Assets em `public/brand`, Grotesk/Inter via `next/font/local`, `tokens.css` (+ tokens extras), `base.css` em `@layer base`, `IsoBackdrop` estático, modo leve, metadata/OG, home "em construção" com identidade SB. Revisado visualmente (1440/390/360) — aprovado. Zero requisições externas. Follow-ups: backdrop por route group (UI-003), ícones quadrados/manifest (UI-006), estilo de link e spinner sem rotação (UI-002), CSP com nonce p/ script inline (QA-002). |
 | 2026-10-08 | PAY-001 | A07 (Opus 5.5) | DONE | API v2; **Checkout Transparente PIX** (ADR-018); HMAC do webhook usa chave pública → reconsulta obrigatória; sem evento de expiração; reembolso via API. Cakto: manter AbacatePay no MVP (PIX R$0,80 vs ~R$3,48; Cakto exige oferta cadastrada e tem área de membros concorrente); reavaliar com cartão/afiliados. Orquestrador: env HMAC removida, fluxo de compra e `orders` atualizados (DB-002 avisado), criadas PAY-006 e STUDENT-008. Pendências A CONFIRMAR em `docs/payments.md` §Pendências. |

@@ -1,0 +1,47 @@
+.spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  color: var(--cyan);
+}
+
+.ring {
+  display: block;
+  width: 1em;
+  height: 1em;
+  border-radius: var(--r-pill);
+  border: 0.14em solid currentColor;
+  border-right-color: transparent;
+  animation: spin 800ms linear infinite;
+}
+
+.sm {
+  font-size: 16px;
+}
+.md {
+  font-size: 24px;
+}
+.lg {
+  font-size: 40px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Sem rotação: pulso de opacidade; se as animações forem zeradas, o anel
+   parado (com o texto "Carregando") ainda comunica o estado. */
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    animation: pulse 1200ms ease-in-out infinite;
+  }
+}

@@ -89,6 +89,8 @@
   --tint-mint: rgba(126, 226, 168, 0.1);
   --tint-amber: rgba(255, 196, 107, 0.1);
   --tint-coral: rgba(255, 122, 122, 0.1);
+  --tint-violet: rgba(139, 92, 246, 0.16); /* UI-002: Badge violet */
+  --scrim: rgba(5, 9, 15, 0.8); /* UI-002: fundo de Dialog/Drawer (ink-950 a 80%) */
 
   /* ------------------------------------------------------------ semânticos */
   --success: var(--mint);
@@ -159,6 +161,7 @@
   --wrap: 1180px; /* largura máxima de conteúdo (público/aluno) */
   --measure: 66ch; /* largura de leitura */
   --dock-h: 58px;
+  --tap: 44px; /* UI-002: alvo mínimo de toque */
 
   /* breakpoints (mobile-first) — só documentação, var() não vale em @media:
      --bp-sm: 480px; --bp-md: 720px; --bp-lg: 1024px; --bp-xl: 1280px; */
