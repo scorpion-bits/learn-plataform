@@ -1,0 +1,229 @@
+.list {
+  display: grid;
+  gap: var(--space-6);
+}
+.material {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.heading {
+  color: var(--text-soft);
+  font-size: var(--s-1);
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ vídeo */
+.videoFrame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--hair-lit);
+  border-radius: var(--r);
+  background: var(--ink-950);
+}
+.iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.poster {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background:
+    radial-gradient(60% 80% at 30% 20%, var(--glow-blue), transparent 70%),
+    radial-gradient(50% 70% at 80% 90%, var(--glow-indigo), transparent 70%), var(--ink-850);
+  color: var(--text);
+  cursor: pointer;
+}
+.poster:hover .playButton {
+  transform: scale(1.06);
+  background: var(--cyan);
+  color: var(--on-accent);
+}
+.thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.playButton {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  padding-left: 4px;
+  border: 1px solid var(--hair-lit);
+  border-radius: 50%;
+  background: var(--glass-bg-solid);
+  color: var(--cyan);
+  box-shadow: var(--shadow-float);
+  transition:
+    transform var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.posterLabel {
+  position: absolute;
+  left: var(--space-3);
+  bottom: var(--space-3);
+  padding: 2px var(--space-2);
+  border-radius: var(--r-pill);
+  background: var(--glass-bg-solid);
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+}
+.notice {
+  padding: var(--space-4);
+  border: 1px dashed var(--hair-lit);
+  border-radius: var(--r);
+  color: var(--text-soft);
+}
+
+/* ------------------------------------------------------------------ texto */
+.prose {
+  max-width: var(--measure);
+  color: var(--text-soft);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.prose > * + * {
+  margin-top: var(--space-4);
+}
+.prose h3,
+.prose h4,
+.prose h5 {
+  margin-top: var(--space-5);
+  color: var(--text);
+  line-height: 1.3;
+}
+.prose h3 {
+  font-size: var(--s-1);
+}
+.prose h4,
+.prose h5 {
+  font-size: var(--s-0);
+}
+.prose p {
+  white-space: pre-line;
+}
+.prose ul,
+.prose ol {
+  padding-left: var(--space-5);
+}
+.prose ul {
+  list-style: disc;
+}
+.prose ol {
+  list-style: decimal;
+}
+.prose li + li {
+  margin-top: var(--space-1);
+}
+.prose strong {
+  color: var(--text);
+}
+.prose a {
+  color: var(--cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose code {
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--ink-800);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+.prose pre {
+  padding: var(--space-4);
+  overflow-x: auto;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-sm);
+  background: var(--ink-900);
+  line-height: 1.55;
+}
+.prose pre code {
+  padding: 0;
+  background: none;
+  font-size: var(--s--1);
+  white-space: pre;
+}
+
+/* ------------------------------------------------- cartão (arquivo / link) */
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--hair-lit);
+  border-radius: var(--r);
+  background: var(--glass-bg);
+  color: var(--text);
+}
+.linkCard {
+  grid-template-columns: auto minmax(0, 1fr);
+  min-height: var(--tap);
+  transition: border-color var(--dur) var(--ease);
+}
+.linkCard:hover {
+  border-color: var(--cyan);
+}
+.cardIcon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  background: var(--tint-cyan);
+  color: var(--cyan);
+}
+.cardText {
+  display: grid;
+  min-width: 0;
+}
+.cardTitle {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cardMeta {
+  overflow: hidden;
+  color: var(--text-dim);
+  font-size: var(--s--1);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cardStatus {
+  grid-column: 1 / -1;
+  color: var(--danger);
+  font-size: var(--s--1);
+}
+
+@media (max-width: 479px) {
+  .card:not(.linkCard) {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .card:not(.linkCard) > :nth-child(3) {
+    grid-column: 1 / -1;
+  }
+}

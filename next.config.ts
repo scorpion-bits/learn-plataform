@@ -23,6 +23,33 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: { remotePatterns: supabaseImagePatterns() },
+  async headers() {
+    const noStore = [{ key: 'Cache-Control', value: 'private, no-store' }];
+    const privateRoutes = [
+      '/aprender',
+      '/inicio',
+      '/minha-biblioteca',
+      '/conta',
+      '/checkout',
+      '/admin',
+    ];
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+      // Conteúdo pessoal/pago nunca em cache compartilhado (CLAUDE.md, segurança #7).
+      ...privateRoutes.flatMap((route) => [
+        { source: route, headers: noStore },
+        { source: `${route}/:path*`, headers: noStore },
+      ]),
+    ];
+  },
 };
 
 export default nextConfig;
