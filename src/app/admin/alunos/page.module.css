@@ -1,0 +1,11 @@
+.page {
+  display: grid;
+  gap: var(--space-4);
+}
+.title {
+  font-size: var(--s-2);
+}
+.skel {
+  display: grid;
+  gap: var(--space-3);
+}

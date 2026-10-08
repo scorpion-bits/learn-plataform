@@ -87,6 +87,11 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Prioridade**: P2 · **Fase**: 10 · **Dependências**: DB-005 · **Requer humano**: validação jurídica
 - **Status**: BACKLOG · **Agente**: A02 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
+#### DB-009 — Função `admin_student_by_id`
+- **Descrição**: o perfil do aluno no admin (ADMIN-006) não tem como ler o email por id; hoje busca por nome em `admin_students`. Criar `admin_student_by_id(p_user_id)` admin-only (mesmo padrão de `admin_students`) + pgTAP + tipo em `database.ts`, e trocar a query em `src/features/students/queries.ts`.
+- **Prioridade**: P1 · **Dependências**: ADMIN-006
+- **Status**: IN PROGRESS · **Agente**: A02 · **Modelo**: Sonnet 5.5 · **Esforço**: baixo
+
 #### DB-007 — Seed de desenvolvimento
 - **Descrição**: `seed.sql` com categorias, 2 cursos (1 publicado completo com 3 módulos/10 aulas/materiais de cada tipo, 1 rascunho), usuários admin/aluno de teste (somente local).
 - **Prioridade**: P2 · **Fase**: 2 · **Dependências**: DB-003

@@ -1,0 +1,72 @@
+.search {
+  display: flex;
+  gap: var(--space-2);
+  max-width: 32rem;
+}
+.search input {
+  flex: 1;
+  min-width: 0;
+}
+.muted {
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}
+.grant {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 32rem;
+}
+.section {
+  display: grid;
+  gap: var(--space-3);
+}
+.sectionTitle {
+  font-size: var(--s-1);
+}
+.cell {
+  display: grid;
+  gap: var(--space-1);
+}
+.dim {
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}
+.revoked td,
+.revoked {
+  color: var(--text-dim);
+}
+.revokedTitle {
+  text-decoration: line-through;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.progress {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 7rem;
+}
+.bar {
+  height: 0.375rem;
+  border-radius: 999px;
+  background: var(--hair-lit);
+  overflow: hidden;
+}
+.barFill {
+  display: block;
+  height: 100%;
+  background: var(--mint);
+}
+.profileHead {
+  display: grid;
+  gap: var(--space-1);
+}
+.link {
+  font-weight: 600;
+}
+.back {
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}

@@ -8,7 +8,7 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `STUDENT-007`+`004` (A06) · `ADMIN-005`+`006` (A05) |
+| Em andamento | `STUDENT-007`+`004` (A06) · `PAY-002` (A07) · `DB-009` (A02) |
 | Próximas | `PAY-002` → `PAY-003` → `PAY-004` (pagamentos) · `STUDENT-001` (landing) · `STUDENT-008` (páginas legais) |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
@@ -45,6 +45,7 @@
 | DB-006 | Métricas do admin | P1 | DONE ✅ | A02 | Sonnet 5.5 |
 | DB-007 | Seed de desenvolvimento | P2 | DONE ✅ | A02 | Haiku 5.5 |
 | DB-008 | Exclusão de conta e anonimização (LGPD) | P2 | BACKLOG | A02 | Sonnet 5.5 |
+| DB-009 | Função `admin_student_by_id` (email no perfil do aluno) | P1 | IN PROGRESS | A02 | Sonnet 5.5 |
 | UI-001 | Tokens, fontes, base e assets de marca | P0 | DONE ✅ | A03 | Sonnet 5.5 |
 | UI-002 | Primitivas de UI | P0 | DONE ✅ | A03 | Sonnet 5.5 |
 | UI-003 | Shells de layout | P0 | DONE ✅ | A03 | Sonnet 5.5 |
@@ -59,8 +60,8 @@
 | ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-003 | Editor de ementa (módulos e aulas) | P0 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-004 | Editor de materiais da aula | P0 | DONE ✅ | A05 | Sonnet 5.5 |
-| ADMIN-005 | Alunos: lista e busca | P1 | IN PROGRESS | A05 | Sonnet 5.5 |
-| ADMIN-006 | Perfil do aluno e atribuições | P0 | IN PROGRESS | A05 | Sonnet 5.5 |
+| ADMIN-005 | Alunos: lista e busca | P1 | DONE ✅ | A05 | Sonnet 5.5 |
+| ADMIN-006 | Perfil do aluno e atribuições | P0 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-007 | Pedidos | P1 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-008 | Alunos do curso | P2 | BACKLOG | A05 | Haiku 5.5 |
 | STUDENT-001 | Landing page | P1 | BACKLOG | A06 | Sonnet 5.5 |
@@ -72,7 +73,7 @@
 | STUDENT-007 | Progresso | P0 | IN PROGRESS | A06 | Sonnet 5.5 |
 | STUDENT-008 | Páginas legais e rodapé institucional | P0 | BACKLOG | A06 | Haiku 5.5 |
 | PAY-001 | Spike: API AbacatePay | P0 | DONE ✅ | A07 | Opus 5.5 |
-| PAY-002 | Cliente AbacatePay + `startCheckout` | P0 | BACKLOG | A07 | Opus 5.5 |
+| PAY-002 | Cliente AbacatePay + `startCheckout` | P0 | IN PROGRESS | A07 | Opus 5.5 |
 | PAY-003 | Webhook e concessão | P0 | BACKLOG | A07 | Opus 5.5 |
 | PAY-004 | Página de status do pedido | P0 | BACKLOG | A07 | Sonnet 5.5 |
 | PAY-005 | Reconciliação e expiração | P2 | BACKLOG | A07 | Sonnet 5.5 |
