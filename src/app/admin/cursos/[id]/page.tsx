@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
-import { Tabs } from '@/components/ui';
+import { Skeleton, Tabs } from '@/components/ui';
 import { CourseForm } from '@/features/courses/components/CourseForm';
 import { StatusControl } from '@/features/courses/components/StatusControl';
 import { getAdminCourse, listCategories } from '@/features/courses/queries';
 import { formatCentsForInput } from '@/features/courses/schemas';
+import { SyllabusPanel } from '@/features/curriculum/components/SyllabusPanel';
 import { getCoverPublicUrl } from '@/features/materials/storage';
 
 import styles from '../page.module.css';
@@ -48,6 +50,20 @@ export default async function EditCoursePage({ params }: { params: Promise<{ id:
     </div>
   );
 
+  const syllabus = (
+    <Suspense
+      fallback={
+        <div className={styles.skel} role="status" aria-label="Carregando ementa">
+          <Skeleton height="3.5rem" />
+          <Skeleton height="3.5rem" />
+          <Skeleton height="3.5rem" />
+        </div>
+      }
+    >
+      <SyllabusPanel courseId={course.id} />
+    </Suspense>
+  );
+
   return (
     <div className={styles.page}>
       <Link className={styles.back} href="/admin/cursos">
@@ -58,7 +74,7 @@ export default async function EditCoursePage({ params }: { params: Promise<{ id:
         label="Seções do curso"
         items={[
           { value: 'info', label: 'Informações', panel: info },
-          { value: 'syllabus', label: 'Ementa (em breve)', panel: null, disabled: true },
+          { value: 'syllabus', label: 'Ementa', panel: syllabus },
           { value: 'students', label: 'Alunos (em breve)', panel: null, disabled: true },
         ]}
       />

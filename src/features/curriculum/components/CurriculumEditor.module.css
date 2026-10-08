@@ -1,0 +1,175 @@
+.root {
+  display: grid;
+  gap: var(--space-5);
+  max-width: 56rem;
+}
+.root:focus {
+  outline: none;
+}
+
+.modules,
+.lessons {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ------------------------------------------------------------------ módulo */
+.module {
+  border: 1px solid var(--hair-lit);
+  border-radius: var(--r);
+  background: var(--ink-900);
+}
+.moduleHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-2) var(--space-3);
+}
+.moduleHeading {
+  flex: 1 1 14rem;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--s-0);
+}
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+.chevron {
+  display: grid;
+  flex: none;
+  place-items: center;
+  color: var(--text-dim);
+  transition: transform var(--dur) var(--ease);
+}
+.chevron svg {
+  width: 1.25em;
+  height: 1.25em;
+}
+.chevron[data-open='false'] {
+  transform: rotate(-90deg);
+}
+.moduleTitle {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.count {
+  flex: none;
+  margin-inline-start: auto;
+  color: var(--text-dim);
+  font-size: var(--s--1);
+  font-weight: 400;
+}
+.number {
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+.actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+.modulePanel {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-top: 1px solid var(--hair);
+}
+.modulePanel[hidden] {
+  display: none;
+}
+.hint {
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}
+
+/* ------------------------------------------------------------------- aula */
+.lesson {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-sm);
+  background: var(--ink-850);
+}
+.lessonHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+}
+.lessonTitle {
+  flex: 1 1 12rem;
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.lessonMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+.duration {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.durationInput {
+  width: 5rem;
+  text-align: end;
+}
+.durationUnit {
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}
+
+/* ------------------------------------------------------------ formulários */
+.titleForm {
+  display: grid;
+  flex: 1 1 14rem;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.titleFormRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.titleInput {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+.fieldError {
+  color: var(--danger);
+  font-size: var(--s--1);
+}
+.addModule {
+  display: grid;
+  gap: var(--space-2);
+}
+.addHeading {
+  font-size: var(--s-0);
+}
+.dialogWarning {
+  color: var(--text-soft);
+}

@@ -8,8 +8,8 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `ADMIN-003` (A05) · `STUDENT-002`+`003` (A06) |
-| Próximas | `ADMIN-004` · `STUDENT-005` · `DB-006` |
+| Em andamento | `ADMIN-004` (A05) · `STUDENT-002`+`003` (A06) |
+| Próximas | `STUDENT-005` · `DB-006` · `STUDENT-001` |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
 
@@ -57,8 +57,8 @@
 | AUTH-004 | Página "Minha conta" | P2 | BACKLOG | A04 | Haiku 5.5 |
 | ADMIN-001 | Dashboard | P1 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | DONE ✅ | A05 | Sonnet 5.5 |
-| ADMIN-003 | Editor de ementa (módulos e aulas) | P0 | IN PROGRESS | A05 | Sonnet 5.5 |
-| ADMIN-004 | Editor de materiais da aula | P0 | BACKLOG | A05 | Sonnet 5.5 |
+| ADMIN-003 | Editor de ementa (módulos e aulas) | P0 | DONE ✅ | A05 | Sonnet 5.5 |
+| ADMIN-004 | Editor de materiais da aula | P0 | IN PROGRESS | A05 | Sonnet 5.5 |
 | ADMIN-005 | Alunos: lista e busca | P1 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-006 | Perfil do aluno e atribuições | P0 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-007 | Pedidos | P1 | BACKLOG | A05 | Sonnet 5.5 |
