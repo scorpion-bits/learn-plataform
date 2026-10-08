@@ -620,6 +620,23 @@ export type Database = {
       }
     }
     Functions: {
+      admin_dashboard_metrics: {
+        Args: {
+          p_from: string
+          p_to: string
+        }
+        Returns: {
+          avg_ticket_cents: number
+          enrollments_admin_grant: number
+          enrollments_purchase: number
+          pending_refund_requests: number
+          refunds_count: number
+          revenue_cents: number
+          sales_count: number
+          students_new: number
+          students_total: number
+        }[]
+      }
       admin_record_manual_sale: {
         Args: {
           p_amount_cents?: number
@@ -627,6 +644,17 @@ export type Database = {
           p_user_id: string
         }
         Returns: string
+      }
+      admin_revenue_by_day: {
+        Args: {
+          p_from: string
+          p_to: string
+        }
+        Returns: {
+          day: string
+          revenue_cents: number
+          sales: number
+        }[]
       }
       admin_students: {
         Args: {
@@ -644,6 +672,20 @@ export type Database = {
           total_count: number
           total_spent_cents: number
           user_id: string
+        }[]
+      }
+      admin_top_courses: {
+        Args: {
+          p_from: string
+          p_limit?: number
+          p_to: string
+        }
+        Returns: {
+          course_id: string
+          revenue_cents: number
+          sales: number
+          slug: string
+          title: string
         }[]
       }
       fulfill_order: {
