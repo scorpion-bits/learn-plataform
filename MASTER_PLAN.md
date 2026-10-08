@@ -8,7 +8,7 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `AUTH-003` (A04) · `ADMIN-003` (A05) · `STUDENT-002`+`003` (A06) |
+| Em andamento | `ADMIN-003` (A05) · `STUDENT-002`+`003` (A06) |
 | Próximas | `ADMIN-004` · `STUDENT-005` · `DB-006` |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
@@ -53,7 +53,7 @@
 | UI-006 | Ícones de app e manifest | P1 | DONE ✅ | A03 | Haiku 5.5 |
 | AUTH-001 | Proxy e sessão | P0 | DONE ✅ | A04 | Sonnet 5.5 |
 | AUTH-002 | DAL e guards | P0 | DONE ✅ | A04 | Sonnet 5.5 |
-| AUTH-003 | Telas de autenticação | P0 | IN PROGRESS | A04 | Sonnet 5.5 |
+| AUTH-003 | Telas de autenticação | P0 | DONE ✅ | A04 | Sonnet 5.5 |
 | AUTH-004 | Página "Minha conta" | P2 | BACKLOG | A04 | Haiku 5.5 |
 | ADMIN-001 | Dashboard | P1 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | DONE ✅ | A05 | Sonnet 5.5 |

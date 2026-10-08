@@ -1,0 +1,64 @@
+.card {
+  width: min(440px, 100%);
+}
+.title {
+  font-family: var(--font-display);
+  font-size: var(--s-2);
+  line-height: var(--lh-tight, 1.15);
+  color: var(--text);
+}
+.lead {
+  margin-top: var(--space-2);
+  color: var(--text-soft);
+  font-size: var(--s-0);
+}
+.form {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+.alert {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--coral);
+  border-radius: var(--r-sm);
+  background: var(--ink-850);
+  color: var(--text);
+  font-size: var(--s-0);
+}
+.alert:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.notice {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--cyan);
+  border-radius: var(--r-sm);
+  background: var(--ink-850);
+  color: var(--text);
+  font-size: var(--s-0);
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--s-0);
+  color: var(--text-soft);
+}
+.footer {
+  margin-top: var(--space-5);
+  color: var(--text-soft);
+  font-size: var(--s-0);
+}
+.passwordWrap {
+  position: relative;
+}
+.passwordInput {
+  padding-inline-end: calc(var(--tap) + var(--space-1));
+}
+.toggle {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: var(--space-1);
+  margin-block: auto;
+}

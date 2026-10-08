@@ -13,6 +13,7 @@
 }
 .main {
   display: grid;
+  grid-template-columns: minmax(0, 1fr); /* sem isso o cartão estoura em telas estreitas */
   flex: 1;
   place-items: center;
   padding-block: var(--space-6) max(var(--space-6), env(safe-area-inset-bottom));
