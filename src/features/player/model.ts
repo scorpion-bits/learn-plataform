@@ -118,6 +118,8 @@ export type OutlineLessonView = {
   id: string;
   title: string;
   state: LessonState;
+  /** Concluída (inclusive quando é a aula atual, que mostra `state: 'current'`). */
+  completed: boolean;
   /** `null` quando bloqueada (não vira link). */
   href: string | null;
   durationLabel: string;
@@ -154,6 +156,7 @@ export function buildOutlineView(
         id: lesson.id,
         title: lesson.title,
         state,
+        completed: open && completedIds.has(lesson.id),
         href: open ? hrefFor(lesson.id) : null,
         durationLabel: formatDuration(lesson.durationSeconds),
         isPreview: lesson.isPreview,

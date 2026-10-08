@@ -17,13 +17,7 @@ const STATE_TEXT: Record<LessonState, string | null> = {
 function Marker({ lesson, index }: { lesson: OutlineLessonView; index: number }) {
   return (
     <span className={`${styles.marker} ${styles[lesson.state]}`} aria-hidden="true">
-      {lesson.state === 'completed' ? (
-        <CheckIcon />
-      ) : lesson.state === 'locked' ? (
-        <LockIcon />
-      ) : (
-        index
-      )}
+      {lesson.completed ? <CheckIcon /> : lesson.state === 'locked' ? <LockIcon /> : index}
     </span>
   );
 }
@@ -50,7 +44,11 @@ export function LessonOutline({
             </h3>
             <ol className={styles.lessons}>
               {mod.lessons.map((lesson, lessonIndex) => {
-                const stateText = STATE_TEXT[lesson.state];
+                const baseText = STATE_TEXT[lesson.state];
+                const stateText =
+                  lesson.state === 'current' && lesson.completed
+                    ? 'aula atual, concluída'
+                    : baseText;
                 const body = (
                   <>
                     <Marker lesson={lesson} index={lessonIndex + 1} />

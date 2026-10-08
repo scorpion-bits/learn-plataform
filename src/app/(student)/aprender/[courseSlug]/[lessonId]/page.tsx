@@ -46,6 +46,7 @@ export default async function LessonPage({ params }: { params: Params }) {
       lesson={lesson}
       totalLessons={data.lessons.length}
       completedCount={completedIds.size}
+      lessonCompleted={completedIds.has(lesson.id)}
       outline={buildOutlineView(data.modules, {
         currentId: lesson.id,
         access,

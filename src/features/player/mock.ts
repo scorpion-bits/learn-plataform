@@ -50,6 +50,7 @@ export const MOCK_MODULES: OutlineModule[] = [
 ];
 
 export const MOCK_COMPLETED_IDS = ['mock-lesson-1'];
+export const MOCK_ALL_COMPLETED_IDS = Array.from({ length: 8 }, (_, i) => `mock-lesson-${i + 1}`);
 
 export const MOCK_MATERIALS: PlayerMaterial[] = [
   {

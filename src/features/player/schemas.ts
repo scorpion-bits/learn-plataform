@@ -13,6 +13,13 @@ export { courseSlugSchema };
 export const registerVisitSchema = z.object({ lessonId: lessonIdSchema });
 export type RegisterVisitInput = z.infer<typeof registerVisitSchema>;
 
+/** Concluir / desfazer a conclusão de uma aula. `completed` é estrito: nada de coerção. */
+export const setLessonCompletedSchema = z.object({
+  lessonId: lessonIdSchema,
+  completed: z.boolean(),
+});
+export type SetLessonCompletedInput = z.infer<typeof setLessonCompletedSchema>;
+
 /** Pedir a signed URL de um arquivo de aula. */
 export const downloadMaterialSchema = z.object({ materialId: materialIdSchema });
 export type DownloadMaterialInput = z.infer<typeof downloadMaterialSchema>;

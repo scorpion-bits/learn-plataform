@@ -8,7 +8,7 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `STUDENT-007`+`004` (A06) · `PAY-002` (A07) · `DB-009` (A02) |
+| Em andamento | `PAY-002` (A07) · `DB-009` (A02) |
 | Próximas | `PAY-002` → `PAY-003` → `PAY-004` (pagamentos) · `STUDENT-001` (landing) · `STUDENT-008` (páginas legais) |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
@@ -67,10 +67,10 @@
 | STUDENT-001 | Landing page | P1 | BACKLOG | A06 | Sonnet 5.5 |
 | STUDENT-002 | Catálogo público | P0 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-003 | Página pública do curso | P0 | DONE ✅ | A06 | Sonnet 5.5 |
-| STUDENT-004 | Início e biblioteca do aluno | P0 | IN PROGRESS | A06 | Sonnet 5.5 |
+| STUDENT-004 | Início e biblioteca do aluno | P0 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-005 | Player: estrutura e navegação | P0 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-006 | Renderizadores de materiais | P0 | DONE ✅ | A06 | Sonnet 5.5 |
-| STUDENT-007 | Progresso | P0 | IN PROGRESS | A06 | Sonnet 5.5 |
+| STUDENT-007 | Progresso | P0 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-008 | Páginas legais e rodapé institucional | P0 | BACKLOG | A06 | Haiku 5.5 |
 | PAY-001 | Spike: API AbacatePay | P0 | DONE ✅ | A07 | Opus 5.5 |
 | PAY-002 | Cliente AbacatePay + `startCheckout` | P0 | IN PROGRESS | A07 | Opus 5.5 |

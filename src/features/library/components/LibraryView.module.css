@@ -1,0 +1,64 @@
+.page {
+  display: grid;
+  gap: var(--space-5);
+}
+.eyebrow {
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+}
+.title {
+  font-size: var(--s-3);
+}
+.tabs {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-bottom: var(--space-1);
+  border-bottom: 1px solid var(--hair-lit);
+}
+.tab {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 2px solid transparent;
+  color: var(--text-soft);
+  white-space: nowrap;
+}
+.tab:hover {
+  color: var(--text);
+}
+.tab[aria-current='page'] {
+  border-bottom-color: var(--cyan);
+  color: var(--cyan);
+  font-weight: 600;
+}
+.badge {
+  min-width: 1.6em;
+  padding: 0 var(--space-2);
+  border-radius: var(--r-pill);
+  background: var(--tint-cyan);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  text-align: center;
+}
+.grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  padding: 0;
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

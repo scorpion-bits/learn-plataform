@@ -1,25 +1,26 @@
 import type { ReactNode } from 'react';
 
-import { PlayerShell } from '@/components/layout';
 import { Badge, Button, EmptyState } from '@/components/ui';
 import { formatDuration } from '@/features/catalog/model';
 
 import type { FlatLesson, OutlineModuleView, PlayerMaterial } from '../model';
 
-import { LessonOutline } from './LessonOutline';
-import { LessonShortcuts } from './LessonShortcuts';
 import { LessonTitle } from './LessonTitle';
 import { LockIcon } from './icons';
 import { Materials } from './materials/Materials';
+import { PlayerFrame } from './PlayerFrame';
+import type { LessonLink } from './PlayerFrame';
 import styles from './PlayerView.module.css';
 
-export type LessonLink = { href: string; title: string };
+export type { LessonLink };
 
 export interface PlayerViewProps {
   course: { slug: string; title: string };
   lesson: FlatLesson;
   totalLessons: number;
   completedCount: number;
+  /** A aula atual está concluída (servidor). */
+  lessonCompleted: boolean;
   outline: OutlineModuleView[];
   materials: PlayerMaterial[];
   /** A aula abre (acesso ao curso ou prévia)? Senão mostra o convite para o curso. */
@@ -32,6 +33,8 @@ export interface PlayerViewProps {
   courseHref: string;
   /** Efeitos sem UI (ex.: registro de retomada). */
   children?: ReactNode;
+  /** Só a vitrine `/dev`: simula a gravação do progresso. */
+  demo?: 'ok' | 'fail';
 }
 
 /**
@@ -43,6 +46,7 @@ export function PlayerView({
   lesson,
   totalLessons,
   completedCount,
+  lessonCompleted,
   outline,
   materials,
   canOpen,
@@ -52,51 +56,24 @@ export function PlayerView({
   backHref = '/minha-biblioteca',
   courseHref,
   children,
+  demo,
 }: PlayerViewProps) {
   const duration = formatDuration(lesson.durationSeconds);
 
   return (
-    <PlayerShell
+    <PlayerFrame
       backHref={backHref}
       courseTitle={course.title}
-      progress={{ total: totalLessons, completed: completedCount }}
-      outline={<LessonOutline modules={outline} showPreviewBadge={!hasAccess} />}
-      prev={
-        prev ? (
-          <Button
-            variant="secondary"
-            href={prev.href}
-            aria-label={`Anterior: ${prev.title}`}
-            aria-keyshortcuts="["
-          >
-            Anterior
-          </Button>
-        ) : (
-          <Button variant="secondary" disabled>
-            Anterior
-          </Button>
-        )
-      }
-      // Concluir aula é STUDENT-007: aqui só reserva o espaço do slot.
-      complete={
-        <Button disabled fullWidth aria-label="Concluir aula (em breve)">
-          Em breve
-        </Button>
-      }
-      next={
-        next ? (
-          <Button
-            href={next.href}
-            prefetch
-            aria-label={`Próxima: ${next.title}`}
-            aria-keyshortcuts="]"
-          >
-            Próxima
-          </Button>
-        ) : (
-          <Button disabled>Próxima</Button>
-        )
-      }
+      lessonId={lesson.id}
+      totalLessons={totalLessons}
+      completedCount={completedCount}
+      lessonCompleted={lessonCompleted}
+      outline={outline}
+      showPreviewBadge={!hasAccess}
+      canComplete={hasAccess}
+      prev={prev}
+      next={next}
+      demo={demo}
     >
       <article key={lesson.id} aria-labelledby={`${lesson.id}-title`} className={styles.lesson}>
         <header className={styles.header}>
@@ -128,8 +105,7 @@ export function PlayerView({
           <kbd>Shift</kbd>+<kbd>←</kbd>/<kbd>→</kbd>
         </p>
       </article>
-      <LessonShortcuts prevHref={prev?.href ?? null} nextHref={next?.href ?? null} />
       {children}
-    </PlayerShell>
+    </PlayerFrame>
   );
 }

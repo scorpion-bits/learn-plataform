@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { PlayerView } from '@/features/player/components/PlayerView';
 import {
+  MOCK_ALL_COMPLETED_IDS,
   MOCK_COMPLETED_IDS,
   MOCK_COURSE,
   MOCK_MATERIALS,
@@ -22,7 +23,9 @@ const first = (value: string | string[] | undefined) => (Array.isArray(value) ? 
 /**
  * Vitrine do player (STUDENT-005/006) com dados fictícios; 404 em produção.
  * `?lesson=mock-lesson-N` escolhe a aula · `?state=preview` (sem compra: só prévias abrem;
- * `lesson=mock-lesson-3` mostra o convite ao curso) · `?state=empty` (aula sem materiais).
+ * `lesson=mock-lesson-3` mostra o convite ao curso) · `?state=empty` (aula sem materiais) ·
+ * `?state=done` (aula atual concluída, oferece a próxima) · `?state=course-done` (todas concluídas) ·
+ * `?demo=fail` (o "Concluir" falha e faz rollback; padrão: simula sucesso).
  */
 export default async function PlayerShowcasePage({ searchParams }: { searchParams: SearchParams }) {
   if (process.env.NODE_ENV === 'production') notFound();
@@ -39,7 +42,13 @@ export default async function PlayerShowcasePage({ searchParams }: { searchParam
   const link = (l: ReturnType<typeof flattenOutline>[number] | null) =>
     l ? { href: hrefFor(l.id), title: l.title } : null;
   const neighbors = resolveNeighbors(lessons, lesson.id, access);
-  const completedIds = new Set(hasAccess ? MOCK_COMPLETED_IDS : []);
+  const base =
+    state === 'course-done'
+      ? MOCK_ALL_COMPLETED_IDS
+      : state === 'done'
+        ? [...MOCK_COMPLETED_IDS, lesson.id]
+        : MOCK_COMPLETED_IDS;
+  const completedIds = new Set(hasAccess ? base : []);
   const canOpen = hasAccess || lesson.isPreview;
 
   return (
@@ -48,6 +57,8 @@ export default async function PlayerShowcasePage({ searchParams }: { searchParam
       lesson={lesson}
       totalLessons={lessons.length}
       completedCount={completedIds.size}
+      lessonCompleted={completedIds.has(lesson.id)}
+      demo={first(params.demo) === 'fail' ? 'fail' : 'ok'}
       outline={buildOutlineView(MOCK_MODULES, {
         currentId: lesson.id,
         access,

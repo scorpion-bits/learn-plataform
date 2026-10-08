@@ -6,7 +6,7 @@ import { ActionError, userAction } from '@/lib/auth/actions';
 import { createClient } from '@/lib/supabase/server';
 import type { Database } from '@/types/database';
 
-import { downloadMaterialSchema, registerVisitSchema } from './schemas';
+import { downloadMaterialSchema, registerVisitSchema, setLessonCompletedSchema } from './schemas';
 
 /** Postgres: RLS recusou (42501) / aula inexistente (23503). Nada a registrar; não é erro do aluno. */
 const NOT_REGISTERED_CODES = new Set(['42501', '23503']);
@@ -35,6 +35,37 @@ export const registerLessonVisit = userAction(
       throw new Error('Não foi possível registrar a aula.');
     }
     return { registered: true };
+  },
+);
+
+/**
+ * Conclui (`completed_at = agora`) ou desfaz (`completed_at = null`) uma aula. Upsert só com
+ * `user_id` (da sessão), `lesson_id` e `completed_at`: `course_id` é preenchido pelo trigger e
+ * não está no GRANT. Diferente da visita, aqui o cliente mostra "concluída" e precisa saber
+ * se deu certo: RLS barrando (sem matrícula) ou aula inexistente viram erro, nunca sucesso falso.
+ */
+export const setLessonCompleted = userAction(
+  setLessonCompletedSchema,
+  async ({ lessonId, completed }, { user }) => {
+    const supabase = await createClient();
+    const row = {
+      user_id: user.id,
+      lesson_id: lessonId,
+      completed_at: completed ? new Date().toISOString() : null,
+    } as Database['public']['Tables']['lesson_progress']['Insert'];
+    const { error } = await supabase
+      .from('lesson_progress')
+      .upsert(row, { onConflict: 'user_id,lesson_id' });
+
+    if (error) {
+      if (error.code && NOT_REGISTERED_CODES.has(error.code)) {
+        throw new ActionError(
+          'Você não tem acesso a esta aula. Atualize a página e tente de novo.',
+        );
+      }
+      throw new ActionError('Não foi possível salvar o progresso. Tente de novo.');
+    }
+    return { completed };
   },
 );
 
