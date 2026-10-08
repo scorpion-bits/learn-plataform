@@ -16,7 +16,6 @@ const supabaseSchema = z.object({
 const paymentsSchema = z.object({
   ABACATEPAY_API_KEY: z.string().min(1),
   ABACATEPAY_WEBHOOK_SECRET: z.string().min(1),
-  ABACATEPAY_WEBHOOK_HMAC_KEY: z.string().min(1),
 });
 
 export type SupabaseServerEnv = z.infer<typeof supabaseSchema>;

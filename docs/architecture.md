@@ -93,15 +93,16 @@ O proxy **não** consulta papel no banco a cada request (custo); ele garante ses
 3. Confirmação de email (se habilitada) → `/auth/callback` troca code por sessão → redirect para `next` **validado** (apenas paths relativos internos).
 4. Login → `signInWithPassword` → redirect por papel (`/admin` ou `/inicio`).
 
-### Compra
+### Compra (PIX transparente — ADR-018)
 1. `/cursos/[slug]` → CTA "Comprar" (logado; senão `/entrar?next=`).
-2. `/checkout/[slug]` coleta CPF/telefone (exigidos pelo AbacatePay) → Server Action `startCheckout`:
-   - verifica que curso está publicado e tem preço > 0, e que o usuário ainda não tem acesso;
+2. `/checkout/[slug]` coleta CPF/telefone → Server Action `startCheckout`:
+   - verifica curso publicado com preço > 0 e que o usuário ainda não tem acesso;
    - reaproveita pedido `pending` não expirado do mesmo usuário/curso (idempotência de clique duplo);
-   - cria `orders(status='pending', amount_cents=preço atual)` → chama AbacatePay com `externalId = order.id` → salva `provider_billing_id`, `checkout_url` → redireciona.
-3. Usuário paga (PIX). Retorno em `/checkout/pedido/[orderId]` → mostra "Aguardando confirmação" com polling (2–3 s, até ~2 min) do status do pedido. **Não concede nada.**
-4. Webhook → verificação → `fulfill_order()` (transação: `orders.status='paid'`, `paid_at`, cria `enrollment(source='purchase')`) → página de retorno vê `paid` e mostra "Acessar curso".
-5. Falha/expiração → `orders.status` = `failed`/`expired`; UI oferece tentar novamente.
+   - cria `orders(status='pending', amount_cents=preço atual)` → `POST /v2/transparents/create` (amount do pedido, `externalId = order.id`) → salva `provider_billing_id`, `pix_br_code`, `pix_br_code_base64`, `expires_at` → redireciona para `/checkout/pedido/[orderId]`.
+3. `/checkout/pedido/[orderId]` mostra o **QR PIX + copia-e-cola** e contagem até expirar, com polling do status do pedido. **Não concede nada.**
+4. Webhook `transparent.completed` → `webhookSecret` + HMAC (integridade) → dedupe → **reconsulta obrigatória** `GET /v2/transparents/check` = PAID → `fulfill_order()` (transação: `paid`, `paid_at`, cria `enrollment(source='purchase')`) → página vê `paid` e mostra "Acessar curso".
+5. Expiração: não há evento — job/reconsulta marca `expired`; UI oferece gerar novo QR.
+6. Reembolso: aluno solicita até `paid_at + 7 dias` (CDC, ADR-017); admin executa (`POST /v2/transparents/refund`); `transparent.refunded` → `refunded` + revogação da matrícula.
 
 ### Atribuição manual (admin)
 `/admin/alunos/[id]` → "Atribuir curso" → Server Action `grantCourse` (`requireAdmin` + RLS `is_admin`) → `enrollments(source='admin_grant', granted_by)`. "Remover" → `revoked_at/by/reason` apenas na concessão admin. Revogar compra = ação separada e explícita (reembolso), com motivo obrigatório.
@@ -125,7 +126,8 @@ O proxy **não** consulta papel no banco a cada request (custo); ele garante ses
 | `SUPABASE_SECRET_KEY` | **server only** | service role — nunca prefixar com `NEXT_PUBLIC_` |
 | `NEXT_PUBLIC_SITE_URL` | server | base para callbacks/returnUrl |
 | `ABACATEPAY_API_KEY` | server only | |
-| `ABACATEPAY_WEBHOOK_SECRET` | server only | segredo da URL do webhook |
-| `ABACATEPAY_WEBHOOK_HMAC_KEY` | server only | chave de verificação da assinatura (confirmar em PAY-001) |
+| `ABACATEPAY_WEBHOOK_SECRET` | server only | segredo da URL do webhook — **única prova de origem**; nunca logar a URL do webhook |
+
+A chave do HMAC (`X-Webhook-Signature`) da AbacatePay é **pública** e vira constante em `src/lib/payments/` (PAY-003), não env.
 
 Validação lazy com zod: `@/lib/env/client` (`getClientEnv()`, NEXT_PUBLIC_* referenciadas literalmente) e `@/lib/env/server` (`import 'server-only'`). `@/lib/env` reexporta **apenas** o cliente — secrets exigem import explícito do módulo server.

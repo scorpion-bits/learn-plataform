@@ -13,8 +13,8 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 | item | estado |
 |---|---|
 | Fase atual | **PHASE 1 — FOUNDATION** (+ PHASE 3 iniciada) |
-| Próximas tarefas READY | `DB-001` (A02, Opus 5.5) |
-| Em andamento | `PAY-001` (A07, Opus 5.5), `UI-001` (A03, Sonnet 5.5) |
+| Próximas tarefas READY | — |
+| Em andamento | `UI-001` (A03, Sonnet 5.5), `DB-001`+`DB-002` (A02, Opus 5.5) |
 | Bloqueios | — |
 
 ---
@@ -152,14 +152,14 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Prioridade**: P0 · **Fase**: 2 · **Dependências**: ARCH-002
 - **Arquivos**: `supabase/migrations/0001_core_schema.sql`
 - **Critérios**: `supabase db reset` aplica sem erro; constraints por tipo de material; `position` único deferrable; RLS **habilitada** (policies vêm no DB-003 — tabelas ficam fechadas até lá).
-- **Status**: READY · **Agente**: A02 Database & Security · **Modelo**: Opus 5.5 · **Esforço**: alto
+- **Status**: IN PROGRESS · **Agente**: A02 Database & Security · **Modelo**: Opus 5.5 · **Esforço**: alto
 
 #### DB-002 — Schema de acesso, comércio e progresso
 - **Descrição**: enums (`enrollment_source`, `order_status`, `order_source`), `orders`, `payment_events`, `enrollments`, `lesson_progress` com checks e índices parciais.
 - **Prioridade**: P0 · **Fase**: 2 · **Dependências**: DB-001
 - **Arquivos**: `supabase/migrations/0002_access_commerce.sql`
 - **Critérios**: impossível ter 2 matrículas ativas da mesma origem; `purchase` exige `order_id`; `admin_grant` exige `granted_by`; um pedido pendente por usuário+curso.
-- **Status**: BACKLOG · **Agente**: A02 · **Modelo**: Opus 5.5 · **Esforço**: alto
+- **Status**: IN PROGRESS · **Agente**: A02 · **Modelo**: Opus 5.5 · **Esforço**: alto
 
 #### DB-003 — RLS, funções de segurança e trigger de cadastro
 - **Descrição**: `is_admin()`, `has_course_access()`, `handle_new_user()` (ignora metadata.role; cria profile + role student), column grants em `profiles`, todas as policies da matriz em `docs/authorization.md`, views `course_catalog`, `course_outline`, `my_library` (security_invoker), `fulfill_order()` (só service role), funções de reorder; `revoke execute` de anon/public onde aplicável; script `supabase/scripts/grant-admin.sql`.
@@ -313,6 +313,11 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Prioridade**: P0 · **Fase**: 6 · **Dependências**: STUDENT-002
 - **Status**: BACKLOG · **Agente**: A06 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
+#### STUDENT-008 — Páginas legais e rodapé institucional
+- **Descrição**: `/termos` (inclui política de reembolso de 7 dias), `/privacidade` (LGPD: dados coletados, CPF para pagamento), rodapé com razão social e **CNPJ** (exigência da AbacatePay para produção). Texto-base gerado e marcado para revisão jurídica.
+- **Prioridade**: P0 (bloqueia produção) · **Fase**: 6 · **Dependências**: UI-003
+- **Status**: BACKLOG · **Agente**: A06 · **Modelo**: Haiku 5.5 · **Esforço**: baixo · **Requer humano**: CNPJ, razão social, revisão jurídica
+
 #### STUDENT-004 — Início e biblioteca do aluno
 - **Descrição**: `/inicio` (continuar último curso + recomendações) e `/minha-biblioteca` (abas Em andamento/Concluídos/Todos, selo Comprado/Atribuído, `CubeProgress`).
 - **Prioridade**: P0 · **Fase**: 6 · **Dependências**: STUDENT-007, AUTH-003
@@ -340,10 +345,10 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Prioridade**: P0 · **Fase**: 1 (paralelo) · **Dependências**: —
 - **Arquivos**: `docs/payments.md`
 - **Critérios**: cada pergunta respondida com link da fonte; incertezas explícitas.
-- **Status**: IN PROGRESS · **Agente**: A07 Payments · **Modelo**: Opus 5.5 · **Esforço**: médio
+- **Status**: DONE ✅ · **Agente**: A07 Payments · **Modelo**: Opus 5.5 · **Esforço**: médio
 
 #### PAY-002 — Cliente AbacatePay + `startCheckout`
-- **Descrição**: `src/lib/payments/abacatepay.ts` (server-only, tipado, timeouts, erros mapeados); Server Action `startCheckout(courseSlug, taxId, phone)` conforme `docs/architecture.md` §4; página `/checkout/[slug]`.
+- **Descrição**: `src/lib/payments/abacatepay.ts` (server-only, tipado, timeouts, erros mapeados; contrato em `docs/payments.md` §2–3); Server Action `startCheckout(courseSlug, taxId, phone)` conforme `docs/architecture.md` §4 (PIX transparente, ADR-018); página `/checkout/[slug]`.
 - **Prioridade**: P0 · **Fase**: 7 · **Dependências**: PAY-001, DB-005, AUTH-002, STUDENT-003
 - **Critérios**: preço só do banco; reaproveita pedido pendente; bloqueia quem já tem acesso; CPF validado com dígito verificador; testes unitários com fetch mockado.
 - **Status**: BACKLOG · **Agente**: A07 · **Modelo**: Opus 5.5 · **Esforço**: alto
@@ -355,8 +360,14 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Status**: BACKLOG · **Agente**: A07 · **Modelo**: Opus 5.5 · **Esforço**: alto
 
 #### PAY-004 — Página de status do pedido
-- **Descrição**: `/checkout/pedido/[orderId]` com polling, estados pending/paid/failed/expired, CTA "Acessar curso" / "Tentar novamente".
+- **Descrição**: `/checkout/pedido/[orderId]` com QR PIX + copia-e-cola (botão copiar com feedback), contagem até expirar, polling, estados pending/paid/expired, CTA "Acessar curso" / "Gerar novo QR".
 - **Prioridade**: P0 · **Fase**: 7 · **Dependências**: PAY-003
+- **Status**: BACKLOG · **Agente**: A07 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
+
+#### PAY-006 — Solicitação e execução de reembolso
+- **Descrição**: aluno vê "Solicitar reembolso" em seus pedidos até `paid_at + 7 dias` (CDC, ADR-017) → `refund_requested_at`; admin vê a fila com % do curso consumido e executa `POST /v2/transparents/refund`; acesso revogado só quando chega `transparent.refunded`. Antiabuso: segundo reembolso do mesmo curso pelo mesmo aluno bloqueado.
+- **Prioridade**: P1 · **Fase**: 7 · **Dependências**: PAY-003, ADMIN-007
+- **Critérios**: aluno não consegue solicitar após 7 dias nem para pedido de outro usuário; falha `INSUFFICIENT_FUNDS` exibida ao admin; testes da action.
 - **Status**: BACKLOG · **Agente**: A07 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
 #### PAY-005 — Reconciliação e expiração
@@ -622,6 +633,7 @@ EXPECTED OUTPUT:
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-08 | PAY-001 | A07 (Opus 5.5) | DONE | API v2; **Checkout Transparente PIX** (ADR-018); HMAC do webhook usa chave pública → reconsulta obrigatória; sem evento de expiração; reembolso via API. Cakto: manter AbacatePay no MVP (PIX R$0,80 vs ~R$3,48; Cakto exige oferta cadastrada e tem área de membros concorrente); reavaliar com cartão/afiliados. Orquestrador: env HMAC removida, fluxo de compra e `orders` atualizados (DB-002 avisado), criadas PAY-006 e STUDENT-008. Pendências A CONFIRMAR em `docs/payments.md` §Pendências. |
 | 2026-10-08 | ARCH-002 | A01 (Sonnet 5.5) | DONE | `supabase init` (config.toml; senha mínima ajustada para 8 pelo orquestrador), clients `src/lib/supabase/{browser,server,service}.ts` tipados com `Database`; `createServiceClient()` é `server-only`. Env de servidor dividido em `getSupabaseServerEnv()` / `getPaymentsEnv()`. Scripts `db:*`. Pendente: Docker/`supabase start` não testado no ambiente dos agentes (R3); redirect URLs de auth em AUTH-001. |
 | 2026-10-08 | ARCH-003 | A01 (Haiku 5.5) | DONE | `.github/workflows/ci.yml`: format, lint, typecheck, test (if present), build com env dummy; concurrency e permissions mínimas. Execução real será validada no primeiro PR. |
 | 2026-10-08 | ARCH-001 | A01 (Sonnet 5.5) | DONE | Next 16.4.0, React 19.3, TS 6.0 strict, zod 4. Env lazy em `src/lib/env/{client,server,shared}.ts`; `@/lib/env` só reexporta o cliente (secrets exigem import explícito de `@/lib/env/server`). `.prettierignore` protege docs. Revisão: build/lint/typecheck verificados pelo orquestrador. Achados: (1) server env exige todas as chaves → dividir por domínio em ARCH-002; (2) `npm audit` alto em `braces` via eslint-config-next (só dev tooling) — aceito, reavaliar em upgrades; (3) prettier do agente reverteu docs momentaneamente — incidente sem perda. |
