@@ -1,6 +1,6 @@
 # Roadmap
 
-> Resumo das fases e ondas de execução. O backlog detalhado (tarefas, critérios, status) vive em `MASTER_PLAN.md` §6.
+> Resumo das fases e ondas de execução. O backlog detalhado (tarefas, critérios, status) vive em `docs/backlog.md`.
 
 ## Fases
 | fase | nome | objetivo | sai quando |
