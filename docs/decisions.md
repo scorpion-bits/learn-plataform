@@ -25,7 +25,7 @@ Status: `aceita`, `proposta` (aguardando validação do responsável do produto)
 
 ### ADR-004 — Produto único no MVP: **Curso**
 `aceita` · 2026-10-08
-- **Decisão**: só `courses` são vendáveis. E-books, materiais avulsos e playlists saem. PDFs passam a ser **materiais de aula**.
+- **Decisão**: só `courses` são vendáveis. E-books, materiais avulsos e playlists saem. (PDFs também não existem — ADR-020.)
 - **Consequências**: modelo de pedido/acesso simples (FK real para `courses`). Expansão futura (trilhas, bundles) entra como nova tabela `products` se e quando necessário.
 
 ### ADR-005 — Papéis em tabela própria, nunca editáveis pelo usuário nem vindos de metadata
@@ -104,6 +104,11 @@ Status: `aceita`, `proposta` (aguardando validação do responsável do produto)
 
 ### ADR-019 — Celular é plataforma de primeira classe (mobile-first + PWA instalável)
 `aceita` · 2026-10-08 (pedido do produto: "total portabilidade para uso pelo celular")
-- **Decisão**: todas as telas (aluno **e admin**) são projetadas primeiro para 360–430px e testadas em celular real/emulado. A plataforma é um **PWA instalável** (manifest, ícones, tela cheia, `theme-color`), sem app nativo. Player com controles na zona do polegar (barra inferior fixa), ementa em bottom-sheet, PDFs abríveis no visualizador nativo do celular, sem hover como única forma de interação, alvos ≥ 44px, `100dvh`/safe-area (`env(safe-area-inset-*)`).
+- **Decisão**: todas as telas (aluno **e admin**) são projetadas primeiro para 360–430px e testadas em celular real/emulado. A plataforma é um **PWA instalável** (manifest, ícones, tela cheia, `theme-color`), sem app nativo. Player com controles na zona do polegar (barra inferior fixa), ementa em bottom-sheet, sem hover como única forma de interação, alvos ≥ 44px, `100dvh`/safe-area (`env(safe-area-inset-*)`).
 - **Fora do MVP**: modo offline/download de aulas, push notifications, app nas lojas.
 - **Consequências**: UI-006 (manifest/ícones) sobe para P1; cada tarefa de tela tem critério "funciona completo em 360px com toque"; QA inclui testes Playwright com perfis de celular (iPhone/Android).
+
+### ADR-020 — Sem PDFs na plataforma
+`aceita` · 2026-10-08 (decisão do produto)
+- **Decisão**: o tipo de material `pdf` sai do modelo. Materiais de aula: `video`, `text` (markdown), `file` (arquivos para download — assets, projetos `.zip` etc.) e `link`.
+- **Consequências**: sem visualizador de PDF no player; `ADMIN-004` e `STUDENT-006` sem PDF.

@@ -29,7 +29,7 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 
 **Escopo do MVP.** Uso completo pelo celular (mobile-first + PWA instalável — ADR-019).
 
-- Admin: dashboard com métricas essenciais; cursos (CRUD, publicar), ementa (módulos/aulas, reordenar), materiais (vídeo embed, texto markdown, PDF, arquivo, link); alunos (busca, perfil, atribuir/revogar curso); pedidos.
+- Admin: dashboard com métricas essenciais; cursos (CRUD, publicar), ementa (módulos/aulas, reordenar), materiais (vídeo embed, texto markdown, arquivo para download, link); alunos (busca, perfil, atribuir/revogar curso); pedidos.
 - Aluno: landing, catálogo público, página pública do curso, cadastro/login, biblioteca (comprados vs atribuídos, andamento, concluídos), player com navegação/retomada/progresso.
 - Pagamento: AbacatePay (PIX; cartão se disponível) com webhook verificado e concessão idempotente.
 
@@ -80,7 +80,7 @@ auth.users
  └── lesson_progress     (N)    → lessons   completed_at · last_position · updated_at
 
 categories ─< courses ─< course_modules ─< lessons ─< lesson_materials
-                                                       type: video | text | pdf | file | link
+                                                       type: video | text | file | link
 ```
 
 Acesso efetivo ao curso = existe `enrollment` não revogada (qualquer origem) **ou** admin.
@@ -170,7 +170,7 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Status**: BACKLOG · **Agente**: A02 · **Modelo**: Opus 5.5 · **Esforço**: alto
 
 #### DB-004 — Storage buckets e policies
-- **Descrição**: buckets `course-covers` (público, 5 MB, imagens) e `course-content` (privado, 200 MB, pdf/zip/imagens/etc.), policies admin-only de escrita; helper server-side `getSignedMaterialUrl(materialId)` que checa acesso.
+- **Descrição**: buckets `course-covers` (público, 5 MB, imagens) e `course-content` (privado, 200 MB, zip/imagens/áudio/arquivos de projeto), policies admin-only de escrita; helper server-side `getSignedMaterialUrl(materialId)` que checa acesso.
 - **Prioridade**: P0 · **Fase**: 2 · **Dependências**: DB-003
 - **Arquivos**: `supabase/migrations/0004_storage.sql`, `src/features/materials/storage.ts`
 - **Critérios**: student não lista nem baixa `course-content` direto; signed URL ≤ 10 min; respostas com `private, no-store`.
@@ -270,7 +270,7 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Status**: BACKLOG · **Agente**: A05 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
 
 #### ADMIN-004 — Editor de materiais da aula
-- **Descrição**: na aula: adicionar/editar/remover/reordenar materiais `video` (URL → provider+id), `text` (markdown com preview), `pdf`/`file` (upload para `course-content` com progresso), `link`.
+- **Descrição**: na aula: adicionar/editar/remover/reordenar materiais `video` (URL → provider+id), `text` (markdown com preview), `file` (upload para `course-content` com progresso), `link`.
 - **Prioridade**: P0 · **Fase**: 5 · **Dependências**: ADMIN-003
 - **Critérios**: upload com barra de progresso e cancelamento; validação de tipo/tamanho no servidor; arquivo removido do storage ao excluir material.
 - **Status**: BACKLOG · **Agente**: A05 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
@@ -339,7 +339,7 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Status**: BACKLOG · **Agente**: A06 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
 
 #### STUDENT-006 — Renderizadores de materiais
-- **Descrição**: `video` (embed lite: thumbnail → iframe on click, `youtube-nocookie`), `text` (markdown sanitizado), `pdf` (visualizador nativo via signed URL + download), `file` (download via signed URL), `link` (card externo `rel="noopener"`).
+- **Descrição**: `video` (embed lite: thumbnail → iframe on click, `youtube-nocookie`), `text` (markdown sanitizado), `file` (download via signed URL), `link` (card externo `rel="noopener"`).
 - **Prioridade**: P0 · **Fase**: 6 · **Dependências**: STUDENT-005, DB-004
 - **Status**: BACKLOG · **Agente**: A06 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
 
