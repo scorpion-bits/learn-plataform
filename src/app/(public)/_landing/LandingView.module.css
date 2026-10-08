@@ -1,0 +1,345 @@
+.page {
+  display: grid;
+  gap: var(--bay);
+  width: min(100%, var(--wrap));
+  margin-inline: auto;
+  padding: var(--space-6) var(--gutter) 0;
+}
+
+/* ------------------------------------------------------------------ tipos */
+.eyebrow {
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--s-4);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+.title em {
+  font-style: normal;
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lead {
+  max-width: 52ch;
+  color: var(--text-soft);
+  font-size: var(--s-1);
+}
+
+.h2 {
+  font-family: var(--font-display);
+  font-size: var(--s-3);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+.h3 {
+  font-family: var(--font-display);
+  font-size: var(--s-2);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-display);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* ------------------------------------------------------------------- hero */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: center;
+}
+
+.heroText {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: start;
+}
+
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 22rem);
+  min-height: 17rem;
+  margin-inline: auto;
+}
+
+/* piso isométrico: losango (proporção 2:1 = 30°) com a luz da marca */
+.floor {
+  position: absolute;
+  bottom: 4%;
+  left: 50%;
+  width: 92%;
+  aspect-ratio: 2 / 1;
+  transform: translateX(-50%);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  background:
+    radial-gradient(closest-side, var(--glow-blue), transparent),
+    linear-gradient(180deg, var(--tint-cyan), transparent);
+  border: 0;
+}
+
+.mascot {
+  position: relative;
+  width: 15rem;
+  max-width: 70%;
+  height: auto;
+  filter: drop-shadow(0 var(--space-5) var(--space-6) var(--glow-blue));
+}
+
+.floater {
+  position: absolute;
+  display: block;
+  line-height: 0;
+  animation: drift 7s var(--ease-io) infinite alternate;
+}
+
+@keyframes drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-14px);
+  }
+}
+
+:global([data-lite]) .floater {
+  animation: none;
+}
+
+:global([data-lite]) .mascot {
+  filter: none;
+}
+
+:global([data-lite]) .floor {
+  background: var(--tint-cyan);
+}
+
+@media (min-width: 720px) {
+  .stage {
+    min-height: 26rem;
+  }
+
+  .mascot {
+    width: 21rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: var(--space-7);
+  }
+
+  .stage {
+    width: 100%;
+    min-height: 32rem;
+  }
+}
+
+/* --------------------------------------------------------------- seções */
+.section {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.sectionHead {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* ---------------------------------------------------------- como funciona */
+.steps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.step {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.stepHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.stepNum {
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+}
+
+.stepText {
+  color: var(--text-soft);
+}
+
+@media (min-width: 1024px) {
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* degraus: cada passo um pouco mais alto, como a trilha subindo */
+  .steps > :nth-child(2) {
+    transform: translateY(calc(var(--space-5) * -1));
+  }
+
+  .steps > :nth-child(3) {
+    transform: translateY(calc(var(--space-6) * -1));
+  }
+}
+
+/* ----------------------------------------------------------------- cursos */
+.courses {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+}
+
+@media (min-width: 720px) {
+  .courses {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .courses {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ----------------------------------------------------------------- estúdio */
+.studio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: center;
+}
+
+.studioText {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+}
+
+.studioP {
+  max-width: var(--measure);
+  color: var(--text-soft);
+}
+
+.studioP strong {
+  color: var(--text);
+}
+
+.facts {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.fact {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    'cube dt'
+    'cube dd';
+  column-gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4);
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
+  background: color-mix(in srgb, var(--ink-850) 80%, transparent);
+}
+
+.fact > svg {
+  grid-area: cube;
+}
+
+.fact dt {
+  grid-area: dt;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+}
+
+.fact dd {
+  grid-area: dd;
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: var(--s-1);
+}
+
+@media (min-width: 1024px) {
+  .studio {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: var(--space-7);
+  }
+}
+
+/* -------------------------------------------------------------- CTA final */
+.cta {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  text-align: center;
+}
+
+.ctaCubes {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.ctaCubes > :nth-child(2) {
+  margin-bottom: var(--space-3);
+}
+
+.ctaCubes > :nth-child(3) {
+  margin-bottom: var(--space-5);
+}
+
+.ctaText {
+  max-width: 46ch;
+  color: var(--text-soft);
+}
+
+.cta .actions {
+  justify-content: center;
+}

@@ -8,7 +8,7 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `PAY-002` (A07) · `STUDENT-001` (A06) |
+| Em andamento | `PAY-002` (A07) |
 | Próximas | `PAY-003` → `PAY-004` → `PAY-006` · `ADMIN-007` (pedidos) · `UX-*` · `QA-*` |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
@@ -65,7 +65,7 @@
 | ADMIN-006 | Perfil do aluno e atribuições | P0 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-007 | Pedidos | P1 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-008 | Alunos do curso | P2 | BACKLOG | A05 | Haiku 5.5 |
-| STUDENT-001 | Landing page | P1 | IN PROGRESS | A06 | Sonnet 5.5 |
+| STUDENT-001 | Landing page | P1 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-002 | Catálogo público | P0 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-003 | Página pública do curso | P0 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-004 | Início e biblioteca do aluno | P0 | DONE ✅ | A06 | Sonnet 5.5 |

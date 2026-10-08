@@ -1,30 +1,63 @@
-import Image from 'next/image';
+import type { Metadata } from 'next';
+import { unstable_rethrow } from 'next/navigation';
 
-import styles from './page.module.css';
+import { getCurrentUser } from '@/lib/auth/dal';
+import { withCover } from '@/features/catalog/presenters';
+import { getCatalog } from '@/features/catalog/queries';
+import type { CourseView } from '@/features/catalog/components/types';
 
-// Tela provisória "em construção" (a landing final é STUDENT-001).
-export default function HomePage() {
-  return (
-    <main className={styles.page}>
-      <div className={styles.card}>
-        <Image
-          className={styles.mascot}
-          src="/brand/logo-poster.png"
-          width={320}
-          height={426}
-          alt="Mascote da Scorpion Bits: um escorpião feito de cubos isométricos"
-          priority
-        />
-        <p className={styles.eyebrow}>Em construção</p>
-        <h1 className={styles.title}>
-          Scorpion Bits <em>Learn</em>
-        </h1>
-        <p className={styles.lead}>
-          Estamos montando a plataforma de cursos do estúdio: aprenda a criar jogos com quem faz
-          jogos, do zero ao seu primeiro projeto publicado. Volte em breve.
-        </p>
-        <p className={styles.foot}>Scorpion Bits · Estúdio de jogos indie</p>
-      </div>
-    </main>
-  );
+import { LandingView } from './_landing/LandingView';
+
+const title = 'Scorpion Bits Learn — aprenda a criar jogos com quem faz jogos';
+const description =
+  'Cursos de game dev do estúdio Scorpion Bits: do zero ao seu primeiro jogo publicado, no seu ritmo e também no celular.';
+
+// `openGraph`/`twitter` de uma página substituem os do layout (merge raso): repetimos a imagem.
+const ogImage = {
+  url: '/brand/og-cover.png',
+  width: 1200,
+  height: 630,
+  alt: 'Scorpion Bits — escorpião feito de cubos isométricos',
+};
+
+export const metadata: Metadata = {
+  title: { absolute: title },
+  description,
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    siteName: 'Scorpion Bits Learn',
+    url: '/',
+    title,
+    description,
+    images: [ogImage],
+  },
+  twitter: { card: 'summary_large_image', title, description, images: [ogImage.url] },
+};
+
+/** UX, não autorização: qualquer falha vira "visitante". */
+async function isSignedIn(): Promise<boolean> {
+  try {
+    return Boolean(await getCurrentUser());
+  } catch (error) {
+    unstable_rethrow(error);
+    return false;
+  }
+}
+
+/** Até 3 cursos publicados. Supabase indisponível/sem env = lista vazia (a seção some). */
+async function featuredCourses(): Promise<CourseView[]> {
+  try {
+    const { courses } = await getCatalog();
+    return courses.slice(0, 3).map(withCover);
+  } catch (error) {
+    unstable_rethrow(error);
+    return [];
+  }
+}
+
+export default async function HomePage() {
+  const [signedIn, courses] = await Promise.all([isSignedIn(), featuredCourses()]);
+  return <LandingView signedIn={signedIn} courses={courses} />;
 }
