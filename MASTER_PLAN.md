@@ -13,8 +13,8 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 | item | estado |
 |---|---|
 | Fase atual | **PHASE 1 — FOUNDATION** (+ PHASE 3 iniciada) |
-| Próximas tarefas READY | — |
-| Em andamento | `PAY-001` (A07, Opus 5.5), `ARCH-002` (A01, Sonnet 5.5), `UI-001` (A03, Sonnet 5.5) |
+| Próximas tarefas READY | `DB-001` (A02, Opus 5.5) |
+| Em andamento | `PAY-001` (A07, Opus 5.5), `UI-001` (A03, Sonnet 5.5) |
 | Bloqueios | — |
 
 ---
@@ -130,7 +130,7 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Prioridade**: P0 · **Fase**: 1 · **Dependências**: ARCH-001
 - **Arquivos**: `supabase/**`, `src/lib/supabase/*`, `package.json`
 - **Critérios**: dividir `getServerEnv()` por domínio (ex.: `getSupabaseServerEnv()` e `getPaymentsEnv()`) para que o Supabase funcione sem as chaves de pagamento configuradas (achado na revisão do ARCH-001); clients tipados com `Database`; service client impossível de importar em client component (build quebra); nenhuma chave secreta com prefixo `NEXT_PUBLIC_`.
-- **Status**: IN PROGRESS · **Agente**: A01 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
+- **Status**: DONE ✅ · **Agente**: A01 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
 #### ARCH-003 — CI (GitHub Actions)
 - **Descrição**: workflow em PR/push: install (cache), lint, typecheck, test (quando existir), build com envs dummy.
@@ -152,7 +152,7 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Prioridade**: P0 · **Fase**: 2 · **Dependências**: ARCH-002
 - **Arquivos**: `supabase/migrations/0001_core_schema.sql`
 - **Critérios**: `supabase db reset` aplica sem erro; constraints por tipo de material; `position` único deferrable; RLS **habilitada** (policies vêm no DB-003 — tabelas ficam fechadas até lá).
-- **Status**: BACKLOG · **Agente**: A02 Database & Security · **Modelo**: Opus 5.5 · **Esforço**: alto
+- **Status**: READY · **Agente**: A02 Database & Security · **Modelo**: Opus 5.5 · **Esforço**: alto
 
 #### DB-002 — Schema de acesso, comércio e progresso
 - **Descrição**: enums (`enrollment_source`, `order_status`, `order_source`), `orders`, `payment_events`, `enrollments`, `lesson_progress` com checks e índices parciais.
@@ -622,6 +622,7 @@ EXPECTED OUTPUT:
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-08 | ARCH-002 | A01 (Sonnet 5.5) | DONE | `supabase init` (config.toml; senha mínima ajustada para 8 pelo orquestrador), clients `src/lib/supabase/{browser,server,service}.ts` tipados com `Database`; `createServiceClient()` é `server-only`. Env de servidor dividido em `getSupabaseServerEnv()` / `getPaymentsEnv()`. Scripts `db:*`. Pendente: Docker/`supabase start` não testado no ambiente dos agentes (R3); redirect URLs de auth em AUTH-001. |
 | 2026-10-08 | ARCH-003 | A01 (Haiku 5.5) | DONE | `.github/workflows/ci.yml`: format, lint, typecheck, test (if present), build com env dummy; concurrency e permissions mínimas. Execução real será validada no primeiro PR. |
 | 2026-10-08 | ARCH-001 | A01 (Sonnet 5.5) | DONE | Next 16.4.0, React 19.3, TS 6.0 strict, zod 4. Env lazy em `src/lib/env/{client,server,shared}.ts`; `@/lib/env` só reexporta o cliente (secrets exigem import explícito de `@/lib/env/server`). `.prettierignore` protege docs. Revisão: build/lint/typecheck verificados pelo orquestrador. Achados: (1) server env exige todas as chaves → dividir por domínio em ARCH-002; (2) `npm audit` alto em `braces` via eslint-config-next (só dev tooling) — aceito, reavaliar em upgrades; (3) prettier do agente reverteu docs momentaneamente — incidente sem perda. |
 | 2026-10-08 | Respostas do produto Q1–Q8 | Orquestrador | registrado | ADR-002/010/011 aceitas; ADR-015/016/017 criadas; REL-002 cancelada. Onda 1 delegada. |

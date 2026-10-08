@@ -9,29 +9,31 @@ Node 22 LTS, npm, Supabase CLI (`npx supabase`), Docker (opcional, para Supabase
 ```bash
 npm install
 cp .env.example .env.local      # preencher valores (ver docs/architecture.md §6)
-npx supabase start              # Supabase local (Docker) — ou use um projeto dev remoto
-npx supabase db reset           # aplica migrations + seed
+npm run db:start                # Supabase local (Docker) — ou use um projeto dev remoto
+npm run db:reset                # aplica migrations + seed
 npm run db:types                # gera src/types/database.ts
 npm run dev
 ```
 
-## Scripts (alvo)
+## Scripts
+`test` (Vitest) e `test:e2e` (Playwright) ainda não existem; entram em tarefas futuras.
+
 | script | faz |
 |---|---|
 | `dev` / `build` / `start` | Next |
 | `lint` | ESLint |
 | `typecheck` | `tsc --noEmit` |
 | `format` | Prettier |
-| `test` | Vitest (unit) |
-| `test:e2e` | Playwright |
 | `db:types` | `supabase gen types typescript --local > src/types/database.ts` |
+| `db:start` / `db:stop` | `supabase start` / `supabase stop` (Docker) |
+| `db:reset` | `supabase db reset` (migrations + seed) |
 | `db:test` | `supabase test db` (pgTAP) |
 
 ## Fluxo de trabalho
 1. Pegue uma tarefa `READY` no `MASTER_PLAN.md` (ou receba um bloco de delegação).
 2. Branch: `feat/<ID>-slug` (ou a branch indicada pelo orquestrador).
 3. Commits pequenos, mensagem `<ID>: descrição` (ex.: `DB-001: create core course schema`).
-4. Antes de entregar: `npm run lint && npm run typecheck && npm test && npm run build` (+ `db:test` se tocou banco).
+4. Antes de entregar: `npm run lint && npm run typecheck && npm run build` (+ `db:test` se tocou banco).
 5. Entregue um resumo: o que fez, arquivos, decisões, pendências, como testar.
 6. O orquestrador revisa, integra e atualiza o `MASTER_PLAN.md`. **Agentes não marcam a própria tarefa como DONE.**
 
