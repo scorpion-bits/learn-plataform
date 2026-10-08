@@ -14,7 +14,7 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 |---|---|
 | Fase atual | **PHASE 1 — FOUNDATION** (+ PHASE 3 iniciada) |
 | Próximas tarefas READY | — |
-| Em andamento | `UI-002` + `UI-004` (A03, Sonnet 5.5), `DB-001`+`DB-002` (A02, Opus 5.5) |
+| Em andamento | `UI-002` + `UI-004` (A03, Sonnet 5.5), `DB-003` (A02, Opus 5.5) |
 | Bloqueios | — |
 
 ---
@@ -151,28 +151,28 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 #### DB-001 — Schema de conteúdo e identidade
 - **Descrição**: migration com enums (`app_role`, `course_level`, `course_status`, `material_type`), `set_updated_at()`, `profiles`, `user_roles`, `categories`, `courses`, `course_modules`, `lessons`, `lesson_materials`, triggers de denormalização de `course_id`, índices e constraints conforme `docs/database.md` §3.
 - **Prioridade**: P0 · **Fase**: 2 · **Dependências**: ARCH-002
-- **Arquivos**: `supabase/migrations/0001_core_schema.sql`
+- **Arquivos**: `supabase/migrations/20261008000001_core_schema.sql`
 - **Critérios**: `supabase db reset` aplica sem erro; constraints por tipo de material; `position` único deferrable; RLS **habilitada** (policies vêm no DB-003 — tabelas ficam fechadas até lá).
-- **Status**: IN PROGRESS · **Agente**: A02 Database & Security · **Modelo**: Opus 5.5 · **Esforço**: alto
+- **Status**: DONE ✅ · **Agente**: A02 Database & Security · **Modelo**: Opus 5.5 · **Esforço**: alto
 
 #### DB-002 — Schema de acesso, comércio e progresso
 - **Descrição**: enums (`enrollment_source`, `order_status`, `order_source`), `orders`, `payment_events`, `enrollments`, `lesson_progress` com checks e índices parciais.
 - **Prioridade**: P0 · **Fase**: 2 · **Dependências**: DB-001
-- **Arquivos**: `supabase/migrations/0002_access_commerce.sql`
+- **Arquivos**: `supabase/migrations/20261008000002_access_commerce.sql`
 - **Critérios**: impossível ter 2 matrículas ativas da mesma origem; `purchase` exige `order_id`; `admin_grant` exige `granted_by`; um pedido pendente por usuário+curso.
-- **Status**: IN PROGRESS · **Agente**: A02 · **Modelo**: Opus 5.5 · **Esforço**: alto
+- **Status**: DONE ✅ · **Agente**: A02 · **Modelo**: Opus 5.5 · **Esforço**: alto
 
 #### DB-003 — RLS, funções de segurança e trigger de cadastro
 - **Descrição**: `is_admin()`, `has_course_access()`, `handle_new_user()` (ignora metadata.role; cria profile + role student), column grants em `profiles`, todas as policies da matriz em `docs/authorization.md`, views `course_catalog`, `course_outline`, `my_library` (security_invoker), `fulfill_order()` (só service role), funções de reorder; `revoke execute` de anon/public onde aplicável; script `supabase/scripts/grant-admin.sql`.
 - **Prioridade**: P0 · **Fase**: 2 · **Dependências**: DB-001, DB-002
-- **Arquivos**: `supabase/migrations/0003_rls_functions.sql`, `supabase/scripts/grant-admin.sql`
+- **Arquivos**: `supabase/migrations/20261008000003_rls_functions.sql`, `supabase/scripts/grant-admin.sql`
 - **Critérios**: matriz de RLS implementada 1:1; todas as `security definer` com `search_path=''`; Supabase advisor (lint) sem alertas de segurança.
-- **Status**: BACKLOG · **Agente**: A02 · **Modelo**: Opus 5.5 · **Esforço**: alto
+- **Status**: IN PROGRESS · **Agente**: A02 · **Modelo**: Opus 5.5 · **Esforço**: alto
 
 #### DB-004 — Storage buckets e policies
 - **Descrição**: buckets `course-covers` (público, 5 MB, imagens) e `course-content` (privado, 200 MB, zip/imagens/áudio/arquivos de projeto), policies admin-only de escrita; helper server-side `getSignedMaterialUrl(materialId)` que checa acesso.
 - **Prioridade**: P0 · **Fase**: 2 · **Dependências**: DB-003
-- **Arquivos**: `supabase/migrations/0004_storage.sql`, `src/features/materials/storage.ts`
+- **Arquivos**: `supabase/migrations/20261008000004_storage.sql`, `src/features/materials/storage.ts`
 - **Critérios**: student não lista nem baixa `course-content` direto; signed URL ≤ 10 min; respostas com `private, no-store`.
 - **Status**: BACKLOG · **Agente**: A02 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
 
@@ -186,6 +186,11 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Descrição**: `admin_dashboard_metrics(from, to)` (receita, nº vendas, ticket médio, alunos totais/novos, matrículas por origem, top 5 cursos) + `admin_revenue_by_day(from,to)` + view `admin_students`; todas checam `is_admin()`.
 - **Prioridade**: P1 · **Fase**: 8 · **Dependências**: DB-005
 - **Critérios**: student recebe erro/zero linhas; testes pgTAP; consultas < 200 ms com 10k pedidos (índices).
+- **Status**: BACKLOG · **Agente**: A02 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
+
+#### DB-008 — Exclusão de conta e anonimização (LGPD)
+- **Descrição**: `orders` usa `on delete restrict` para o comprador (registro financeiro), então excluir a conta de quem comprou é bloqueado. Definir processo: anonimizar `profiles` (nome/CPF/telefone), desativar login no Auth, manter `orders` com referência pseudonimizada. Mesmo para admins com histórico de concessões.
+- **Prioridade**: P2 · **Fase**: 10 · **Dependências**: DB-005 · **Requer humano**: validação jurídica
 - **Status**: BACKLOG · **Agente**: A02 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
 #### DB-007 — Seed de desenvolvimento
@@ -643,6 +648,7 @@ EXPECTED OUTPUT:
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-08 | DB-001 + DB-002 | A02 (Opus 5.5) | DONE | 11 tabelas, enums, triggers (sync de `course_id` + FKs compostas, `published_at`, pedido imutável, matrícula só revogável e `purchase` só com pedido pago), checks por tipo de material (sem `pdf`) e antiinjeção, RLS ligada e tudo revogado de anon/authenticated (policies no DB-003). Validado em PG16 local: 109 asserções. Revisão do orquestrador: triggers e guards conferidos — aprovado. Achado: exclusão de conta de comprador bloqueada (→ DB-008). Docker indisponível no ambiente (R3). |
 | 2026-10-08 | UI-001 | A03 (Sonnet 5.5) | DONE | Assets em `public/brand`, Grotesk/Inter via `next/font/local`, `tokens.css` (+ tokens extras), `base.css` em `@layer base`, `IsoBackdrop` estático, modo leve, metadata/OG, home "em construção" com identidade SB. Revisado visualmente (1440/390/360) — aprovado. Zero requisições externas. Follow-ups: backdrop por route group (UI-003), ícones quadrados/manifest (UI-006), estilo de link e spinner sem rotação (UI-002), CSP com nonce p/ script inline (QA-002). |
 | 2026-10-08 | PAY-001 | A07 (Opus 5.5) | DONE | API v2; **Checkout Transparente PIX** (ADR-018); HMAC do webhook usa chave pública → reconsulta obrigatória; sem evento de expiração; reembolso via API. Cakto: manter AbacatePay no MVP (PIX R$0,80 vs ~R$3,48; Cakto exige oferta cadastrada e tem área de membros concorrente); reavaliar com cartão/afiliados. Orquestrador: env HMAC removida, fluxo de compra e `orders` atualizados (DB-002 avisado), criadas PAY-006 e STUDENT-008. Pendências A CONFIRMAR em `docs/payments.md` §Pendências. |
 | 2026-10-08 | ARCH-002 | A01 (Sonnet 5.5) | DONE | `supabase init` (config.toml; senha mínima ajustada para 8 pelo orquestrador), clients `src/lib/supabase/{browser,server,service}.ts` tipados com `Database`; `createServiceClient()` é `server-only`. Env de servidor dividido em `getSupabaseServerEnv()` / `getPaymentsEnv()`. Scripts `db:*`. Pendente: Docker/`supabase start` não testado no ambiente dos agentes (R3); redirect URLs de auth em AUTH-001. |
