@@ -8,8 +8,8 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `ADMIN-004` (A05) |
-| Próximas | `STUDENT-005` · `DB-006` · `STUDENT-001` |
+| Em andamento | `STUDENT-005`+`006` (A06) · `DB-006` (A02) |
+| Próximas | `STUDENT-007` (progresso) · `STUDENT-004` (biblioteca) · `ADMIN-001` (dashboard) |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
 
@@ -42,7 +42,7 @@
 | DB-003 | RLS, funções de segurança e trigger de cadastro | P0 | DONE ✅ | A02 | Opus 5.5 |
 | DB-004 | Storage buckets e policies | P0 | DONE ✅ | A02 | Sonnet 5.5 |
 | DB-005 | Testes de RLS (pgTAP) | P0 | DONE ✅ | A02 | Sonnet 5.5 |
-| DB-006 | Métricas do admin | P1 | BACKLOG | A02 | Sonnet 5.5 |
+| DB-006 | Métricas do admin | P1 | IN PROGRESS | A02 | Sonnet 5.5 |
 | DB-007 | Seed de desenvolvimento | P2 | DONE ✅ | A02 | Haiku 5.5 |
 | DB-008 | Exclusão de conta e anonimização (LGPD) | P2 | BACKLOG | A02 | Sonnet 5.5 |
 | UI-001 | Tokens, fontes, base e assets de marca | P0 | DONE ✅ | A03 | Sonnet 5.5 |
@@ -58,7 +58,7 @@
 | ADMIN-001 | Dashboard | P1 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-003 | Editor de ementa (módulos e aulas) | P0 | DONE ✅ | A05 | Sonnet 5.5 |
-| ADMIN-004 | Editor de materiais da aula | P0 | IN PROGRESS | A05 | Sonnet 5.5 |
+| ADMIN-004 | Editor de materiais da aula | P0 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-005 | Alunos: lista e busca | P1 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-006 | Perfil do aluno e atribuições | P0 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-007 | Pedidos | P1 | BACKLOG | A05 | Sonnet 5.5 |
@@ -67,8 +67,8 @@
 | STUDENT-002 | Catálogo público | P0 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-003 | Página pública do curso | P0 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-004 | Início e biblioteca do aluno | P0 | BACKLOG | A06 | Sonnet 5.5 |
-| STUDENT-005 | Player: estrutura e navegação | P0 | BACKLOG | A06 | Sonnet 5.5 |
-| STUDENT-006 | Renderizadores de materiais | P0 | BACKLOG | A06 | Sonnet 5.5 |
+| STUDENT-005 | Player: estrutura e navegação | P0 | IN PROGRESS | A06 | Sonnet 5.5 |
+| STUDENT-006 | Renderizadores de materiais | P0 | IN PROGRESS | A06 | Sonnet 5.5 |
 | STUDENT-007 | Progresso | P0 | BACKLOG | A06 | Sonnet 5.5 |
 | STUDENT-008 | Páginas legais e rodapé institucional | P0 | BACKLOG | A06 | Haiku 5.5 |
 | PAY-001 | Spike: API AbacatePay | P0 | DONE ✅ | A07 | Opus 5.5 |

@@ -15,8 +15,14 @@ import styles from '../page.module.css';
 
 export const metadata: Metadata = { title: 'Editar curso' };
 
-export default async function EditCoursePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default async function EditCoursePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const [{ id }, { tab }] = await Promise.all([params, searchParams]);
   const [course, categories] = await Promise.all([getAdminCourse(id), listCategories()]);
   if (!course) notFound();
 
@@ -72,6 +78,7 @@ export default async function EditCoursePage({ params }: { params: Promise<{ id:
       <h1 className={styles.title}>{course.title}</h1>
       <Tabs
         label="Seções do curso"
+        defaultValue={tab === 'syllabus' ? 'syllabus' : 'info'}
         items={[
           { value: 'info', label: 'Informações', panel: info },
           { value: 'syllabus', label: 'Ementa', panel: syllabus },
