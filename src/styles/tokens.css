@@ -1,0 +1,212 @@
+/* ==========================================================================
+   Scorpion Bits Learn — tokens de design
+   Fonte da verdade visual (ADR-003). Toda cor, medida, raio, sombra e
+   tempo usado em CSS Modules vem daqui. Derivado do site da marca
+   (scorpion-bits.github.io) e de docs/design-system.md §2.
+
+   --------------------------------------------------------------------------
+   CONTRASTE (WCAG 2.x, razão de luminância) — verificado em 2026-10-08
+   --------------------------------------------------------------------------
+                    ink-950  ink-900  ink-850  ink-800  ink-700
+     --text          18.14    17.60    16.81    15.60    13.89   AAA
+     --text-soft     11.40    11.06    10.57     9.81     8.73   AAA
+     --text-dim       6.36     6.17     5.89     5.47     4.87   AA (texto de qualquer tamanho)
+     --text-faint     3.52     3.41     3.26     3.03     2.69   NÃO é AA: só decoração,
+                                                                 placeholders desabilitados e
+                                                                 ícones/linhas (alvo >= 3:1 em
+                                                                 ink-950/900/850). Nunca para
+                                                                 texto que precise ser lido.
+     --cyan         12.23    11.86    11.33    10.52     9.36   AAA
+     --blue          7.87     7.63     7.29     6.77     6.02   AAA (texto grande e pequeno)
+     --amber        12.69    12.32    11.77    10.92     9.72   AAA
+     --mint         12.67    12.29    11.74    10.90     9.70   AAA
+     --coral         7.90     7.67     7.32     6.80     6.05   AAA
+     --violet         4.71     4.57     4.37     4.05     3.61   AA só em ink-950/900 (texto
+                                                                 normal); em ink-850 ou mais
+                                                                 claro use apenas em texto
+                                                                 grande (>= 18.66px bold / 24px)
+                                                                 ou elementos gráficos (>= 3:1).
+     --indigo         4.62     4.49     4.29     3.98     3.54   idem: preferir como fundo/borda;
+                                                                 texto só >= 24px sobre ink-950.
+   Texto sobre superfícies claras de acento (botão cyan/blue): usar --ink-950
+   (cyan 12.23, blue 7.87).
+   --------------------------------------------------------------------------
+
+   Tokens ACRESCENTADOS em relação a docs/design-system.md §2 (propor atualizar
+   o doc): --ink-950..700 inalterados; novos = --on-accent, --gradient-brand,
+   --tint-*, --glow-*, --vignette-*, --glass-*, --shadow-*, --wrap, --measure,
+   --dock-h, --bay, --tracking-*, --lh-*, --ease-io, --z-*, --focus-outline, --focus-offset,
+   --bp-* (apenas documentação: variáveis não funcionam em @media).
+
+   MODO LEVE: `<html data-lite="1">` (ver src/app/lite-mode-script.ts).
+   Tokens "decorativos" (--glass-*) são redefinidos no bloco [data-lite]
+   no fim deste arquivo; componentes só precisam usar o token.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark; /* só escuro no MVP: scrollbars e controles nativos escuros */
+
+  /* ------------------------------------------------------ superfície (tinta) */
+  --ink-950: #05090f;
+  --ink-900: #080e16;
+  --ink-850: #0c141f;
+  --ink-800: #111c2a;
+  --ink-700: #17263a;
+
+  /* ----------------------------------------------------------------- marca */
+  --cyan: #6ad8fe;
+  --blue: #51a8f6;
+  --indigo: #5b6bf5;
+  --violet: #8b5cf6;
+  --amber: #ffc46b;
+  --mint: #7ee2a8;
+  --coral: #ff7a7a; /* erro (novo, harmonizado com a paleta) */
+  --outline: #10263a; /* contorno navy da logo */
+  --on-accent: var(--ink-950); /* texto sobre cyan/blue/amber/mint/coral */
+
+  /* faces do cubo (topo claro, lateral média, lateral escura) */
+  --face-top-a: #6a8dff; /* extremos do gradiente do topo (SVG/CSS não aceitam o gradient inteiro) */
+  --face-top-b: #41b8ff;
+  --face-top: linear-gradient(90deg, var(--face-top-a), var(--face-top-b));
+  --face-left: #63cdfc;
+  --face-right: #3593cc;
+
+  --gradient-brand: linear-gradient(120deg, var(--cyan), var(--blue) 55%, var(--indigo));
+
+  /* ----------------------------------------------------------------- texto */
+  --text: #eef5fb;
+  --text-soft: #b4c6d7;
+  --text-dim: #7d94aa;
+  --text-faint: #55697d; /* decorativo apenas — ver tabela de contraste */
+
+  /* ---------------------------------------------------------------- linhas */
+  --hair: rgba(126, 190, 232, 0.14);
+  --hair-lit: rgba(126, 190, 232, 0.34);
+  --grid-line: rgba(106, 216, 254, 0.055);
+  --grid-line-near: rgba(106, 216, 254, 0.085); /* malha da frente, mais acesa */
+
+  /* --------------------------------------------- tintas translúcidas (hover,
+     badges, fundos de estado). Cor da marca a ~10–12% sobre o fundo. */
+  --tint-cyan: rgba(106, 216, 254, 0.1);
+  --tint-mint: rgba(126, 226, 168, 0.1);
+  --tint-amber: rgba(255, 196, 107, 0.1);
+  --tint-coral: rgba(255, 122, 122, 0.1);
+  --tint-violet: rgba(139, 92, 246, 0.16); /* UI-002: Badge violet */
+  --scrim: rgba(5, 9, 15, 0.8); /* UI-002: fundo de Dialog/Drawer (ink-950 a 80%) */
+
+  /* ------------------------------------------------------------ semânticos */
+  --success: var(--mint);
+  --warning: var(--amber);
+  --danger: var(--coral);
+  --info: var(--cyan);
+
+  /* foco: --focus-ring (box-shadow, anel duplo) para controles que pintam o
+     próprio anel; --focus-outline + --focus-offset (equivalente visual) é o
+     que base.css aplica globalmente via `outline`. */
+  --focus-ring: 0 0 0 2px var(--ink-950), 0 0 0 4px var(--cyan);
+  --focus-outline: 2px solid var(--cyan);
+  --focus-offset: 2px;
+
+  /* ------------------------------------------------- fundo (IsoBackdrop) --
+     Manchas de luz da "névoa" e vinheta. Mesmos matizes do site. */
+  --glow-blue: rgba(81, 168, 246, 0.22);
+  --glow-cyan: rgba(106, 216, 254, 0.13);
+  --glow-indigo: rgba(91, 107, 245, 0.16);
+  --glow-violet: rgba(139, 92, 246, 0.1);
+  --vignette-mid: rgba(5, 9, 15, 0.3); /* = ink-950 a 30% */
+  --vignette-edge: rgba(5, 9, 15, 0.72); /* = ink-950 a 72% */
+
+  /* ------------------------------------------------ vidro (dock, popovers) */
+  --glass-bg: rgba(8, 14, 22, 0.68); /* ink-900 a 68% */
+  --glass-bg-solid: rgba(8, 14, 22, 0.9);
+  --glass-blur: blur(18px) saturate(160%); /* modo leve => none */
+
+  /* --------------------------------------------------------------- sombras */
+  --shadow-float: 0 18px 40px -24px rgba(0, 0, 0, 0.9);
+  --shadow-card: 0 18px 30px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 10px 30px -12px rgba(81, 168, 246, 0.9);
+
+  /* ------------------------------------------------------------ tipografia
+     --font-grotesk / --font-inter são definidas por next/font (src/app/fonts.ts)
+     no <html>. Os fallbacks cobrem o instante antes do swap. */
+  --font-display: var(--font-grotesk), 'Segoe UI', system-ui, sans-serif;
+  --font-body: var(--font-inter), 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', 'JetBrains Mono', Consolas, monospace;
+
+  /* escala fluida (viewport 360px -> 1280px) */
+  --s--1: clamp(0.74rem, 0.71rem + 0.13vw, 0.81rem);
+  --s-0: clamp(0.94rem, 0.9rem + 0.18vw, 1.02rem);
+  --s-1: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  --s-2: clamp(1.3rem, 1.15rem + 0.7vw, 1.75rem);
+  --s-3: clamp(1.75rem, 1.4rem + 1.7vw, 2.9rem);
+  --s-4: clamp(2.4rem, 1.6rem + 3.9vw, 5.2rem);
+
+  --lh-tight: 1.05; /* títulos grandes */
+  --lh-snug: 1.2; /* títulos pequenos / UI */
+  --lh-body: 1.62; /* corpo */
+  --tracking-display: -0.03em; /* títulos em Grotesk */
+  --tracking-mono: 0.2em; /* eyebrows/rótulos técnicos em caixa-alta */
+
+  /* ----------------------------------------------------------------- espaço */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 72px;
+  --gutter: clamp(1rem, 4vw, 2.25rem);
+  --bay: clamp(4.5rem, 10vh + 2rem, 8.5rem); /* respiro vertical entre seções */
+
+  /* layout */
+  --wrap: 1180px; /* largura máxima de conteúdo (público/aluno) */
+  --measure: 66ch; /* largura de leitura */
+  --dock-h: 58px;
+  --tap: 44px; /* UI-002: alvo mínimo de toque */
+
+  /* breakpoints (mobile-first) — só documentação, var() não vale em @media:
+     --bp-sm: 480px; --bp-md: 720px; --bp-lg: 1024px; --bp-xl: 1280px; */
+
+  /* ------------------------------------------------------------- raios/cortes */
+  --r-sm: 10px;
+  --r: 14px;
+  --r-lg: 26px;
+  --r-pill: 999px;
+  --chamfer: 18px;
+  --iso-slope: 0.577; /* tan 30° — inclinação da malha isométrica */
+
+  /* ------------------------------------------------------------- movimento */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 120ms;
+  --dur: 220ms;
+  --dur-slow: 420ms;
+
+  /* ------------------------------------------------------------- camadas (z) */
+  --z-backdrop: -1;
+  --z-dock: 150;
+  --z-drawer: 200;
+  --z-dialog: 250;
+  --z-toast: 300;
+}
+
+/* Menos movimento: durações viram ~0 (transições/animações de componentes
+   que usam os tokens ficam instantâneas). A regra global em base.css cobre o
+   resto. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.01ms;
+    --dur: 0.01ms;
+    --dur-slow: 0.01ms;
+  }
+}
+
+/* Modo leve: sem backdrop-filter (refaz o borrão a cada quadro de rolagem);
+   o vidro vira fundo quase opaco. Efeitos decorativos específicos de cada
+   componente se desligam em seus próprios módulos com :global([data-lite]). */
+:root[data-lite] {
+  --glass-bg: rgba(8, 14, 22, 0.94);
+  --glass-bg-solid: rgba(8, 14, 22, 0.97);
+  --glass-blur: none;
+}

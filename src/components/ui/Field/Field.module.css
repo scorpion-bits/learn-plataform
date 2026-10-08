@@ -1,0 +1,21 @@
+.field {
+  display: grid;
+  gap: var(--space-2);
+}
+.label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--s-0);
+  color: var(--text);
+}
+.required {
+  color: var(--coral);
+}
+.hint {
+  font-size: var(--s--1);
+  color: var(--text-dim);
+}
+.error {
+  font-size: var(--s--1);
+  color: var(--coral);
+}

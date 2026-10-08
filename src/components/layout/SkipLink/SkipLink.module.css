@@ -1,0 +1,22 @@
+.skip {
+  position: fixed;
+  top: max(var(--space-2), env(safe-area-inset-top));
+  left: max(var(--space-2), env(safe-area-inset-left));
+  z-index: calc(var(--z-toast) + 1);
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--space-5);
+  border-radius: var(--r-pill);
+  background: var(--cyan);
+  color: var(--on-accent);
+  font-family: var(--font-display);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip:focus-visible {
+  transform: none;
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}

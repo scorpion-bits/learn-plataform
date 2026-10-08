@@ -1,0 +1,114 @@
+.dialog {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+  width: min(32rem, calc(100% - 2 * var(--gutter)));
+  max-height: min(90dvh, 100%);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  color: var(--text);
+  background: var(--ink-850);
+  border: 1px solid var(--hair-lit);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+}
+.dialog:not([open]) {
+  display: none;
+}
+.dialog::backdrop {
+  background: var(--scrim);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  max-height: min(90dvh, 100%);
+  padding: var(--space-5);
+  gap: var(--space-4);
+}
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.title {
+  font-size: var(--s-2);
+}
+.description {
+  color: var(--text-soft);
+}
+.body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* celular: o diálogo ocupa a tela inteira */
+@media (max-width: 479px) {
+  .dialog:not(.sheet) {
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+    border: 0;
+  }
+  .dialog:not(.sheet) .panel {
+    height: 100%;
+    max-height: none;
+    padding-top: max(var(--space-5), env(safe-area-inset-top));
+    padding-bottom: max(var(--space-5), env(safe-area-inset-bottom));
+  }
+}
+
+/* ---- variante sheet (Drawer): bottom-sheet no mobile, lateral no desktop */
+.sheet {
+  margin: 0;
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: none;
+  max-height: 90dvh;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  border-bottom: 0;
+  animation: sheet-up var(--dur) var(--ease);
+}
+.sheet .panel {
+  max-height: 90dvh;
+  padding-bottom: max(var(--space-5), env(safe-area-inset-bottom));
+}
+@media (min-width: 720px) {
+  .sheet {
+    inset: 0 0 0 auto;
+    width: min(26rem, 100%);
+    height: 100dvh;
+    max-height: none;
+    border-radius: var(--r-lg) 0 0 var(--r-lg);
+    border-bottom: 1px solid var(--hair-lit);
+    border-right: 0;
+    animation: sheet-in var(--dur) var(--ease);
+  }
+  .sheet .panel {
+    height: 100%;
+    max-height: none;
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes sheet-in {
+  from {
+    transform: translateX(100%);
+  }
+}

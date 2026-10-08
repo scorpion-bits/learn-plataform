@@ -1,0 +1,17 @@
+.error {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  border: 1px solid var(--coral);
+  border-radius: var(--r);
+  background: var(--tint-coral);
+  text-align: center;
+}
+.title {
+  font-size: var(--s-1);
+}
+.message {
+  max-width: 48ch;
+  color: var(--text-soft);
+}

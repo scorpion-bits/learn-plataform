@@ -1,0 +1,45 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-3);
+  border: 1px solid var(--hair-lit);
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  letter-spacing: 0.08em;
+  line-height: var(--lh-snug);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.neutral {
+  background: var(--ink-800);
+  color: var(--text-soft);
+}
+.cyan {
+  background: var(--tint-cyan);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+.mint {
+  background: var(--tint-mint);
+  border-color: var(--mint);
+  color: var(--mint);
+}
+.amber {
+  background: var(--tint-amber);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+.coral {
+  background: var(--tint-coral);
+  border-color: var(--coral);
+  color: var(--coral);
+}
+/* violet como texto não passa AA sobre tintas claras (ver tokens.css): texto em --text */
+.violet {
+  background: var(--tint-violet);
+  border-color: var(--violet);
+  color: var(--text);
+}

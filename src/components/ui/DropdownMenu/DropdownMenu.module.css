@@ -1,0 +1,69 @@
+.root {
+  position: relative;
+  display: inline-block;
+}
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--hair-lit);
+  border-radius: var(--r-pill);
+  background: var(--tint-cyan);
+  font-family: var(--font-display);
+  font-weight: 600;
+  transition: border-color var(--dur) var(--ease);
+}
+.trigger:hover,
+.trigger[aria-expanded='true'] {
+  border-color: var(--cyan);
+}
+.menu {
+  position: absolute;
+  z-index: var(--z-drawer);
+  top: calc(100% + var(--space-2));
+  left: 0;
+  display: grid;
+  min-width: 12rem;
+  max-width: calc(100vw - 2 * var(--gutter));
+  padding: var(--space-2);
+  background: var(--glass-bg-solid);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--hair-lit);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-float);
+}
+.end {
+  left: auto;
+  right: 0;
+}
+.item {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--space-3);
+  border-radius: var(--r-sm);
+  text-align: start;
+  color: var(--text);
+  cursor: pointer;
+}
+.item:hover,
+.item:focus-visible {
+  background: var(--tint-cyan);
+}
+.item[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.danger {
+  color: var(--coral);
+}
+.danger:hover,
+.danger:focus-visible {
+  background: var(--tint-coral);
+}
+/* o foco do item já tem fundo: outline interno evita corte pelo overflow do menu */
+.item:focus-visible {
+  outline-offset: -2px;
+}

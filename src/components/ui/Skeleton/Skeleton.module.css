@@ -1,0 +1,44 @@
+.skeleton {
+  display: block;
+  background-color: var(--ink-800);
+  background-image: linear-gradient(90deg, transparent, var(--tint-cyan), transparent);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: shimmer 1800ms var(--ease-io) infinite;
+}
+
+.block {
+  width: 100%;
+  height: 6rem;
+  border-radius: var(--r);
+}
+.line {
+  width: 100%;
+  height: 1em;
+  border-radius: var(--r-sm);
+}
+.circle {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-pill);
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background-image: none;
+  }
+}
+:global([data-lite]) .skeleton {
+  animation: none;
+  background-image: none;
+}

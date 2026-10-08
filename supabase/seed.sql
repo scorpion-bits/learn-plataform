@@ -1,0 +1,1 @@
+-- Seed de desenvolvimento (vazio). Dados reais entram a partir de DB-001.
