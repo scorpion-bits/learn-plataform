@@ -1,0 +1,75 @@
+.root {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.group {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.label {
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  font-weight: 400;
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--hair-lit);
+  border-radius: var(--r-pill);
+  background: var(--glass-bg);
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.chip:hover {
+  border-color: var(--cyan);
+  color: var(--text);
+}
+
+.chip[aria-current='true'] {
+  border-color: var(--cyan);
+  background: var(--tint-cyan);
+  color: var(--cyan);
+}
+
+.chip:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+/* 360px: chips numa linha rolável em vez de empilhar várias linhas. */
+@media (max-width: 719px) {
+  .list {
+    flex-wrap: nowrap;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+}
