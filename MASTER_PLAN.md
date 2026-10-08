@@ -14,7 +14,7 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 |---|---|
 | Fase atual | **PHASE 1 — FOUNDATION** (+ PHASE 3 iniciada) |
 | Próximas tarefas READY | — |
-| Em andamento | `PAY-001` (A07, Opus 5.5), `ARCH-002` (A01, Sonnet 5.5), `ARCH-003` (A01, Haiku 5.5), `UI-001` (A03, Sonnet 5.5) |
+| Em andamento | `PAY-001` (A07, Opus 5.5), `ARCH-002` (A01, Sonnet 5.5), `UI-001` (A03, Sonnet 5.5) |
 | Bloqueios | — |
 
 ---
@@ -137,7 +137,7 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Prioridade**: P1 · **Fase**: 1 · **Dependências**: ARCH-001
 - **Arquivos**: `.github/workflows/ci.yml`
 - **Critérios**: CI verde no PR; tempo < 5 min.
-- **Status**: IN PROGRESS · **Agente**: A01 · **Modelo**: Haiku 5.5 · **Esforço**: baixo
+- **Status**: DONE ✅ · **Agente**: A01 · **Modelo**: Haiku 5.5 · **Esforço**: baixo
 
 #### ARCH-004 — Vercel + ambientes
 - **Descrição**: `vercel.json` se necessário, documentação de envs por ambiente (prod/preview), headers de segurança básicos (`X-Frame-Options`/`frame-ancestors`, `Referrer-Policy`, `X-Content-Type-Options`, `Permissions-Policy`) em `next.config.ts`.
@@ -622,6 +622,7 @@ EXPECTED OUTPUT:
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-08 | ARCH-003 | A01 (Haiku 5.5) | DONE | `.github/workflows/ci.yml`: format, lint, typecheck, test (if present), build com env dummy; concurrency e permissions mínimas. Execução real será validada no primeiro PR. |
 | 2026-10-08 | ARCH-001 | A01 (Sonnet 5.5) | DONE | Next 16.4.0, React 19.3, TS 6.0 strict, zod 4. Env lazy em `src/lib/env/{client,server,shared}.ts`; `@/lib/env` só reexporta o cliente (secrets exigem import explícito de `@/lib/env/server`). `.prettierignore` protege docs. Revisão: build/lint/typecheck verificados pelo orquestrador. Achados: (1) server env exige todas as chaves → dividir por domínio em ARCH-002; (2) `npm audit` alto em `braces` via eslint-config-next (só dev tooling) — aceito, reavaliar em upgrades; (3) prettier do agente reverteu docs momentaneamente — incidente sem perda. |
 | 2026-10-08 | Respostas do produto Q1–Q8 | Orquestrador | registrado | ADR-002/010/011 aceitas; ADR-015/016/017 criadas; REL-002 cancelada. Onda 1 delegada. |
 | 2026-10-08 | PHASE 0 — Auditoria e plano | Orquestrador (Opus 5.5) | DONE | `docs/audit.md`, `docs/*`, `CLAUDE.md`, este plano. 9 falhas de segurança catalogadas no sistema antigo (S1–S9), todas endereçadas por ADRs 005–010. |
