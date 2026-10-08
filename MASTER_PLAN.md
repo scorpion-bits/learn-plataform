@@ -12,9 +12,9 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 
 | item | estado |
 |---|---|
-| Fase atual | **PHASE 1 — FOUNDATION** |
+| Fase atual | **PHASE 1 — FOUNDATION** (+ PHASE 3 iniciada) |
 | Próximas tarefas READY | — |
-| Em andamento | `ARCH-001` (A01, Sonnet 5.5), `PAY-001` (A07, Opus 5.5) |
+| Em andamento | `PAY-001` (A07, Opus 5.5), `ARCH-002` (A01, Sonnet 5.5), `ARCH-003` (A01, Haiku 5.5), `UI-001` (A03, Sonnet 5.5) |
 | Bloqueios | Q8b (regra de reembolso de 10 min) — bloqueia só PAY-003 |
 
 ---
@@ -123,21 +123,21 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Prioridade**: P0 · **Fase**: 1 · **Dependências**: —
 - **Arquivos**: `package.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `.prettierrc`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/lib/env.ts`, `.env.example`, `.gitignore`
 - **Critérios de aceitação**: `npm run build`, `lint`, `typecheck` passam; nenhuma dependência além de next/react/react-dom/zod/server-only + dev tooling; `env.ts` falha com mensagem clara se variável obrigatória faltar (server) sem quebrar o build quando a var é só de runtime; README atualizado com setup.
-- **Status**: IN PROGRESS · **Agente**: A01 Foundation · **Modelo**: Sonnet 5.5 · **Esforço**: médio
+- **Status**: DONE ✅ · **Agente**: A01 Foundation · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
 #### ARCH-002 — Supabase CLI, clients e tipos
 - **Descrição**: `supabase init` (config.toml), pastas `migrations/`, `tests/`, `scripts/`, `seed.sql` vazio; `src/lib/supabase/{browser,server,service}.ts` (service com `import 'server-only'`), script `db:types`, `src/types/database.ts` placeholder; `docs/development.md` revisado.
 - **Prioridade**: P0 · **Fase**: 1 · **Dependências**: ARCH-001
 - **Arquivos**: `supabase/**`, `src/lib/supabase/*`, `package.json`
-- **Critérios**: clients tipados com `Database`; service client impossível de importar em client component (build quebra); nenhuma chave secreta com prefixo `NEXT_PUBLIC_`.
-- **Status**: BACKLOG · **Agente**: A01 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
+- **Critérios**: dividir `getServerEnv()` por domínio (ex.: `getSupabaseServerEnv()` e `getPaymentsEnv()`) para que o Supabase funcione sem as chaves de pagamento configuradas (achado na revisão do ARCH-001); clients tipados com `Database`; service client impossível de importar em client component (build quebra); nenhuma chave secreta com prefixo `NEXT_PUBLIC_`.
+- **Status**: IN PROGRESS · **Agente**: A01 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
 #### ARCH-003 — CI (GitHub Actions)
 - **Descrição**: workflow em PR/push: install (cache), lint, typecheck, test (quando existir), build com envs dummy.
 - **Prioridade**: P1 · **Fase**: 1 · **Dependências**: ARCH-001
 - **Arquivos**: `.github/workflows/ci.yml`
 - **Critérios**: CI verde no PR; tempo < 5 min.
-- **Status**: BACKLOG · **Agente**: A01 · **Modelo**: Haiku 5.5 · **Esforço**: baixo
+- **Status**: IN PROGRESS · **Agente**: A01 · **Modelo**: Haiku 5.5 · **Esforço**: baixo
 
 #### ARCH-004 — Vercel + ambientes
 - **Descrição**: `vercel.json` se necessário, documentação de envs por ambiente (prod/preview), headers de segurança básicos (`X-Frame-Options`/`frame-ancestors`, `Referrer-Policy`, `X-Content-Type-Options`, `Permissions-Policy`) em `next.config.ts`.
@@ -199,7 +199,7 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Prioridade**: P0 · **Fase**: 3 · **Dependências**: ARCH-001
 - **Arquivos**: `public/brand/*`, `src/app/fonts/*`, `src/styles/*`, `src/components/brand/IsoBackdrop/*`, `src/app/layout.tsx`
 - **Critérios**: zero requisições a Google Fonts; CLS ~0 por fontes; página placeholder já com identidade SB; assets otimizados (sem o `.webm` de 4 MB fora da landing).
-- **Status**: BACKLOG · **Agente**: A03 Design System · **Modelo**: Sonnet 5.5 · **Esforço**: alto
+- **Status**: IN PROGRESS · **Agente**: A03 Design System · **Modelo**: Sonnet 5.5 · **Esforço**: alto
 
 #### UI-002 — Primitivas de UI
 - **Descrição**: componentes de `docs/design-system.md` §5 com CSS Modules, acessíveis, com estados (hover/focus/active/disabled/pending/error).
@@ -622,6 +622,7 @@ EXPECTED OUTPUT:
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-08 | ARCH-001 | A01 (Sonnet 5.5) | DONE | Next 16.4.0, React 19.3, TS 6.0 strict, zod 4. Env lazy em `src/lib/env/{client,server,shared}.ts`; `@/lib/env` só reexporta o cliente (secrets exigem import explícito de `@/lib/env/server`). `.prettierignore` protege docs. Revisão: build/lint/typecheck verificados pelo orquestrador. Achados: (1) server env exige todas as chaves → dividir por domínio em ARCH-002; (2) `npm audit` alto em `braces` via eslint-config-next (só dev tooling) — aceito, reavaliar em upgrades; (3) prettier do agente reverteu docs momentaneamente — incidente sem perda. |
 | 2026-10-08 | Respostas do produto Q1–Q8 | Orquestrador | registrado | ADR-002/010/011 aceitas; ADR-015/016/017 criadas; REL-002 cancelada. Onda 1 delegada. |
 | 2026-10-08 | PHASE 0 — Auditoria e plano | Orquestrador (Opus 5.5) | DONE | `docs/audit.md`, `docs/*`, `CLAUDE.md`, este plano. 9 falhas de segurança catalogadas no sistema antigo (S1–S9), todas endereçadas por ADRs 005–010. |
 

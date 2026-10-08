@@ -1,0 +1,26 @@
+# dependencies
+node_modules
+
+# next
+.next
+out
+build
+next-env.d.ts
+
+# env (NÃO ignorar .env.example)
+.env
+.env*.local
+
+# vercel
+.vercel
+
+# tests
+coverage
+playwright-report
+test-results
+
+# misc
+*.tsbuildinfo
+.DS_Store
+*.pem
+npm-debug.log*

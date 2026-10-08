@@ -128,4 +128,4 @@ O proxy **não** consulta papel no banco a cada request (custo); ele garante ses
 | `ABACATEPAY_WEBHOOK_SECRET` | server only | segredo da URL do webhook |
 | `ABACATEPAY_WEBHOOK_HMAC_KEY` | server only | chave de verificação da assinatura (confirmar em PAY-001) |
 
-`src/lib/env.ts` valida tudo na inicialização (zod) e separa `serverEnv` de `clientEnv`.
+Validação lazy com zod: `@/lib/env/client` (`getClientEnv()`, NEXT_PUBLIC_* referenciadas literalmente) e `@/lib/env/server` (`import 'server-only'`). `@/lib/env` reexporta **apenas** o cliente — secrets exigem import explícito do módulo server.
