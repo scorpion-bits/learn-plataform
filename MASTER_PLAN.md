@@ -7,9 +7,9 @@
 
 | item | estado |
 |---|---|
-| Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `PAY-004` (A07) |
-| Próximas | `PAY-004` (tela do QR) · `ADMIN-007` (pedidos) · `PAY-006` (reembolso) · `UX-*` · `QA-*` |
+| Fase atual | PHASE 7 (pagamentos) — fluxo de compra completo; falta operação de pedidos/reembolso |
+| Em andamento | `ADMIN-007`+`PAY-005`+`PAY-006` (A07) |
+| Próximas | `QA-004` (teste PIX real com o produto) · `UX-001..004` · `QA-001..003` · `ADMIN-008` |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
 
@@ -63,7 +63,7 @@
 | ADMIN-004 | Editor de materiais da aula | P0 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-005 | Alunos: lista e busca | P1 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-006 | Perfil do aluno e atribuições | P0 | DONE ✅ | A05 | Sonnet 5.5 |
-| ADMIN-007 | Pedidos | P1 | BACKLOG | A05 | Sonnet 5.5 |
+| ADMIN-007 | Pedidos | P1 | IN PROGRESS | A05 | Sonnet 5.5 |
 | ADMIN-008 | Alunos do curso | P2 | BACKLOG | A05 | Haiku 5.5 |
 | STUDENT-001 | Landing page | P1 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-002 | Catálogo público | P0 | DONE ✅ | A06 | Sonnet 5.5 |
@@ -77,8 +77,8 @@
 | PAY-002 | Cliente AbacatePay + `startCheckout` | P0 | DONE ✅ | A07 | Opus 5.5 |
 | PAY-003 | Webhook e concessão | P0 | DONE ✅ | A07 | Opus 5.5 |
 | PAY-004 | Página de status do pedido | P0 | DONE ✅ | A07 | Sonnet 5.5 |
-| PAY-005 | Reconciliação e expiração | P2 | BACKLOG | A07 | Sonnet 5.5 |
-| PAY-006 | Solicitação e execução de reembolso | P1 | BACKLOG | A07 | Sonnet 5.5 |
+| PAY-005 | Reconciliação e expiração | P2 | IN PROGRESS | A07 | Sonnet 5.5 |
+| PAY-006 | Solicitação e execução de reembolso | P1 | IN PROGRESS | A07 | Sonnet 5.5 |
 | UX-001 | `loading.tsx`/skeletons por segmento, `error.tsx`, `not-found.tsx`, prefetch e transições | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |
 | UX-002 | Auditoria de acessibilidade (axe + teclado + leitor de tela) e correções | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |
 | UX-003 | Passe responsivo 360/390/768/1024/1440 em todas as telas | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |
