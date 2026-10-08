@@ -34,3 +34,6 @@ Admin lista cursos, cria, edita informações (com capa) e publica/despublica, t
 
 ## Relatório final
 Arquivos · decisões · testes · pendências.
+
+## Retomada (2026-10-09)
+O agente anterior parou por limite de uso no início. Pode existir trabalho parcial em `src/features/courses/` (não revisado) — revise ou refaça; nada mais foi criado.

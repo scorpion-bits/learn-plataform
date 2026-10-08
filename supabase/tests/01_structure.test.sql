@@ -57,7 +57,7 @@ select is(
   (select array_agg(p.proname::text order by p.proname) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and has_function_privilege('authenticated', p.oid, 'execute')
      and not exists (select 1 from pg_depend d where d.classid = 'pg_proc'::regclass and d.objid = p.oid and d.deptype = 'e')),
-  array['admin_record_manual_sale','admin_students','has_course_access','is_admin','reorder_lessons','reorder_materials','reorder_modules','request_refund'],
+  array['admin_dashboard_metrics','admin_record_manual_sale','admin_revenue_by_day','admin_student_by_id','admin_students','admin_top_courses','has_course_access','is_admin','reorder_lessons','reorder_materials','reorder_modules','request_refund'],
   'authenticated executa só as funções de app (nunca fulfill_order/refund_order nem triggers)');
 
 select ok(

@@ -1,0 +1,45 @@
+.page {
+  display: grid;
+  gap: var(--space-5);
+}
+.crumbs {
+  font-size: var(--s--1);
+}
+.crumbList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-dim);
+}
+.crumbList li:not(:last-child)::after {
+  content: '›';
+  margin-inline-start: var(--space-2);
+}
+.crumbList a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+}
+.crumbCurrent {
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.head {
+  display: grid;
+  gap: var(--space-1);
+}
+.title {
+  font-size: var(--s-2);
+  overflow-wrap: anywhere;
+}
+.sub {
+  margin: 0;
+  color: var(--text-dim);
+}
+.skel {
+  display: grid;
+  gap: var(--space-3);
+}

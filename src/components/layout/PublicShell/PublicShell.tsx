@@ -29,7 +29,7 @@ export function PublicShell({ user, children }: PublicShellProps) {
         nav={
           <>
             <ActiveDockLink href="/cursos">Cursos</ActiveDockLink>
-            <ActiveDockLink href="/sobre">Sobre</ActiveDockLink>
+            <ActiveDockLink href="/#estudio">Sobre</ActiveDockLink>
           </>
         }
         actions={

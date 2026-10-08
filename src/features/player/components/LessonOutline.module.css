@@ -1,0 +1,91 @@
+.modules {
+  display: grid;
+  gap: var(--space-5);
+}
+.moduleTitle {
+  margin-bottom: var(--space-2);
+  color: var(--text-dim);
+  font-size: var(--s--1);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+}
+.lessons {
+  display: grid;
+  gap: 2px;
+}
+.lesson {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--tap);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--r-sm);
+  color: var(--text-soft);
+}
+a.lesson:hover {
+  background: var(--tint-cyan);
+  color: var(--text);
+}
+.lesson[aria-current='page'] {
+  background: var(--tint-cyan);
+  color: var(--cyan);
+  font-weight: 600;
+}
+.disabled {
+  color: var(--text-dim);
+  cursor: not-allowed;
+}
+
+.marker {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--hair-lit);
+  border-radius: 50%;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+}
+.marker svg {
+  width: 16px;
+  height: 16px;
+}
+.current {
+  border-color: var(--cyan);
+  background: var(--cyan);
+  color: var(--on-accent);
+}
+.completed {
+  border-color: var(--mint);
+  background: var(--tint-mint);
+  color: var(--mint);
+}
+.locked {
+  border-style: dashed;
+}
+
+.text {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+.name {
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+.duration {
+  color: var(--text-dim);
+  font-size: var(--s--1);
+  font-weight: 400;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

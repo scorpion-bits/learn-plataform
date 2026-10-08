@@ -69,3 +69,11 @@ No CI, o job `db-test` (`.github/workflows/ci.yml`) roda `npx supabase db start`
 - CSS Modules + tokens; nada de cor/medida "mágica".
 - Acessibilidade é critério de aceite, não extra.
 - Next 16 tem breaking changes: consulte `node_modules/next/dist/docs/` antes de usar APIs de roteamento, cache, `proxy`, `params`.
+
+## Configuração manual no Supabase (por ambiente)
+Checklist para o humano (ARCH-004 / REL-001):
+- Auth → URL Configuration: **Site URL** = `NEXT_PUBLIC_SITE_URL`; **Redirect URLs**: `<SITE_URL>/auth/callback` para produção, previews da Vercel e `http://localhost:3000`.
+- Auth → Providers → Email: senha mínima **8**; "Confirm email" ligado em produção (a tela de cadastro funciona com ou sem).
+- Auth → Email Templates (Confirm signup, Reset password): usar `{{ .ConfirmationURL }}` e traduzir para pt-BR.
+- `NEXT_PUBLIC_SITE_URL` definida em cada ambiente da Vercel.
+- Admin inicial: `psql "$DATABASE_URL" -v email='...' -f supabase/scripts/grant-admin.sql`.

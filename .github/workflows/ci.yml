@@ -72,6 +72,10 @@ jobs:
       - name: Start local database
         run: npx supabase db start
 
+      # Os testes pgTAP criam suas próprias fixtures; o seed de dev (mesmos slugs) atrapalharia.
+      - name: Reset DB without seed
+        run: npx supabase db reset --no-seed
+
       # Roda supabase/tests/*.test.sql (pgTAP) como `supabase test db`.
       - name: Run pgTAP tests
         run: npx supabase test db

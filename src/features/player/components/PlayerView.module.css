@@ -1,0 +1,125 @@
+.lesson {
+  display: grid;
+  gap: var(--space-5);
+  padding-bottom: var(--space-4);
+}
+.header {
+  display: grid;
+  gap: var(--space-2);
+}
+.eyebrow {
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+}
+.title {
+  font-size: var(--s-2);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.title:focus {
+  outline: none;
+}
+.title:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}
+.summary {
+  max-width: var(--measure);
+  color: var(--text-soft);
+}
+.hint {
+  display: none;
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}
+.hint kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--hair-lit);
+  border-radius: 6px;
+  background: var(--ink-800);
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+}
+/* teclado físico: só aparece onde há ponteiro fino e hover */
+@media (hover: hover) and (pointer: fine) {
+  .hint {
+    display: block;
+  }
+}
+
+/* ------------------------------------------------------------- esqueleto */
+.skeleton {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100dvh;
+  overflow: hidden;
+}
+.skeletonTop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: var(--space-1) var(--gutter);
+  border-bottom: 1px solid var(--hair);
+  background: var(--glass-bg-solid);
+}
+.skeletonMain {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  width: min(960px, 100%);
+  margin-inline: auto;
+  padding: var(--space-5) var(--gutter);
+}
+.skeletonVideo {
+  aspect-ratio: 16 / 9;
+  height: auto;
+}
+.skeletonActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--gutter) max(var(--space-2), env(safe-area-inset-bottom));
+  border-top: 1px solid var(--hair-lit);
+  background: var(--glass-bg-solid);
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------- erro / 404 (fora do shell) */
+.screen {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: var(--space-5) var(--gutter);
+}
+.screenBody {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: center;
+  width: min(32rem, 100%);
+}
+.screenActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}

@@ -5,7 +5,7 @@
 --   D reembolsado · E admin_grant em curso ARQUIVADO · F compra há 8 dias · M tentou virar admin
 --   P1 publicado (aula L1 preview) · P2 arquivado · P3 rascunho
 begin;
-select plan(27);
+select plan(30);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures (como dono do schema). Usuários entram por auth.users -> handle_new_user.
@@ -113,6 +113,18 @@ select is((select status::text || '|' || (refunded_at is not null) from public.o
 
 update public.orders set status = 'canceled' where id = '60000000-0000-0000-0000-0000000000c1';
 select is(public.fulfill_order('60000000-0000-0000-0000-0000000000c1', 'pix_char_c1', 4990, null), 'invalid_status', 'fulfill: pedido canceled -> invalid_status (tratamento manual)');
+
+-- Pedido marcado failed (timeout ao criar a cobrança no PAY-002, sem billing id gravado),
+-- mas a cobrança existia e foi paga: o provedor confirmou -> failed -> paid (migration 0007).
+insert into public.orders (id, user_id, course_id, amount_cents, status, expires_at) values
+  ('60000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-00000000000e', '20000000-0000-0000-0000-000000000001', 4990, 'failed', now() - interval '1 hour');
+insert into public.payment_events (provider_event_id, event_type, payload) values ('evt_e1_paid', 'transparent.completed', '{}');
+select is(public.fulfill_order('60000000-0000-0000-0000-0000000000e1', 'pix_char_e1', 1, null), 'amount_mismatch', 'fulfill: failed com valor divergente não paga');
+select is(public.fulfill_order('60000000-0000-0000-0000-0000000000e1', 'pix_char_e1', 4990, 'evt_e1_paid'), 'fulfilled', 'fulfill: failed -> paid aceito (cobrança paga após timeout)');
+select is(
+  (select o.status::text || '|' || o.provider_billing_id || '|' || (o.paid_at is not null) from public.orders o where o.id = '60000000-0000-0000-0000-0000000000e1')
+  || '|' || (select count(*) from public.enrollments where order_id = '60000000-0000-0000-0000-0000000000e1' and source = 'purchase' and revoked_at is null),
+  'paid|pix_char_e1|true|1', 'fulfill: failed -> paid grava billing id, paid_at e cria matrícula');
 
 -- Pagamento em duplicidade (a Bia gera um 2º pedido do mesmo curso, que também é pago no provedor)
 insert into public.orders (id, user_id, course_id, amount_cents, provider_billing_id, expires_at) values

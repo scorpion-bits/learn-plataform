@@ -7,9 +7,9 @@
 
 | item | estado |
 |---|---|
-| Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `AUTH-003` (A04) · `ADMIN-002` (A05) · `DB-007` (A02) |
-| Próximas | `ADMIN-003` · `DB-006` · `STUDENT-002/003` |
+| Fase atual | PHASE 7 (pagamentos) — fluxo de compra completo; falta operação de pedidos/reembolso |
+| Em andamento | `ADMIN-007`+`PAY-005`+`PAY-006` (A07) |
+| Próximas | `QA-004` (teste PIX real com o produto) · `UX-001..004` · `QA-001..003` · `ADMIN-008` |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
 
@@ -28,6 +28,7 @@
 | Decisões (ADRs) | `docs/decisions.md` |
 | Fases e ondas | `docs/roadmap.md` |
 | Fora do MVP | `docs/post-mvp.md` |
+| **Colocar no ar (Supabase/Vercel/AbacatePay)** | `docs/setup.md` |
 
 ## 2. Tarefas
 
@@ -42,9 +43,10 @@
 | DB-003 | RLS, funções de segurança e trigger de cadastro | P0 | DONE ✅ | A02 | Opus 5.5 |
 | DB-004 | Storage buckets e policies | P0 | DONE ✅ | A02 | Sonnet 5.5 |
 | DB-005 | Testes de RLS (pgTAP) | P0 | DONE ✅ | A02 | Sonnet 5.5 |
-| DB-006 | Métricas do admin | P1 | BACKLOG | A02 | Sonnet 5.5 |
-| DB-007 | Seed de desenvolvimento | P2 | IN PROGRESS | A02 | Haiku 5.5 |
+| DB-006 | Métricas do admin | P1 | DONE ✅ | A02 | Sonnet 5.5 |
+| DB-007 | Seed de desenvolvimento | P2 | DONE ✅ | A02 | Haiku 5.5 |
 | DB-008 | Exclusão de conta e anonimização (LGPD) | P2 | BACKLOG | A02 | Sonnet 5.5 |
+| DB-009 | Função `admin_student_by_id` (email no perfil do aluno) | P1 | DONE ✅ | A02 | Sonnet 5.5 |
 | UI-001 | Tokens, fontes, base e assets de marca | P0 | DONE ✅ | A03 | Sonnet 5.5 |
 | UI-002 | Primitivas de UI | P0 | DONE ✅ | A03 | Sonnet 5.5 |
 | UI-003 | Shells de layout | P0 | DONE ✅ | A03 | Sonnet 5.5 |
@@ -53,30 +55,30 @@
 | UI-006 | Ícones de app e manifest | P1 | DONE ✅ | A03 | Haiku 5.5 |
 | AUTH-001 | Proxy e sessão | P0 | DONE ✅ | A04 | Sonnet 5.5 |
 | AUTH-002 | DAL e guards | P0 | DONE ✅ | A04 | Sonnet 5.5 |
-| AUTH-003 | Telas de autenticação | P0 | IN PROGRESS | A04 | Sonnet 5.5 |
+| AUTH-003 | Telas de autenticação | P0 | DONE ✅ | A04 | Sonnet 5.5 |
 | AUTH-004 | Página "Minha conta" | P2 | BACKLOG | A04 | Haiku 5.5 |
-| ADMIN-001 | Dashboard | P1 | BACKLOG | A05 | Sonnet 5.5 |
-| ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | IN PROGRESS | A05 | Sonnet 5.5 |
-| ADMIN-003 | Editor de ementa (módulos e aulas) | P0 | BACKLOG | A05 | Sonnet 5.5 |
-| ADMIN-004 | Editor de materiais da aula | P0 | BACKLOG | A05 | Sonnet 5.5 |
-| ADMIN-005 | Alunos: lista e busca | P1 | BACKLOG | A05 | Sonnet 5.5 |
-| ADMIN-006 | Perfil do aluno e atribuições | P0 | BACKLOG | A05 | Sonnet 5.5 |
-| ADMIN-007 | Pedidos | P1 | BACKLOG | A05 | Sonnet 5.5 |
+| ADMIN-001 | Dashboard | P1 | DONE ✅ | A05 | Sonnet 5.5 |
+| ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | DONE ✅ | A05 | Sonnet 5.5 |
+| ADMIN-003 | Editor de ementa (módulos e aulas) | P0 | DONE ✅ | A05 | Sonnet 5.5 |
+| ADMIN-004 | Editor de materiais da aula | P0 | DONE ✅ | A05 | Sonnet 5.5 |
+| ADMIN-005 | Alunos: lista e busca | P1 | DONE ✅ | A05 | Sonnet 5.5 |
+| ADMIN-006 | Perfil do aluno e atribuições | P0 | DONE ✅ | A05 | Sonnet 5.5 |
+| ADMIN-007 | Pedidos | P1 | IN PROGRESS | A05 | Sonnet 5.5 |
 | ADMIN-008 | Alunos do curso | P2 | BACKLOG | A05 | Haiku 5.5 |
-| STUDENT-001 | Landing page | P1 | BACKLOG | A06 | Sonnet 5.5 |
-| STUDENT-002 | Catálogo público | P0 | BACKLOG | A06 | Sonnet 5.5 |
-| STUDENT-003 | Página pública do curso | P0 | BACKLOG | A06 | Sonnet 5.5 |
-| STUDENT-004 | Início e biblioteca do aluno | P0 | BACKLOG | A06 | Sonnet 5.5 |
-| STUDENT-005 | Player: estrutura e navegação | P0 | BACKLOG | A06 | Sonnet 5.5 |
-| STUDENT-006 | Renderizadores de materiais | P0 | BACKLOG | A06 | Sonnet 5.5 |
-| STUDENT-007 | Progresso | P0 | BACKLOG | A06 | Sonnet 5.5 |
-| STUDENT-008 | Páginas legais e rodapé institucional | P0 | BACKLOG | A06 | Haiku 5.5 |
+| STUDENT-001 | Landing page | P1 | DONE ✅ | A06 | Sonnet 5.5 |
+| STUDENT-002 | Catálogo público | P0 | DONE ✅ | A06 | Sonnet 5.5 |
+| STUDENT-003 | Página pública do curso | P0 | DONE ✅ | A06 | Sonnet 5.5 |
+| STUDENT-004 | Início e biblioteca do aluno | P0 | DONE ✅ | A06 | Sonnet 5.5 |
+| STUDENT-005 | Player: estrutura e navegação | P0 | DONE ✅ | A06 | Sonnet 5.5 |
+| STUDENT-006 | Renderizadores de materiais | P0 | DONE ✅ | A06 | Sonnet 5.5 |
+| STUDENT-007 | Progresso | P0 | DONE ✅ | A06 | Sonnet 5.5 |
+| STUDENT-008 | Páginas legais e rodapé institucional | P0 | DONE ✅ | A06 | Haiku 5.5 |
 | PAY-001 | Spike: API AbacatePay | P0 | DONE ✅ | A07 | Opus 5.5 |
-| PAY-002 | Cliente AbacatePay + `startCheckout` | P0 | BACKLOG | A07 | Opus 5.5 |
-| PAY-003 | Webhook e concessão | P0 | BACKLOG | A07 | Opus 5.5 |
-| PAY-004 | Página de status do pedido | P0 | BACKLOG | A07 | Sonnet 5.5 |
-| PAY-005 | Reconciliação e expiração | P2 | BACKLOG | A07 | Sonnet 5.5 |
-| PAY-006 | Solicitação e execução de reembolso | P1 | BACKLOG | A07 | Sonnet 5.5 |
+| PAY-002 | Cliente AbacatePay + `startCheckout` | P0 | DONE ✅ | A07 | Opus 5.5 |
+| PAY-003 | Webhook e concessão | P0 | DONE ✅ | A07 | Opus 5.5 |
+| PAY-004 | Página de status do pedido | P0 | DONE ✅ | A07 | Sonnet 5.5 |
+| PAY-005 | Reconciliação e expiração | P2 | IN PROGRESS | A07 | Sonnet 5.5 |
+| PAY-006 | Solicitação e execução de reembolso | P1 | IN PROGRESS | A07 | Sonnet 5.5 |
 | UX-001 | `loading.tsx`/skeletons por segmento, `error.tsx`, `not-found.tsx`, prefetch e transições | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |
 | UX-002 | Auditoria de acessibilidade (axe + teclado + leitor de tela) e correções | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |
 | UX-003 | Passe responsivo 360/390/768/1024/1440 em todas as telas | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |

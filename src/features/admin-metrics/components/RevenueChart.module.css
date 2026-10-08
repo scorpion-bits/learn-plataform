@@ -1,0 +1,33 @@
+.figure {
+  margin: 0;
+}
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 11rem;
+}
+.grid {
+  stroke: var(--hair);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+.zero {
+  stroke: var(--hair-lit);
+  stroke-width: 1.5;
+}
+.tick {
+  fill: var(--text-dim);
+  font-family: var(--font-body);
+  font-size: 11px;
+}
+.bar {
+  fill: var(--cyan);
+  stroke: var(--outline);
+  stroke-width: 0.75;
+}
+.barNeg {
+  fill: var(--coral);
+  stroke: var(--outline);
+  stroke-width: 0.75;
+}

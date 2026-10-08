@@ -1,0 +1,79 @@
+.wrap {
+  display: grid;
+  gap: var(--space-3);
+}
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-3);
+}
+.item {
+  display: grid;
+}
+.card {
+  height: 100%;
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.label {
+  color: var(--text-soft);
+  font-size: var(--s-0);
+}
+.value {
+  margin-top: var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--s-2);
+  font-weight: 700;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.hint {
+  margin-top: var(--space-1);
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}
+.secondary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: var(--space-3);
+}
+.sec {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
+  background: var(--glass-bg);
+}
+.sec dt {
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}
+.sec dd {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--s-1);
+  font-weight: 600;
+}
+.secLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--cyan);
+  font-family: var(--font-body);
+  font-size: var(--s--1);
+  font-weight: 500;
+  text-decoration: underline;
+}
+.secLink:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}

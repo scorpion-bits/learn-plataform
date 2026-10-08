@@ -1,0 +1,16 @@
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+}
+.link:hover {
+  color: var(--cyan);
+  text-decoration: underline;
+}
+.link:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
