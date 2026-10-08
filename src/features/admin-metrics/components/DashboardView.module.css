@@ -2,32 +2,34 @@
   display: grid;
   gap: var(--space-5);
 }
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
 .title {
   font-size: var(--s-2);
 }
-.h2 {
-  margin-bottom: var(--space-3);
-  font-size: var(--s-1);
+.range {
+  color: var(--text-dim);
+  font-size: var(--s--1);
 }
-.kpis {
+.panel {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
   gap: var(--space-3);
-}
-.kpi {
-  display: grid;
-  gap: var(--space-1);
+  min-width: 0;
   padding: var(--space-4);
   border: 1px solid var(--hair);
   border-radius: var(--r);
   background: var(--glass-bg);
 }
-.kpiLabel {
+.h2 {
+  font-size: var(--s-1);
+}
+.sub {
+  margin-top: calc(var(--space-2) * -1);
   color: var(--text-dim);
   font-size: var(--s--1);
-}
-.kpiValue {
-  font-family: var(--font-display);
-  font-size: var(--s-2);
-  font-weight: 700;
 }
