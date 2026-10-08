@@ -116,7 +116,7 @@ Assine estes eventos: `transparent.completed`, `transparent.refunded`, `transpar
 | 2. `X-Webhook-Signature` | Base64 de **HMAC-SHA256** do corpo bruto (UTF-8), com a **chave pública da AbacatePay** (constante publicada na doc, igual para todas as contas) | Só **integridade** do corpo. Qualquer pessoa consegue calcular, então **não autentica** | [webhooks/security](https://docs.abacatepay.com/pages/webhooks/security), [llms.txt](https://docs.abacatepay.com/llms.txt) |
 
 Consequências:
-- A variável `ABACATEPAY_WEBHOOK_HMAC_KEY` (prevista em `architecture.md` e `.env.example`) **não é segredo**: é uma constante pública. Ela pode virar constante no código (`ABACATEPAY_PUBLIC_HMAC_KEY`, copiada da página de segurança) ou continuar como env para facilitar uma rotação futura. Ajuste os dois arquivos em `PAY-003`.
+- A chave HMAC **não é segredo**: é uma constante pública, igual para todas as contas. Ela fica no código como `ABACATEPAY_PUBLIC_HMAC_KEY` em `src/lib/payments/abacatepay-webhook.ts` (copiada da página de segurança, com o link), **não** em env. Se a AbacatePay a trocar, atualize a constante.
 - O segredo viaja na URL e pode aparecer em logs de acesso. **Nunca logue `request.url` completo** e faça o rotate do secret se houver suspeita. Por isso, e conforme ADR-008, **o acesso só é liberado depois de reconsultar `/transparents/check`** com a nossa API key, que é o que de fato autentica o "pago".
 - A CLI (`abacatepay listen`) **não** acrescenta `webhookSecret`: inclua-o em `--forward-to` ([cli/webhooks](https://docs.abacatepay.com/pages/cli/webhooks)).
 
@@ -306,6 +306,27 @@ Job/admin "Reconsultar" ── GET /transparents/check ──▶ PAID → fulfil
 - Admin: botão "Reconsultar pagamento" (`check`) e job de expiração de pendentes (pós-MVP: Vercel Cron).
 - Logs sem CPF completo, sem payload bruto com dados pessoais e **sem a URL do webhook (contém o segredo)**.
 - Env: `ABACATEPAY_API_KEY` (dev `abc_dev_…` / prod `abc_prod_…`), `ABACATEPAY_WEBHOOK_SECRET`. A chave HMAC é **pública** (ver §4.1).
+
+## Implementado — webhook (`PAY-003`)
+
+**URL a cadastrar no painel da AbacatePay** (um cadastro para Dev, outro para produção), com os eventos `transparent.completed`, `transparent.refunded`, `transparent.disputed` e `transparent.lost`:
+
+```text
+https://<app>.vercel.app/api/webhooks/abacatepay?webhookSecret=<ABACATEPAY_WEBHOOK_SECRET>
+```
+
+Código: rota `src/app/api/webhooks/abacatepay/route.ts` (Node, só adapta Request/Response; `GET` → 405), lógica em `src/features/payments-webhook/handler.ts`, banco em `store.ts` (service role), chave HMAC pública em `src/lib/payments/abacatepay-webhook.ts` (constante, não é env).
+
+Comportamento, na ordem:
+1. Sem env de pagamentos → `503`. `webhookSecret` ≠ env (tempo constante) → `401`.
+2. Corpo bruto até **64 KB** (`Content-Length` ou leitura em stream) → senão `413`. `X-Webhook-Signature` inválida → `401`. JSON ilegível / sem `event` ou `data` → `400`.
+3. Chave `abc_prod_` + `devMode: true` → `200 ignored_dev_mode` (nada gravado).
+4. `INSERT payment_events` (payload **reduzido**: id, event, devMode e `data.transparent.{id, externalId, amount, paidAmount, status}`; sem dados do pagador). Conflito: já processado ou com erro de dado → `200 duplicate`; ainda pendente (falha transitória anterior) → reprocessa. Sem `id` de topo, a chave vira `<event>:<data.transparent.id>`.
+5. Pedido por `data.transparent.externalId` (= `orders.id`). Cobrança reconsultada = a gravada no pedido; o id do evento precisa casar (tolera `char_…` × `pix_char_…`). Pedido sem cobrança gravada (`failed` por timeout no `PAY-002`) usa a do evento, se nenhum outro pedido a usa.
+6. `completed`: pedido `pending|expired|failed` → `GET /transparents/check` = `PAID` → `fulfill_order(order.id, billing, data.transparent.amount, eventId)`. `check` = `PENDING` (provedor ainda não refletiu o pagamento) é **transitório**: o evento fica não processado (sem `processing_error`/`processed_at`) e a resposta é `503`, para a AbacatePay re-tentar e o evento ser reprocessado. Outros status ≠ `PAID` (`EXPIRED`, `CANCELLED`…) são erro de dado. Pedido já `paid` → `already_paid` sem reconsulta. `refunded`/`lost`: pedido `paid` → `check` = `REFUNDED` → `refund_order`. `disputed`: só registra (`processed_at`) e loga `ALERTA`.
+7. Respostas: `200` para processado, duplicado e erro de dado (`order_not_found`, `billing_mismatch`, `amount_mismatch`, `invalid_status`, `provider_status_<status>`, `provider_check_rejected`, `unsupported_event` — gravados em `processing_error`). `500` para banco ou provedor indisponível e `503 provider_pending` para reconsulta ainda `PENDING` (a AbacatePay re-tenta até 7x em ~18 h; se esgotar, resta o "Reconsultar pagamento" do admin). Logs `[webhook:abacatepay]` só com eventId, tipo, orderId e resultado.
+
+Migration `20261009000007_fulfill_failed_orders.sql`: `fulfill_order` também aceita `failed → paid`.
 
 ## Pendências (A CONFIRMAR em Dev mode / suporte)
 1. Presença do `id` de topo em `transparent.*` e o formato de `data.transparent.id` (`pix_char_…` ou `char_…`).

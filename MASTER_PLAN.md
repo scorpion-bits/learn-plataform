@@ -8,7 +8,7 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `PAY-003` (A07, ajuste final) · `PAY-004` (A07) |
+| Em andamento | `PAY-004` (A07) |
 | Próximas | `PAY-004` (tela do QR) · `ADMIN-007` (pedidos) · `PAY-006` (reembolso) · `UX-*` · `QA-*` |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
@@ -75,7 +75,7 @@
 | STUDENT-008 | Páginas legais e rodapé institucional | P0 | DONE ✅ | A06 | Haiku 5.5 |
 | PAY-001 | Spike: API AbacatePay | P0 | DONE ✅ | A07 | Opus 5.5 |
 | PAY-002 | Cliente AbacatePay + `startCheckout` | P0 | DONE ✅ | A07 | Opus 5.5 |
-| PAY-003 | Webhook e concessão | P0 | IN PROGRESS | A07 | Opus 5.5 |
+| PAY-003 | Webhook e concessão | P0 | DONE ✅ | A07 | Opus 5.5 |
 | PAY-004 | Página de status do pedido | P0 | IN PROGRESS | A07 | Sonnet 5.5 |
 | PAY-005 | Reconciliação e expiração | P2 | BACKLOG | A07 | Sonnet 5.5 |
 | PAY-006 | Solicitação e execução de reembolso | P1 | BACKLOG | A07 | Sonnet 5.5 |
