@@ -27,7 +27,8 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 
 **Proposta.** Aprender game dev com quem faz jogos — conteúdo estruturado (curso → módulos → aulas → materiais), progresso persistente, experiência visual de estúdio de jogos (isométrica, identidade Scorpion Bits).
 
-**Escopo do MVP.**
+**Escopo do MVP.** Uso completo pelo celular (mobile-first + PWA instalável — ADR-019).
+
 - Admin: dashboard com métricas essenciais; cursos (CRUD, publicar), ementa (módulos/aulas, reordenar), materiais (vídeo embed, texto markdown, PDF, arquivo, link); alunos (busca, perfil, atribuir/revogar curso); pedidos.
 - Aluno: landing, catálogo público, página pública do curso, cadastro/login, biblioteca (comprados vs atribuídos, andamento, concluídos), player com navegação/retomada/progresso.
 - Pagamento: AbacatePay (PIX; cartão se disponível) com webhook verificado e concessão idempotente.
@@ -220,8 +221,8 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Status**: BACKLOG · **Agente**: A03 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
 #### UI-006 — Ícones de app e manifest
-- **Descrição**: gerar ícones quadrados 180/192/512 a partir do glyph, `manifest.webmanifest`, apple-touch-icon correto.
-- **Prioridade**: P3 · **Fase**: 9 · **Dependências**: UI-001
+- **Descrição**: PWA instalável (ADR-019): ícones quadrados 180/192/512 + maskable a partir do glyph, `manifest.webmanifest` (`display: standalone`, `start_url: /inicio`, cores da marca), apple-touch-icon, `viewport-fit=cover` + safe-area. Sem service worker offline no MVP.
+- **Prioridade**: P1 · **Fase**: 3 · **Dependências**: UI-001
 - **Status**: BACKLOG · **Agente**: A03 · **Modelo**: Haiku 5.5 · **Esforço**: baixo
 
 #### UI-005 — Vitrine `/dev/ui`
@@ -391,7 +392,7 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 | UX-003 | Passe responsivo 360/390/768/1024/1440 em todas as telas | P1 | Fase 6 | Sonnet 5.5 | médio | BACKLOG |
 | UX-004 | Performance: imagens (`next/image`), bundle analyzer, cache de leituras públicas | P2 | Fase 6 | Haiku 5.5 | baixo | BACKLOG |
 
-Agente: A06 (UX-001/003/004) e A03 (UX-002). Critério comum: checklist de estados de `docs/design-system.md` §8 preenchido por tela.
+Agente: A06 (UX-001/003/004) e A03 (UX-002). Critério comum: checklist de estados de `docs/design-system.md` §8 preenchido por tela. **Mobile (ADR-019)**: toda tela de aluno e admin utilizável por completo com toque em 360px.
 
 ### QA
 
@@ -399,7 +400,7 @@ Agente: A06 (UX-001/003/004) e A03 (UX-002). Critério comum: checklist de estad
 |---|---|---|---|---|---|---|
 | QA-001 | Setup Vitest + Playwright + integração no CI | P1 | ARCH-003 | Sonnet 5.5 | baixo | BACKLOG |
 | QA-002 | Revisão de segurança adversarial (actions, rotas, RLS, storage, headers, secrets) | P0 | PAY-003, ADMIN-006 | **Opus 5.5** | alto | BACKLOG |
-| QA-003 | E2E dos fluxos críticos (cadastro→compra mock→acesso→progresso; admin cria curso; admin atribui/revoga) | P0 | Fase 7 | Sonnet 5.5 | médio | BACKLOG |
+| QA-003 | E2E dos fluxos críticos (cadastro→compra mock→acesso→progresso; admin cria curso; admin atribui/revoga) — rodando também em perfis de celular (Pixel/iPhone) | P0 | Fase 7 | Sonnet 5.5 | médio | BACKLOG |
 | QA-004 | Teste de pagamento real em devMode/sandbox (roteiro manual + evidências) | P0 | PAY-004 | Sonnet 5.5 + humano | médio | BACKLOG |
 
 Agente: A08 QA & Security.

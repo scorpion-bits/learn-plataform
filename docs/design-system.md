@@ -82,5 +82,6 @@ Link de prosa (sublinhado, o reset remove), Button (variantes primary/secondary/
 ## 8. Estados obrigatórios por tela
 Loading (skeleton com a mesma geometria do conteúdo), Empty (cubo vazio + ação), Error (mensagem + tentar novamente, `error.tsx`), Success (toast/inline), Mobile (testado em 360px), Acessibilidade (teclado, foco visível, `aria-*`, landmarks).
 
-## 9. Responsividade
+## 9. Responsividade (mobile-first — ADR-019)
+Celular é plataforma de primeira classe, inclusive no admin. PWA instalável. Use `100dvh`, `env(safe-area-inset-*)`, ações principais na zona do polegar, nada que dependa só de hover.
 Breakpoints por conteúdo: `480`, `720`, `1024`, `1280`. Mobile-first. Alvos de toque ≥ 44px. Sem scroll horizontal em 360px.

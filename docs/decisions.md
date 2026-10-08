@@ -101,3 +101,9 @@ Status: `aceita`, `proposta` (aguardando validação do responsável do produto)
 - **Decisão**: `POST /v2/transparents/create` com `amount = orders.amount_cents` e `externalId = order.id`; o aluno paga pelo QR exibido em `/checkout/pedido/[id]`. Pedido resolvido por `externalId` no webhook.
 - **Segurança**: a assinatura `X-Webhook-Signature` usa chave **pública** (só integridade); a origem é provada apenas pelo `webhookSecret` da URL → reconsulta `GET /v2/transparents/check` é **obrigatória** antes de liberar acesso; a URL do webhook nunca é logada.
 - **Consequências**: `orders.checkout_url` substituída por `pix_br_code`/`pix_br_code_base64`; `ABACATEPAY_WEBHOOK_HMAC_KEY` deixa de ser env; disputas (`transparent.disputed/lost`) só registram e alertam o admin (sem novo status). Produção exige CNPJ e site com termos/privacidade/CNPJ no rodapé (STUDENT-008). Cakto reavaliada se houver cartão/afiliados (ver `docs/payments.md` §9).
+
+### ADR-019 — Celular é plataforma de primeira classe (mobile-first + PWA instalável)
+`aceita` · 2026-10-08 (pedido do produto: "total portabilidade para uso pelo celular")
+- **Decisão**: todas as telas (aluno **e admin**) são projetadas primeiro para 360–430px e testadas em celular real/emulado. A plataforma é um **PWA instalável** (manifest, ícones, tela cheia, `theme-color`), sem app nativo. Player com controles na zona do polegar (barra inferior fixa), ementa em bottom-sheet, PDFs abríveis no visualizador nativo do celular, sem hover como única forma de interação, alvos ≥ 44px, `100dvh`/safe-area (`env(safe-area-inset-*)`).
+- **Fora do MVP**: modo offline/download de aulas, push notifications, app nas lojas.
+- **Consequências**: UI-006 (manifest/ícones) sobe para P1; cada tarefa de tela tem critério "funciona completo em 360px com toque"; QA inclui testes Playwright com perfis de celular (iPhone/Android).
