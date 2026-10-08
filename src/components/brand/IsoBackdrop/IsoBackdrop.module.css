@@ -1,0 +1,114 @@
+/* ==========================================================================
+   IsoBackdrop — malha isométrica em 2 camadas + névoa ciano + vinheta.
+   Portado de .backdrop / .backdrop-grid do site (css/style.css).
+
+   Valores GEOMÉTRICOS (únicos números "soltos" permitidos, não são tokens de
+   design porque descrevem a malha, não o tema):
+     - ângulo 30° / -30°: projeção isométrica clássica (losangos 2:1 reais
+       seriam ~26.57°; 30° é o da logo e do site);
+     - --cell: lado do losango. Fundo (longe) = 78px; frente (perto) = 156px,
+       o DOBRO exato, para os vértices da malha fina caírem sobre os da grossa;
+     - --line-w: 1px de traço.
+   Cores e z-index vêm de tokens.css.
+
+   Por que sem `filter: blur`: a camada seria rasterizada num bitmap grande e
+   reduzida na composição, dando aspecto serrilhado/escalonado e custo de
+   GPU. Linha fina e nítida lê melhor que borrada.
+   ========================================================================== */
+
+.backdrop {
+  /* intensidades por variante; multiplicam a opacidade de cada camada */
+  --bd-glow: 1;
+  --bd-grid: 1;
+
+  position: fixed;
+  inset: 0 0 auto 0;
+  /* lvh: não redimensiona quando a barra do navegador mobile some/aparece
+     (evita repintar a malha durante a rolagem) */
+  height: 100vh;
+  height: 100lvh;
+  z-index: var(--z-backdrop);
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--ink-950);
+  contain: layout paint style;
+}
+
+/* admin / telas densas: malha e luz discretas, vinheta mais forte */
+.subtle {
+  --bd-glow: 0.4;
+  --bd-grid: 0.55;
+}
+
+/* névoa: manchas de luz grandes e estáticas, uma só pintura */
+.glow {
+  position: absolute;
+  inset: 0;
+  opacity: var(--bd-glow);
+  background:
+    radial-gradient(circle at 28% 22%, var(--glow-blue), transparent 40%),
+    radial-gradient(circle at 72% 12%, var(--glow-cyan), transparent 38%),
+    radial-gradient(circle at 60% 82%, var(--glow-indigo), transparent 42%),
+    radial-gradient(circle at 12% 72%, var(--glow-violet), transparent 40%);
+}
+
+.grid {
+  --line-w: 1px;
+
+  position: absolute;
+  inset: 0;
+  opacity: var(--bd-grid);
+  background-image:
+    repeating-linear-gradient(
+      30deg,
+      transparent 0 calc(var(--cell) - var(--line-w)),
+      var(--line-color) calc(var(--cell) - var(--line-w)) var(--cell)
+    ),
+    repeating-linear-gradient(
+      -30deg,
+      transparent 0 calc(var(--cell) - var(--line-w)),
+      var(--line-color) calc(var(--cell) - var(--line-w)) var(--cell)
+    );
+}
+
+/* atrás: losango pequeno, traço mais apagado */
+.far {
+  --cell: 78px;
+  --line-color: var(--grid-line);
+}
+
+/* na frente: losango maior (2x), traço mais aceso */
+.near {
+  --cell: 156px;
+  --line-color: var(--grid-line-near);
+}
+
+/* telas estreitas: a malha da frente encolhe um pouco para não parecer
+   gigante num viewport de 360px (mantém a razão 2:1 com a de trás) */
+@media (max-width: 480px) {
+  .far {
+    --cell: 60px;
+  }
+
+  .near {
+    --cell: 120px;
+  }
+}
+
+/* vinheta: apaga a malha nas bordas para o conteúdo respirar */
+.backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 92% 78% at 50% 42%,
+    transparent 0%,
+    var(--vignette-mid) 62%,
+    var(--vignette-edge) 100%
+  );
+}
+
+/* modo leve: some a malha de trás (menos área de gradiente pintada) */
+:global([data-lite]) .far {
+  display: none;
+}
