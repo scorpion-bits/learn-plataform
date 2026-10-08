@@ -28,6 +28,7 @@
 | Decisões (ADRs) | `docs/decisions.md` |
 | Fases e ondas | `docs/roadmap.md` |
 | Fora do MVP | `docs/post-mvp.md` |
+| **Colocar no ar (Supabase/Vercel/AbacatePay)** | `docs/setup.md` |
 
 ## 2. Tarefas
 
