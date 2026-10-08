@@ -2,14 +2,18 @@ import type { ReactNode } from 'react';
 
 import { IsoBackdrop } from '@/components/brand';
 import { AdminShell } from '@/components/layout';
-import { devUser } from '@/components/layout/dev-user';
+import { getCurrentProfile, requireAdmin } from '@/lib/auth/dal';
 
-// TODO(AUTH-002): `await requireAdmin()` aqui e usuário real no shell.
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  // Anônimo -> /entrar; logado não-admin -> 404. Cada Server Action repete o guard.
+  const user = await requireAdmin();
+  const profile = await getCurrentProfile();
   return (
     <>
       <IsoBackdrop variant="subtle" />
-      <AdminShell user={devUser()}>{children}</AdminShell>
+      <AdminShell user={{ name: profile?.fullName ?? user.email, email: user.email }}>
+        {children}
+      </AdminShell>
     </>
   );
 }

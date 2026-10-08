@@ -1,9 +1,17 @@
 import type { ReactNode } from 'react';
 
 import { StudentShell } from '@/components/layout';
-import { devUser } from '@/components/layout/dev-user';
+import { getCurrentProfile, getCurrentRole, requireUser } from '@/lib/auth/dal';
 
-// TODO(AUTH-002): trocar `devUser` pelo usuário da sessão (requireUser()).
-export default function StudentAppLayout({ children }: { children: ReactNode }) {
-  return <StudentShell user={devUser()}>{children}</StudentShell>;
+export default async function StudentAppLayout({ children }: { children: ReactNode }) {
+  const user = await requireUser();
+  const [profile, role] = await Promise.all([getCurrentProfile(), getCurrentRole()]);
+  return (
+    <StudentShell
+      user={{ name: profile?.fullName ?? user.email, email: user.email }}
+      isAdmin={role === 'admin'} // só UX (link "Painel admin"); a autorização mora no banco
+    >
+      {children}
+    </StudentShell>
+  );
 }

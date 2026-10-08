@@ -8,8 +8,8 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 2 (dados/segurança) e PHASE 4 (auth) — fundação e design system prontos |
-| Em andamento | `DB-004`+`DB-005` (A02) · `AUTH-001`+`AUTH-002` (A04) — retomados em 2026-10-09 após limite semanal de uso interromper os agentes |
-| Próximas | `AUTH-003` → `ADMIN-002` · `DB-006`/`DB-007` |
+| Em andamento | `DB-004`+`DB-005` (A02) · `AUTH-003` (A04) |
+| Próximas | `ADMIN-002` · `DB-006`/`DB-007` |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
 
@@ -51,9 +51,9 @@
 | UI-004 | Componentes de assinatura isométricos | P1 | DONE ✅ | A03 | Sonnet 5.5 |
 | UI-005 | Vitrine `/dev/ui` | P2 | BACKLOG | A03 | Haiku 5.5 |
 | UI-006 | Ícones de app e manifest | P1 | DONE ✅ | A03 | Haiku 5.5 |
-| AUTH-001 | Proxy e sessão | P0 | IN PROGRESS | A04 | Sonnet 5.5 |
-| AUTH-002 | DAL e guards | P0 | IN PROGRESS | A04 | Sonnet 5.5 |
-| AUTH-003 | Telas de autenticação | P0 | BACKLOG | A04 | Sonnet 5.5 |
+| AUTH-001 | Proxy e sessão | P0 | DONE ✅ | A04 | Sonnet 5.5 |
+| AUTH-002 | DAL e guards | P0 | DONE ✅ | A04 | Sonnet 5.5 |
+| AUTH-003 | Telas de autenticação | P0 | IN PROGRESS | A04 | Sonnet 5.5 |
 | AUTH-004 | Página "Minha conta" | P2 | BACKLOG | A04 | Haiku 5.5 |
 | ADMIN-001 | Dashboard | P1 | BACKLOG | A05 | Sonnet 5.5 |
 | ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | BACKLOG | A05 | Sonnet 5.5 |
