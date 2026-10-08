@@ -15,6 +15,7 @@ Recriação do antigo "Learn/KodaBooks" (loja de PDFs) como plataforma de aprend
    - `docs/development.md` — setup, scripts, padrões de código, fluxo de trabalho
    - `docs/decisions.md` — ADRs (não contradiga uma ADR aceita sem propor outra)
    - `docs/audit.md` — o que havia de errado no sistema antigo (não repita)
+   - `docs/post-mvp.md` — ideias fora do MVP (não implementar sem tarefa no backlog)
 
 ## Stack
 Next.js 16 (App Router) · React 19 · TypeScript strict · CSS Modules + tokens · Supabase (Auth, Postgres+RLS, Storage) · AbacatePay · Vercel · Vitest · Playwright · pgTAP.

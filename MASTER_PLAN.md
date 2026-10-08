@@ -33,7 +33,7 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 - Aluno: landing, catálogo público, página pública do curso, cadastro/login, biblioteca (comprados vs atribuídos, andamento, concluídos), player com navegação/retomada/progresso.
 - Pagamento: AbacatePay (PIX; cartão se disponível) com webhook verificado e concessão idempotente.
 
-**Fora do MVP (não construir agora).** Cursos gratuitos, cupons, assinaturas, trilhas/bundles, certificados, comentários/fórum, avaliações, quizzes/exercícios corrigidos, slides HTML interativos (ADR-010), upload de vídeo próprio (ADR-011), OAuth social, gamificação (XP/badges), multi-idioma, app mobile, múltiplos instrutores, notificações por email além das do Supabase Auth, tema claro.
+**Fora do MVP (não construir agora)** — lista completa com motivos em `docs/post-mvp.md`. Cursos gratuitos, cupons, assinaturas, trilhas/bundles, certificados, comentários/fórum, avaliações, quizzes/exercícios corrigidos, slides HTML interativos (ADR-010), upload de vídeo próprio (ADR-011), OAuth social, gamificação (XP/badges), multi-idioma, app mobile, múltiplos instrutores, notificações por email além das do Supabase Auth, tema claro.
 
 ---
 
