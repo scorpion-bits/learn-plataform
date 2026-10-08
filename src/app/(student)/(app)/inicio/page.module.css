@@ -1,0 +1,36 @@
+.page {
+  display: grid;
+  gap: var(--space-6);
+}
+.eyebrow {
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: var(--s--1);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+}
+.title {
+  font-size: var(--s-3);
+}
+.lead {
+  color: var(--text-soft);
+}
+.card {
+  display: grid;
+  gap: var(--space-5);
+  align-items: center;
+}
+.cover {
+  min-width: 0;
+}
+.info {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  min-width: 0;
+}
+@media (min-width: 720px) {
+  .card {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  }
+}

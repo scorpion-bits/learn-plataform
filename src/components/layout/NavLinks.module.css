@@ -1,0 +1,73 @@
+/* ---- tab bar (aluno, mobile) ---- */
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: 56px;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--r-sm);
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.1;
+  text-align: center;
+}
+.tab[data-active='true'] {
+  color: var(--cyan);
+}
+.tabIcon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 28px;
+  border-radius: var(--r-pill);
+  transition: background-color var(--dur) var(--ease);
+}
+.tab[data-active='true'] .tabIcon {
+  background: var(--tint-cyan);
+}
+.tabLabel {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- sidebar (admin) ---- */
+.side {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--tap);
+  padding: 0 var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  color: var(--text-soft);
+  font-weight: 500;
+  transition:
+    background-color var(--dur-fast),
+    color var(--dur-fast);
+}
+.side:hover {
+  background: var(--tint-cyan);
+  color: var(--text);
+}
+.side[data-active='true'] {
+  border-color: var(--hair-lit);
+  background: var(--tint-cyan);
+  color: var(--cyan);
+}
+.sideIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+}
+.sideLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -266,3 +266,11 @@
 :global([data-lite]) .inner::before {
   transition: none;
 }
+
+/* hideMenuOnMobile: sem botão nem folha no mobile (navegação mora na tab bar) */
+@media (max-width: 860px) {
+  .dock[data-compact='true'] .toggle,
+  .dock[data-compact='true'] .panel {
+    display: none;
+  }
+}

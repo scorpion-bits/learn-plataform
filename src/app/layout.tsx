@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
-import { IsoBackdrop } from '@/components/brand/IsoBackdrop/IsoBackdrop';
+import { ToastProvider } from '@/components/ui';
 
 import { grotesk, inter } from './fonts';
 import { LITE_MODE_SCRIPT } from './lite-mode-script';
@@ -34,8 +34,11 @@ export const metadata: Metadata = {
   description,
   applicationName: 'Scorpion Bits Learn',
   icons: {
-    icon: { url: '/brand/favicon.png', type: 'image/png' },
-    apple: '/brand/favicon.png',
+    icon: [
+      { url: '/brand/favicon.png', type: 'image/png' },
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: { url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
   },
   openGraph: {
     type: 'website',
@@ -75,8 +78,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: LITE_MODE_SCRIPT }} />
       </head>
       <body>
-        <IsoBackdrop />
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

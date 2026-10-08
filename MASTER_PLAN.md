@@ -14,7 +14,7 @@ Leitura obrigatória para qualquer agente: `CLAUDE.md` → este arquivo → `doc
 |---|---|
 | Fase atual | **PHASE 1 — FOUNDATION** (+ PHASE 3 iniciada) |
 | Próximas tarefas READY | — |
-| Em andamento | `UI-003` + `UI-006` (A03, Sonnet 5.5), `DB-004` + `DB-005` (A02) |
+| Em andamento | `DB-004` + `DB-005` (A02) |
 | Bloqueios | — |
 
 ---
@@ -223,12 +223,12 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 - **Descrição**: `PublicShell` (Dock + footer), `StudentShell` (Dock com menu do usuário), `PlayerShell` (topo/ementa/drawer), `AdminShell` (sidebar colapsável/drawer + breadcrumbs).
 - **Prioridade**: P0 · **Fase**: 3 · **Dependências**: UI-002, UI-004
 - **Critérios**: mover `IsoBackdrop` do root layout para os layouts dos route groups (`full` em público/aluno, `subtle` no admin); landmarks corretos; skip-link; menus acessíveis; funcionam em 360/768/1024/1440.
-- **Status**: IN PROGRESS · **Agente**: A03 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
+- **Status**: DONE ✅ · **Agente**: A03 · **Modelo**: Sonnet 5.5 · **Esforço**: médio
 
 #### UI-006 — Ícones de app e manifest
 - **Descrição**: PWA instalável (ADR-019): ícones quadrados 180/192/512 + maskable a partir do glyph, `manifest.webmanifest` (`display: standalone`, `start_url: /inicio`, cores da marca), apple-touch-icon, `viewport-fit=cover` + safe-area. Sem service worker offline no MVP.
 - **Prioridade**: P1 · **Fase**: 3 · **Dependências**: UI-001
-- **Status**: IN PROGRESS · **Agente**: A03 · **Modelo**: Haiku 5.5 · **Esforço**: baixo
+- **Status**: DONE ✅ · **Agente**: A03 · **Modelo**: Haiku 5.5 · **Esforço**: baixo
 
 #### UI-005 — Vitrine `/dev/ui`
 - **Descrição**: página (somente em dev/preview) mostrando todos os componentes e estados.
@@ -246,7 +246,7 @@ Legenda — **Status**: `BACKLOG` (dependências abertas) · `READY` · `IN PROG
 #### AUTH-002 — DAL e guards
 - **Descrição**: `src/lib/auth/dal.ts` (`getCurrentUser`, `getCurrentRole`, `requireUser`, `requireAdmin`) com `React.cache`; helper `adminAction()`/`userAction()` que compõe guard + zod + resultado tipado.
 - **Prioridade**: P0 · **Fase**: 4 · **Dependências**: AUTH-001
-- **Critérios**: `requireAdmin` usa `user_roles` (banco), nunca metadata/cookie; testes unitários com mocks; documentação em `docs/authentication.md` atualizada.
+- **Critérios**: remover `src/components/layout/dev-user.ts` e os `TODO(AUTH-002)` dos layouts, passando o usuário real aos shells; `requireAdmin` usa `user_roles` (banco), nunca metadata/cookie; testes unitários com mocks; documentação em `docs/authentication.md` atualizada.
 - **Status**: BACKLOG · **Agente**: A04 · **Modelo**: Sonnet 5.5 · **Esforço**: alto
 
 #### AUTH-003 — Telas de autenticação
@@ -648,6 +648,7 @@ EXPECTED OUTPUT:
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-08 | UI-003 + UI-006 | A03 (Sonnet 5.5) | DONE | Route groups e shells Public/Student/Player/Admin (skip-link, landmarks, aria-current, tab bar mobile, Drawers com Esc/retorno de foco), `src/config/company.ts` (dados legais no rodapé), PWA: `manifest.ts` + ícones 180/192/512/maskable. Sem overflow em 360–1440. Revisão visual (player desktop, início mobile, admin) — aprovado. Atenção: `devUser()` fake fora de produção até AUTH-002. |
 | 2026-10-08 | DB-003 | A02 (Opus 5.5) | DONE | RLS + grants por coluna em 11 tabelas; `is_admin`, `has_course_access` (curso rascunho não dá acesso), `handle_new_user` (sempre student — S1 corrigido), `fulfill_order`/`refund_order` (service_role, lock + idempotência + códigos de resultado), `request_refund` (7 dias, antiabuso, grava % consumido), `admin_record_manual_sale`, `admin_students`, `reorder_*`; views `course_catalog`/`course_outline`/`my_library`; `supabase/scripts/grant-admin.sql`. 174 asserções por papel + teste de concorrência em PG16. Revisão do orquestrador: `has_course_access`, `handle_new_user`, `fulfill_order` conferidos — aprovado. Contratos para PAY-003 em `docs/database.md` §4. |
 | 2026-10-08 | UI-004 | A03 (Sonnet 5.5) | DONE | IsoCube SVG (4 estados × 4 tons, < 1,1 KB), CubeProgress (agrupa > 12 itens, progressbar acessível), ChamferCard (topo chanfrado, foco visível, seta permanente p/ toque), IsoCover (bloco 3D por container query), Logo, Dock (sticky com IntersectionObserver, menu mobile tela cheia com foco preso). Vitrine `/dev/brand` (404 em produção). Revisão visual 1440/390 — aprovada. Orquestrador adicionou `viewportFit: 'cover'`. Follow-ups: promover tokens `--face-top-a/b`, `--iso-slope` (UI-003); `images.remotePatterns` p/ Storage (ADMIN-002); leitor de tela no Dock (UX-002). |
 | 2026-10-08 | UI-002 | A03 (Sonnet 5.5) | DONE | 21 primitivas acessíveis em `src/components/ui` (Button com `pending`, Field com aria, Dialog/Drawer nativos com bottom-sheet mobile, Toast aria-live, Table empilhada < 720px, Tabs/DropdownMenu com teclado), alvos ≥ 44px, inputs ≥ 16px. Vitest + Testing Library configurados (12 testes). Revisão: testes/typecheck/lint verificados — aprovado. Pendências menores: sem animação de saída no Dialog, Table empilhada pode perder semântica em leitor de tela (rever em UX-002), sem testes de Table/DropdownMenu. `next dev` pode gerar `AGENTS.md` com regras do Next 16 — pode ser commitado. |

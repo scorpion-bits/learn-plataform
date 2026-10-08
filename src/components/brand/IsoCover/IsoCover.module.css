@@ -4,14 +4,13 @@
    contêiner; o topo e a lateral são paralelogramos com a inclinação de 30°
    da malha (tan 30° ≈ 0.577).
 
-   Tokens locais (sugestão de promoção): --iso-slope: 0.577 (tan 30°).
+   --iso-slope (tokens.css) = tan 30°.
    ========================================================================== */
 
 .root {
-  --iso-slope: 0.577;
   --edge: 2px; /* espessura do contorno navy */
-  --face-a: #6a8dff; /* extremos do gradiente do topo (= --face-top) */
-  --face-b: #41b8ff;
+  --face-a: var(--face-top-a); /* extremos do gradiente do topo */
+  --face-b: var(--face-top-b);
   --side: var(--face-right);
 
   container-type: inline-size;

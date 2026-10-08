@@ -2,10 +2,7 @@
    IsoCube — cubo isométrico paramétrico. Cores por tom via custom properties
    locais (derivadas de tokens) e por estado via classes.
 
-   Tokens locais (sugestão de promoção para tokens.css):
-     --face-top-a / --face-top-b : extremos do gradiente da face de cima
-                                    (#6a8dff -> #41b8ff, o `--face-top` é um
-                                    gradient inteiro e não dá para usar em SVG).
+   --face-top-a / --face-top-b (tokens.css): extremos do gradiente da face de cima.
    ========================================================================== */
 
 .cube {
@@ -19,8 +16,8 @@
 /* ------------------------------------------------------------------ tons -- */
 .cyan {
   --tone: var(--cyan);
-  --c-top-a: #6a8dff; /* = início de --face-top */
-  --c-top-b: #41b8ff; /* = fim de --face-top */
+  --c-top-a: var(--face-top-a);
+  --c-top-b: var(--face-top-b);
   --c-left: var(--face-left);
   --c-right: var(--face-right);
 }

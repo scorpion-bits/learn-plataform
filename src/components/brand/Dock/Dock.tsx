@@ -15,6 +15,11 @@ export interface DockProps {
    */
   trailing?: ReactNode;
   navLabel?: string;
+  /**
+   * Mobile sem menu: esconde o botão e a folha (a navegação mobile é outra,
+   * ex.: a tab bar do aluno). `nav`/`actions` continuam no desktop.
+   */
+  hideMenuOnMobile?: boolean;
   className?: string;
 }
 
@@ -34,6 +39,7 @@ export function Dock({
   actions,
   trailing,
   navLabel = 'Principal',
+  hideMenuOnMobile,
   className,
 }: DockProps) {
   return (
@@ -43,6 +49,7 @@ export function Dock({
       actions={actions}
       trailing={trailing}
       navLabel={navLabel}
+      hideMenuOnMobile={hideMenuOnMobile}
       className={className}
     />
   );

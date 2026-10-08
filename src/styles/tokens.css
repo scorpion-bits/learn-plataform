@@ -65,7 +65,9 @@
   --on-accent: var(--ink-950); /* texto sobre cyan/blue/amber/mint/coral */
 
   /* faces do cubo (topo claro, lateral média, lateral escura) */
-  --face-top: linear-gradient(90deg, #6a8dff, #41b8ff);
+  --face-top-a: #6a8dff; /* extremos do gradiente do topo (SVG/CSS não aceitam o gradient inteiro) */
+  --face-top-b: #41b8ff;
+  --face-top: linear-gradient(90deg, var(--face-top-a), var(--face-top-b));
   --face-left: #63cdfc;
   --face-right: #3593cc;
 
@@ -172,6 +174,7 @@
   --r-lg: 26px;
   --r-pill: 999px;
   --chamfer: 18px;
+  --iso-slope: 0.577; /* tan 30° — inclinação da malha isométrica */
 
   /* ------------------------------------------------------------- movimento */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);

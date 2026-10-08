@@ -42,7 +42,7 @@
   --ease:cubic-bezier(.22,1,.36,1); --dur-fast:120ms; --dur:220ms; --dur-slow:420ms;
 }
 ```
-Implementação real: `src/styles/tokens.css` (fonte da verdade; inclui tokens adicionais do UI-001: `--on-accent`, `--gradient-brand`, `--tint-*`, `--glow-*`, `--glass-*`, `--shadow-*`, `--lh-*`, `--tracking-*`, `--wrap`, `--measure`, `--dock-h`, `--z-*`, `--focus-outline/offset`; UI-002: `--tint-violet`, `--scrim`, `--tap` = 44px alvo mínimo). `--font-display/--font-body` derivam de `--font-grotesk/--font-inter` (`next/font/local`). Estilos de elemento ficam em `@layer base` — CSS Modules sempre vencem. `--text-faint` **não é AA**: só decorativo. `--violet/--indigo` como texto só sobre ink-950/900.
+Implementação real: `src/styles/tokens.css` (fonte da verdade; inclui tokens adicionais do UI-001: `--on-accent`, `--gradient-brand`, `--tint-*`, `--glow-*`, `--glass-*`, `--shadow-*`, `--lh-*`, `--tracking-*`, `--wrap`, `--measure`, `--dock-h`, `--z-*`, `--focus-outline/offset`; UI-002: `--tint-violet`, `--scrim`, `--tap` = 44px alvo mínimo; UI-003: `--face-top-a/b`, `--iso-slope`). `--font-display/--font-body` derivam de `--font-grotesk/--font-inter` (`next/font/local`). Estilos de elemento ficam em `@layer base` — CSS Modules sempre vencem. `--text-faint` **não é AA**: só decorativo. `--violet/--indigo` como texto só sobre ink-950/900.
 
 Tema: **somente escuro** no MVP (a marca é escura). Contraste mínimo AA verificado para `--text-dim` sobre `--ink-900` em texto ≥ 14px.
 
@@ -72,12 +72,14 @@ Link de prosa (sublinhado, o reset remove), Button (variantes primary/secondary/
 - **Player**: tela cheia em 3 zonas — topo fino (curso + progresso em cubos + sair), conteúdo central (máx. 960px), ementa lateral direita recolhível (drawer bottom-sheet no mobile). Barra inferior fixa no mobile com Anterior / Concluir / Próxima.
 - **Admin**: sidebar à esquerda (colapsa em ícones < 1100px, vira drawer < 720px), header com breadcrumbs, conteúdo denso. Mesmos tokens, malha só no header.
 
+Implementação (UI-003): shells em `src/components/layout/` — `PublicShell`, `StudentShell` (tab bar inferior no mobile), `PlayerShell` (ementa lateral ≥ 1024px / Drawer abaixo; barra prev/concluir/próxima fixa no mobile), `AdminShell` (sidebar → ícones 720–1099px → Drawer < 720px). Route groups: `(public)`, `(auth)`, `(student)/(app)` (com StudentShell) e `(student)/aprender` (PlayerShell, sem chrome do aluno), `admin`. Backdrop `full` em público/aluno, `subtle` no admin.
+
 ## 7. Telas-chave (direção)
 - **Landing**: hero "Aprenda a criar jogos com quem faz jogos" + escorpião; trilha de cursos como blocos isométricos empilhados; prova social (GameLab/SESC, projetos do estúdio).
 - **Catálogo**: filtros como "chips" mono (categoria, nível); grid de `ChamferCard` com capa, nível em cubos (1–3), nº de aulas, duração, preço/selo "Na sua biblioteca". Evitar grade monótona: primeiro item destacado em largura dupla.
 - **Página do curso**: `IsoCover` + resumo; ementa em acordeão com módulos numerados como "camadas"; CTA fixo no mobile.
 - **Biblioteca**: "Continuar" (último curso, grande) + abas Em andamento / Concluídos / Todos; selo de origem.
-- **Dashboard admin**: 4 KPIs (receita no período, vendas, alunos ativos, matrículas) + gráfico de receita por dia + top cursos + últimos pedidos.
+- **Dashboard admin** (o placeholder do UI-003 ainda é genérico — ADMIN-001 deve aplicar a linguagem isométrica: KPIs com `IsoCube`/chanfro, gráfico com cores da marca): 4 KPIs (receita no período, vendas, alunos ativos, matrículas) + gráfico de receita por dia + top cursos + últimos pedidos.
 
 ## 8. Estados obrigatórios por tela
 Loading (skeleton com a mesma geometria do conteúdo), Empty (cubo vazio + ação), Error (mensagem + tentar novamente, `error.tsx`), Success (toast/inline), Mobile (testado em 360px), Acessibilidade (teclado, foco visível, `aria-*`, landmarks).

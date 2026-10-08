@@ -17,6 +17,7 @@ export interface DockShellProps {
   actions?: ReactNode;
   trailing?: ReactNode;
   navLabel: string;
+  hideMenuOnMobile?: boolean;
   className?: string;
 }
 
@@ -25,7 +26,15 @@ export interface DockShellProps {
  * de 1px logo acima) e o menu mobile (aria-expanded, Esc, clique fora, foco
  * preso, trava de rolagem). Os slots chegam prontos do servidor.
  */
-export function DockShell({ brand, nav, actions, trailing, navLabel, className }: DockShellProps) {
+export function DockShell({
+  brand,
+  nav,
+  actions,
+  trailing,
+  navLabel,
+  hideMenuOnMobile,
+  className,
+}: DockShellProps) {
   const [open, setOpen] = useState(false);
   const [stuck, setStuck] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -106,6 +115,7 @@ export function DockShell({ brand, nav, actions, trailing, navLabel, className }
         className={[styles.dock, className].filter(Boolean).join(' ')}
         data-stuck={stuck ? 'true' : undefined}
         data-open={open ? 'true' : undefined}
+        data-compact={hideMenuOnMobile ? 'true' : undefined}
         onKeyDown={onKeyDown}
       >
         <div className={styles.inner}>
