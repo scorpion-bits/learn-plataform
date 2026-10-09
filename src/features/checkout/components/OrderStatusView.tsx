@@ -39,8 +39,8 @@ const STEPS = [
 
 /**
  * `/checkout/pedido/[orderId]`: QR PIX, copia-e-cola, contagem e acompanhamento
- * do status. Esta tela NUNCA concede acesso: só reflete o status do pedido,
- * que o webhook verificado altera (`fulfill_order()`).
+ * do status. A tela não decide nada: o status muda pelo webhook verificado ou pela
+ * reconsulta do servidor à AbacatePay em `getOrderStatus` (ambos via `fulfill_order()`).
  */
 export function OrderStatusView({
   order,
