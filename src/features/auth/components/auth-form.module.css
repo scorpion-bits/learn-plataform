@@ -45,6 +45,11 @@
   font-size: var(--s-0);
   color: var(--text-soft);
 }
+.links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
 .footer {
   margin-top: var(--space-5);
   color: var(--text-soft);
@@ -61,4 +66,6 @@
   inset-block: 0;
   inset-inline-end: var(--space-1);
   margin-block: auto;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
 }
