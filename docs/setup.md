@@ -59,6 +59,7 @@ Guia passo a passo para o responsável do projeto. Leva ~30 min. Nenhuma chave s
    | `SUPABASE_SECRET_KEY` | Secret key (**secreta**) |
    | `NEXT_PUBLIC_SITE_URL` | a URL final da Vercel |
    | `ABACATEPAY_API_KEY` | chave **Dev** (`abc_dev_…`) por enquanto (**secreta**) |
+   | ~~`ABACATEPAY_API_BASE_URL`~~ | **não configure** — existe só para os testes E2E (mock) |
    | `ABACATEPAY_WEBHOOK_SECRET` | uma string aleatória longa que você inventa (ex. gerada por um gerenciador de senhas) (**secreta**) |
 
 3. Enquanto o código está na branch `claude/exciting-ramanujan-xhdzfd`, a Vercel gera um **Preview** dela (aba *Deployments*). A produção sai quando a branch for mesclada na `main`.

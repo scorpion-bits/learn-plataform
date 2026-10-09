@@ -306,3 +306,37 @@ describe('refundPixCharge', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });
+
+describe('ABACATEPAY_API_BASE_URL (mock dos testes E2E)', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('usa a base configurada quando é https ou loopback', async () => {
+    vi.stubEnv('ABACATEPAY_API_BASE_URL', 'http://127.0.0.1:4010/v2');
+    fetchMock.mockResolvedValue(json({ data: { status: 'PAID' }, success: true, error: null }));
+    await getPixStatus('pix_char_abc123');
+    expect(fetchMock.mock.calls[0]![0]).toBe(
+      'http://127.0.0.1:4010/v2/transparents/check?id=pix_char_abc123',
+    );
+  });
+
+  it('valor inválido vira provider_unavailable sem chamar a rede nem vazar o valor', async () => {
+    vi.stubEnv('ABACATEPAY_API_BASE_URL', 'http://evil.example.com/v2');
+    const err = await expectCode(getPixStatus('pix_char_abc123'), 'provider_unavailable');
+    expect(err.message).not.toContain('evil.example.com');
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('chave de produção nunca vai para um host diferente do oficial', async () => {
+    vi.stubEnv('ABACATEPAY_API_BASE_URL', 'https://proxy.exemplo.com/v2');
+    getPaymentsEnv.mockReturnValue({
+      ABACATEPAY_API_KEY: 'abc_prod_FAKE',
+      ABACATEPAY_WEBHOOK_SECRET: 's',
+    });
+    await expect(getPixStatus('pix_char_abc123')).rejects.toMatchObject({
+      code: 'provider_unavailable',
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
