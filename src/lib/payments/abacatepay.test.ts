@@ -239,6 +239,21 @@ describe('getPixStatus', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it('aceita resposta sem id (usa o id consultado)', async () => {
+    fetchMock.mockResolvedValue(json({ data: { status: 'PAID' }, success: true, error: null }));
+    expect(await getPixStatus('pix_char_abc123')).toMatchObject({
+      billingId: 'pix_char_abc123',
+      status: 'PAID',
+    });
+  });
+
+  it('resposta sem status: erro diz qual campo faltou (sem valores)', async () => {
+    fetchMock.mockResolvedValue(
+      json({ data: { id: 'pix_char_abc123' }, success: true, error: null }),
+    );
+    await expect(getPixStatus('pix_char_abc123')).rejects.toThrow(/\(status\)/);
+  });
+
   it('resposta de outra cobrança é erro', async () => {
     fetchMock.mockResolvedValue(
       json({ data: { id: 'pix_char_other', status: 'PAID' }, success: true, error: null }),

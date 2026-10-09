@@ -37,12 +37,13 @@ function providerMessage(error: unknown): string {
     case 'not_refundable':
       return 'A AbacatePay informa que esta transação não pode ser reembolsada.';
     case 'unauthorized':
-      return 'A AbacatePay recusou a chave de API (verifique as permissões, incluindo REFUND:CREATE).';
+      return `A AbacatePay recusou a chave de API: verifique na Vercel a ABACATEPAY_API_KEY e as permissões (TRANSPARENT:READ, REFUND:CREATE). Detalhe: ${error.message}`;
     case 'invalid_request':
-      return 'A AbacatePay recusou a requisição.';
+      return `A AbacatePay recusou a requisição. Detalhe: ${error.message}`;
     case 'provider_unavailable':
     default:
-      return 'A AbacatePay está indisponível no momento. Tente novamente em instantes.';
+      // Mensagens de `PaymentProviderError` são nossas (sem texto do provedor): ok para o admin.
+      return `Não foi possível consultar a AbacatePay. Detalhe: ${error.message}`;
   }
 }
 

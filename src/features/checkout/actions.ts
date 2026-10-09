@@ -57,7 +57,7 @@ type PendingOrder = {
 function logCheckoutError(step: string, orderId: string | null, error: unknown) {
   const detail =
     error instanceof PaymentProviderError
-      ? { code: error.code, status: error.status }
+      ? { code: error.code, status: error.status, message: error.message }
       : { code: (error as { code?: unknown } | null)?.code };
   console.error(`[checkout] ${step}`, { orderId, ...detail });
 }

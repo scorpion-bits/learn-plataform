@@ -154,7 +154,8 @@ const createDataSchema = z.object({
 });
 
 const checkDataSchema = z.object({
-  id: billingIdSchema,
+  // A doc mostra `id`, mas não é garantido: se vier, tem que ser a cobrança pedida.
+  id: billingIdSchema.optional(),
   status: z.string(),
   expiresAt: isoDate,
   amount: z.number().int().positive().optional(),
@@ -361,16 +362,18 @@ export async function getPixStatus(billingId: string): Promise<PixStatusResult> 
 
   const parsed = checkDataSchema.safeParse(data);
   if (!parsed.success) {
+    // Só nomes de campos (nunca valores) para diagnosticar mudança de contrato.
+    const fields = parsed.error.issues.map((issue) => issue.path.join('.') || '(raiz)').join(', ');
     throw new PaymentProviderError(
       'provider_unavailable',
-      'Status da AbacatePay sem os campos esperados.',
+      `Status da AbacatePay sem os campos esperados (${fields}).`,
     );
   }
-  if (parsed.data.id !== billingId) {
+  if (parsed.data.id !== undefined && parsed.data.id !== billingId) {
     throw new PaymentProviderError('provider_unavailable', 'Status devolvido para outra cobrança.');
   }
   return {
-    billingId: parsed.data.id,
+    billingId,
     status: toPixStatus(parsed.data.status),
     expiresAt: parsed.data.expiresAt ?? null,
     amountCents: parsed.data.amount ?? null,
