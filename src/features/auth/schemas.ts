@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
-export const MIN_PASSWORD_LENGTH = 8;
+import { MIN_PASSWORD_LENGTH } from './form-state';
+
+export { MIN_PASSWORD_LENGTH, IDLE_STATE } from './form-state';
+export type { AuthFormState } from './form-state';
+
 const MAX_PASSWORD_LENGTH = 72; // limite do bcrypt usado pelo Supabase
 
 const email = z
@@ -50,17 +54,3 @@ export const resetPasswordSchema = z
     path: ['confirm_password'],
     message: 'As senhas não conferem.',
   });
-
-/** Estado devolvido pelas actions de formulário (consumido por `useActionState`). */
-export type AuthFormState =
-  | { status: 'idle' }
-  | {
-      status: 'error';
-      message: string;
-      fieldErrors?: Record<string, string[] | undefined>;
-      /** Valores não sensíveis para repovoar o formulário (nunca senhas). */
-      values?: Record<string, string>;
-    }
-  | { status: 'success'; message: string };
-
-export const IDLE_STATE: AuthFormState = { status: 'idle' };

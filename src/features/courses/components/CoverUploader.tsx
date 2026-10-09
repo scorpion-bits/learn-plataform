@@ -4,11 +4,9 @@ import { useEffect, useId, useRef, useState } from 'react';
 
 import { IsoCover } from '@/components/brand';
 import { Button } from '@/components/ui';
-import { getClientEnv } from '@/lib/env/client';
-import { createClient } from '@/lib/supabase/browser';
 
 import { COVERS_BUCKET_NAME } from '../rules';
-import { COVER_EXTENSIONS, COVER_MAX_BYTES, COVER_MIME_TYPES } from '../schemas';
+import { COVER_EXTENSIONS, COVER_MAX_BYTES, COVER_MIME_TYPES } from '../constants';
 import styles from './CoverUploader.module.css';
 
 interface Props {
@@ -51,6 +49,11 @@ export function CoverUploader({ courseId, title, initialUrl, value, onChange }: 
       return;
     }
 
+    // Carregados só ao enviar: supabase-js + zod não entram no bundle da tela.
+    const [{ createClient }, { getClientEnv }] = await Promise.all([
+      import('@/lib/supabase/browser'),
+      import('@/lib/env/client'),
+    ]);
     const { data } = await createClient().auth.getSession();
     const token = data.session?.access_token;
     if (!token) {

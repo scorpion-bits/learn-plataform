@@ -6,8 +6,8 @@ import { Button, Field } from '@/components/ui';
 import { PasswordInput } from '@/features/auth/components/PasswordInput';
 
 import { changePassword } from '../actions';
-import { IDLE_STATE, MIN_PASSWORD_LENGTH } from '../schemas';
-import type { AccountFormState } from '../schemas';
+import { IDLE_STATE, MIN_PASSWORD_LENGTH } from '../form-state';
+import type { AccountFormState } from '../form-state';
 import styles from './Account.module.css';
 
 async function submit(_prev: AccountFormState, formData: FormData): Promise<AccountFormState> {

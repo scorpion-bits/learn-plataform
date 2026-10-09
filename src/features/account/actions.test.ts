@@ -4,15 +4,43 @@ vi.mock('server-only', () => ({}));
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 const requireUser = vi.fn();
+const getCurrentRole = vi.fn();
+const calls: string[] = [];
 vi.mock('@/lib/auth/dal', () => ({
   requireUser: () => requireUser(),
   requireAdmin: vi.fn(),
+  getCurrentRole: () => {
+    calls.push('getCurrentRole');
+    return getCurrentRole();
+  },
 }));
+
+const anonymizeUser = vi.fn();
+const disableAuthUser = vi.fn();
+vi.mock('./deletion', async () => {
+  class AccountDeletionError extends Error {
+    constructor(readonly step: string) {
+      super(step);
+    }
+  }
+  return {
+    AccountDeletionError,
+    anonymizeUser: (id: string) => {
+      calls.push('anonymizeUser');
+      return anonymizeUser(id);
+    },
+    disableAuthUser: (id: string) => {
+      calls.push('disableAuthUser');
+      return disableAuthUser(id);
+    },
+  };
+});
 
 let updatePayload: Record<string, unknown> | null;
 let updateEq: [string, unknown] | null;
 let profileResult: { data: unknown; error: unknown };
 const updateUser = vi.fn();
+const signOut = vi.fn();
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(async () => ({
     from: (table: string) => {
@@ -30,11 +58,18 @@ vi.mock('@/lib/supabase/server', () => ({
       b.maybeSingle = () => Promise.resolve(profileResult);
       return b;
     },
-    auth: { updateUser: (...a: unknown[]) => updateUser(...a) },
+    auth: {
+      updateUser: (...a: unknown[]) => updateUser(...a),
+      signOut: (...a: unknown[]) => {
+        calls.push('signOut');
+        return signOut(...a);
+      },
+    },
   })),
 }));
 
-import { changePassword, updateProfile } from './actions';
+import { changePassword, deleteMyAccount, updateProfile } from './actions';
+import { AccountDeletionError } from './deletion';
 
 const USER = '22222222-2222-4222-8222-222222222222';
 
@@ -51,6 +86,11 @@ beforeEach(() => {
   profileResult = { data: { id: USER }, error: null };
   updateUser.mockResolvedValue({ error: null });
   requireUser.mockResolvedValue({ id: USER, email: 'u@b.c' });
+  calls.length = 0;
+  getCurrentRole.mockResolvedValue('student');
+  anonymizeUser.mockResolvedValue('anonymized');
+  disableAuthUser.mockResolvedValue(undefined);
+  signOut.mockResolvedValue({ error: null });
 });
 
 describe('updateProfile', () => {
@@ -132,5 +172,88 @@ describe('changePassword', () => {
       form({ password: 'senha-forte-1', confirm_password: 'senha-forte-1' }),
     );
     expect(r).toMatchObject({ ok: false, error: expect.stringContaining(text) });
+  });
+});
+
+describe('deleteMyAccount', () => {
+  it('não autenticado: o guard rejeita antes de qualquer chamada', async () => {
+    requireUser.mockRejectedValue(new Error('NEXT_REDIRECT'));
+    await expect(deleteMyAccount(form({ email: 'u@b.c' }))).rejects.toThrow('NEXT_REDIRECT');
+    expect(calls).toEqual([]);
+  });
+
+  it('sem e-mail: erro de validação, nada é chamado', async () => {
+    const r = await deleteMyAccount(form({}));
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.fieldErrors?.email).toBeDefined();
+    expect(calls).toEqual([]);
+  });
+
+  it('e-mail divergente é recusado sem tocar no banco', async () => {
+    const r = await deleteMyAccount(form({ email: 'outra@b.c' }));
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.fieldErrors?.email?.[0]).toContain('e-mail desta conta');
+    expect(calls).toEqual([]);
+  });
+
+  it('e-mail da sessão vazio nunca confirma', async () => {
+    requireUser.mockResolvedValue({ id: USER, email: '' });
+    const r = await deleteMyAccount(form({ email: ' ' }));
+    expect(r.ok).toBe(false);
+    expect(calls).toEqual([]);
+  });
+
+  it('admin é recusado antes de anonimizar', async () => {
+    getCurrentRole.mockResolvedValue('admin');
+    const r = await deleteMyAccount(form({ email: 'u@b.c' }));
+    expect(r).toMatchObject({ ok: false, error: expect.stringContaining('administrador') });
+    expect(calls).toEqual(['getCurrentRole']);
+  });
+
+  it.each([
+    ['is_admin', 'administrador'],
+    ['refund_pending', 'reembolso em andamento'],
+    ['payment_pending', 'pagamento PIX em aberto'],
+    ['not_found', 'Tente novamente'],
+  ])('banco devolve %s: recusa e não mexe no Auth', async (result, text) => {
+    anonymizeUser.mockResolvedValue(result);
+    const r = await deleteMyAccount(form({ email: 'u@b.c' }));
+    expect(r).toMatchObject({ ok: false, error: expect.stringContaining(text) });
+    expect(calls).toEqual(['getCurrentRole', 'anonymizeUser']);
+  });
+
+  it('sucesso: ordem banco -> Auth -> sair, sempre com o id da sessão', async () => {
+    const r = await deleteMyAccount(form({ email: '  U@B.C ', user_id: 'outro-usuario' }));
+    expect(r).toEqual({ ok: true, data: { message: 'Sua conta foi excluída.' } });
+    expect(calls).toEqual(['getCurrentRole', 'anonymizeUser', 'disableAuthUser', 'signOut']);
+    expect(anonymizeUser).toHaveBeenCalledWith(USER);
+    expect(disableAuthUser).toHaveBeenCalledWith(USER);
+    expect(signOut).toHaveBeenCalledWith({ scope: 'local' });
+  });
+
+  it('repetição após falha parcial (already_anonymized) conclui no Auth', async () => {
+    anonymizeUser.mockResolvedValue('already_anonymized');
+    const r = await deleteMyAccount(form({ email: 'u@b.c' }));
+    expect(r.ok).toBe(true);
+    expect(calls).toEqual(['getCurrentRole', 'anonymizeUser', 'disableAuthUser', 'signOut']);
+  });
+
+  it('falha no Auth: mensagem para tentar de novo, sessão mantida', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    disableAuthUser.mockRejectedValue(new AccountDeletionError('soft_delete'));
+    const r = await deleteMyAccount(form({ email: 'u@b.c' }));
+    expect(r).toMatchObject({ ok: false, error: expect.stringContaining('Tente novamente') });
+    expect(calls).not.toContain('signOut');
+    expect(spy).toHaveBeenCalledWith('[account] delete failed', {
+      userId: USER,
+      step: 'soft_delete',
+    });
+    spy.mockRestore();
+  });
+
+  it('falha ao limpar cookies não desfaz a exclusão', async () => {
+    signOut.mockRejectedValue(new Error('network'));
+    const r = await deleteMyAccount(form({ email: 'u@b.c' }));
+    expect(r.ok).toBe(true);
   });
 });

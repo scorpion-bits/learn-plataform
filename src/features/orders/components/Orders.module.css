@@ -62,6 +62,9 @@
   font-size: var(--s--1);
 }
 .link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem; /* alvo de toque >= 44px (ADR-019) */
   font-weight: 600;
 }
 .back {

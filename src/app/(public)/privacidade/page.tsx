@@ -8,7 +8,7 @@ import { company } from '@/config/company';
 
 import styles from '../legal.module.css';
 
-const LAST_UPDATED = '8 de outubro de 2026';
+const LAST_UPDATED = '9 de outubro de 2026';
 
 export const metadata: Metadata = {
   title: 'Política de privacidade',
@@ -141,6 +141,15 @@ export default function PrivacidadePage() {
           <li>informação sobre com quem compartilhamos seus dados;</li>
           <li>revogação do consentimento, quando ele for a base legal.</li>
         </ul>
+        <p>
+          <strong>Excluir sua conta</strong>: você mesmo pode fazer isso em{' '}
+          <Link href="/conta">Minha conta → Excluir conta</Link>. Apagamos seu nome, CPF, telefone e
+          progresso nas aulas, encerramos o acesso aos cursos e desativamos o login. Os registros de
+          pedidos e pagamentos são mantidos, ligados só a um identificador interno, pelo prazo
+          exigido pela legislação fiscal e contábil (art. 16, I, LGPD). A exclusão não pode ser
+          desfeita e fica indisponível enquanto houver um reembolso em andamento ou um pagamento PIX
+          em aberto.
+        </p>
         <p>
           Para exercer seus direitos, envie um e-mail para{' '}
           <a href={`mailto:${company.email}`}>{company.email}</a>. Responderemos no prazo previsto

@@ -5,7 +5,7 @@ import { useActionState, useRef } from 'react';
 import { Button, Field, Input, TextLink } from '@/components/ui';
 
 import { signUp } from '../actions';
-import { IDLE_STATE, MIN_PASSWORD_LENGTH } from '../schemas';
+import { IDLE_STATE, MIN_PASSWORD_LENGTH } from '../form-state';
 import styles from './auth-form.module.css';
 import { PasswordInput } from './PasswordInput';
 import { useFocusOnError } from './useFocusOnError';

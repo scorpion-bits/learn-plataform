@@ -7,8 +7,8 @@ import type { BadgeTone } from '@/components/ui';
 
 import { setCourseStatus } from '../actions';
 import { publishBlockers } from '../rules';
-import { STATUS_LABELS } from '../schemas';
-import type { CourseStatus } from '../schemas';
+import { STATUS_LABELS } from '../constants';
+import type { CourseStatus } from '../constants';
 import styles from './StatusControl.module.css';
 
 export const STATUS_TONES: Record<CourseStatus, BadgeTone> = {

@@ -8,7 +8,7 @@ import { moveItem } from '@/features/curriculum/order';
 import { deleteMaterial, reorderMaterials } from '../actions';
 import type { EditorMaterial } from '../queries';
 import { MATERIAL_TYPE_LABELS } from '../schemas';
-import { MaterialForm } from './MaterialForm';
+import { LazyMaterialForm } from './LazyMaterialForm';
 import { MaterialItem, materialLabel } from './MaterialItem';
 import styles from './MaterialsEditor.module.css';
 
@@ -153,7 +153,7 @@ export function MaterialsEditor({ courseId, lessonId, materials: initial }: Prop
         <h3 id="add-material-heading" className={styles.addHeading}>
           Novo material
         </h3>
-        <MaterialForm
+        <LazyMaterialForm
           key={formKey}
           courseId={courseId}
           lessonId={lessonId}

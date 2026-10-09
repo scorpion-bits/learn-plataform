@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import type { RefObject } from 'react';
 
-import type { AuthFormState } from '../schemas';
+import type { AuthFormState } from '../form-state';
 
 /**
  * Depois de um envio com erro, move o foco para o primeiro campo inválido

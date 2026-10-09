@@ -482,6 +482,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          deleted_at: string | null
           full_name: string
           id: string
           phone: string | null
@@ -491,6 +492,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          deleted_at?: string | null
           full_name?: string
           id: string
           phone?: string | null
@@ -500,6 +502,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          deleted_at?: string | null
           full_name?: string
           id?: string
           phone?: string | null
@@ -656,6 +659,26 @@ export type Database = {
           sales: number
         }[]
       }
+      admin_course_students: {
+        Args: {
+          p_course_id: string
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+        }
+        Returns: {
+          completed_count: number
+          email: string
+          enrollment_id: string
+          full_name: string
+          granted_at: string
+          lesson_count: number
+          revoked_at: string | null
+          source: Database["public"]["Enums"]["enrollment_source"]
+          total_count: number
+          user_id: string
+        }[]
+      }
       admin_student_by_id: {
         Args: { p_user_id: string }
         Returns: {
@@ -700,6 +723,10 @@ export type Database = {
           slug: string
           title: string
         }[]
+      }
+      anonymize_user: {
+        Args: { p_user_id: string }
+        Returns: string
       }
       fulfill_order: {
         Args: {

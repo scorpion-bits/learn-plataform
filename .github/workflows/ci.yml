@@ -79,3 +79,61 @@ jobs:
       # Roda supabase/tests/*.test.sql (pgTAP) como `supabase test db`.
       - name: Run pgTAP tests
         run: npx supabase test db
+
+  # E2E (QA-001/QA-003, ADR-021): Playwright em Desktop Chrome, Pixel 7 e iPhone 14 contra o
+  # Supabase local completo (Auth + Postgres + Storage + Mailpit) e o mock da AbacatePay.
+  e2e:
+    name: E2E (Playwright)
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Só nesta job (efêmera, sem commit): confirmação de email ligada como em produção, para o
+      # teste de cadastro passar pelo Mailpit, e limite de emails alto para os 3 projects.
+      - name: Configure local Supabase for E2E
+        run: |
+          sed -i '/^\[auth\.email\]/,/^\[auth\.sms\]/ s/^enable_confirmations = false/enable_confirmations = true/' supabase/config.toml
+          sed -i 's/^email_sent = 2/email_sent = 1000/' supabase/config.toml
+          git diff --stat supabase/config.toml
+
+      # Sobe a stack local, aplica supabase/migrations e o seed.
+      - name: Start local Supabase
+        run: npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor
+
+      - name: Write .env from Supabase status
+        run: bash e2e/scripts/write-env.sh .env
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      # NEXT_PUBLIC_* são embutidas no build: o .env precisa existir antes.
+      - name: Build
+        run: npm run build
+
+      # O mock da AbacatePay sobe no globalSetup e o `npm start` no webServer do playwright.config.ts.
+      - name: Run E2E
+        run: npm run test:e2e
+        env:
+          CI: 'true'
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

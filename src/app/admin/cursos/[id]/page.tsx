@@ -4,11 +4,14 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { Skeleton, Tabs } from '@/components/ui';
+import courseStudentStyles from '@/features/course-students/components/CourseStudents.module.css';
+import { CourseStudentsPanel } from '@/features/course-students/components/CourseStudentsPanel';
 import { CourseForm } from '@/features/courses/components/CourseForm';
 import { StatusControl } from '@/features/courses/components/StatusControl';
 import { getAdminCourse, listCategories } from '@/features/courses/queries';
 import { formatCentsForInput } from '@/features/courses/schemas';
 import { SyllabusPanel } from '@/features/curriculum/components/SyllabusPanel';
+import { parseListParams } from '@/features/students/schemas';
 import { getCoverPublicUrl } from '@/features/materials/storage';
 
 import styles from '../page.module.css';
@@ -20,9 +23,9 @@ export default async function EditCoursePage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; q?: string; pagina?: string }>;
 }) {
-  const [{ id }, { tab }] = await Promise.all([params, searchParams]);
+  const [{ id }, { tab, ...listRaw }] = await Promise.all([params, searchParams]);
   const [course, categories] = await Promise.all([getAdminCourse(id), listCategories()]);
   if (!course) notFound();
 
@@ -70,6 +73,23 @@ export default async function EditCoursePage({
     </Suspense>
   );
 
+  const { q, page } = parseListParams(listRaw);
+  const students = (
+    <Suspense
+      key={`${q}|${page}`}
+      fallback={
+        <div className={courseStudentStyles.skel} role="status" aria-label="Carregando alunos">
+          <Skeleton height="2.75rem" width="24rem" />
+          <Skeleton height="3.5rem" />
+          <Skeleton height="3.5rem" />
+          <Skeleton height="3.5rem" />
+        </div>
+      }
+    >
+      <CourseStudentsPanel courseId={course.id} q={q} page={page} />
+    </Suspense>
+  );
+
   return (
     <div className={styles.page}>
       <Link className={styles.back} href="/admin/cursos">
@@ -78,11 +98,11 @@ export default async function EditCoursePage({
       <h1 className={styles.title}>{course.title}</h1>
       <Tabs
         label="Seções do curso"
-        defaultValue={tab === 'syllabus' ? 'syllabus' : 'info'}
+        defaultValue={tab === 'syllabus' || tab === 'students' ? tab : 'info'}
         items={[
           { value: 'info', label: 'Informações', panel: info },
           { value: 'syllabus', label: 'Ementa', panel: syllabus },
-          { value: 'students', label: 'Alunos (em breve)', panel: null, disabled: true },
+          { value: 'students', label: 'Alunos', panel: students },
         ]}
       />
     </div>

@@ -16,8 +16,6 @@ npm run dev
 ```
 
 ## Scripts
-`test:e2e` (Playwright) ainda não existe; entra em tarefa futura.
-
 | script | faz |
 |---|---|
 | `dev` / `build` / `start` | Next |
@@ -25,6 +23,7 @@ npm run dev
 | `typecheck` | `tsc --noEmit` |
 | `test` | Vitest (`vitest run`, jsdom; testes em `src/**/*.test.tsx`) |
 | `test:watch` | Vitest em modo watch |
+| `test:e2e` | Playwright (ver "E2E" abaixo; precisa de Docker) |
 | `format` | Prettier |
 | `db:types` | `supabase gen types typescript --local > src/types/database.ts` |
 | `db:start` / `db:stop` | `supabase start` / `supabase stop` (Docker) |
@@ -52,6 +51,27 @@ npm run db:test       # supabase test db → pg_prove em supabase/tests
 Regras para novos testes: **toda tarefa que muda tabela, policy, função ou bucket adiciona/ajusta testes aqui**; um teste de segurança deve falhar se a proteção for removida (confira revertendo a policy/grant). Arquivos `.sql` extras em `supabase/tests/` seriam executados como testes, então não coloque helpers ali. Se o Docker não estiver disponível, qualquer Postgres 15+ com `pgtap` e `pg_prove` serve, desde que tenha os papéis `anon`/`authenticated`/`service_role`, `auth.users`/`auth.uid()` e `storage.buckets/objects` (stubs mínimos), o schema `extensions` com `pgtap`, e as migrations aplicadas em ordem.
 
 No CI, o job `db-test` (`.github/workflows/ci.yml`) roda `npx supabase db start` e `npx supabase test db`.
+
+## E2E (Playwright)
+Robô que percorre a plataforma como usuário real em **Desktop Chrome, Pixel 7 e iPhone 14** (ADR-021), contra o Supabase local completo (Auth, Postgres, Storage, Mailpit) e um **mock da AbacatePay**. Specs em `e2e/*.spec.ts`: visitante, cadastro com confirmação por email, admin cria/publica curso, compra PIX (webhook e plano B por polling), atribuir/revogar, `/conta`, segurança básica e overflow horizontal.
+
+Rodar local (precisa de Docker):
+```bash
+npx supabase start                        # sobe a stack local, aplica migrations + seed
+bash e2e/scripts/write-env.sh             # gera .env.e2e.local a partir do `supabase status`
+set -a; . ./.env.e2e.local; set +a        # NEXT_PUBLIC_* são embutidas no build
+npm run build
+npx playwright install chromium           # uma vez (ou use PLAYWRIGHT_BROWSERS_PATH)
+npm run test:e2e                          # ou: npx playwright test --project=pixel-7 -g compra
+npx playwright show-report                # relatório HTML (playwright-report/)
+```
+- **Como o app é servido**: o `webServer` do `playwright.config.ts` roda `npm run start` (app já buildado) em `127.0.0.1:3000` e reaproveita um servidor que já esteja de pé. Use `127.0.0.1` (não `localhost`): é o `site_url` do `supabase/config.toml`, e o link de confirmação de email depende disso.
+- **Variáveis** (todas escritas por `write-env.sh`; o config lê `.env.e2e.local`, depois `.env`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY` (service role, só para montar dados nos testes), `NEXT_PUBLIC_SITE_URL`, `ABACATEPAY_API_KEY` (`abc_dev_e2e`), `ABACATEPAY_WEBHOOK_SECRET`, `ABACATEPAY_API_BASE_URL` (aponta o app para o mock), `E2E_MOCK_PORT` (4010), `E2E_MAILPIT_URL` (porta de `[local_smtp]`, 54324). Os testes **recusam** um Supabase que não seja loopback.
+- **Mock da AbacatePay** (`e2e/mocks/abacatepay.ts`): sobe no `globalSetup` em `127.0.0.1:4010`. `POST /v2/transparents/create` valida o contrato e devolve `PENDING`; `GET …/check?id=` devolve o status; `POST …/simulate-payment?id=` marca `PAID` (o "pagar" do Dev mode); `POST …/refund` marca `REFUNDED`. O teste de compra paga no mock e então dispara o webhook real (`transparent.completed`, com segredo na URL e `X-Webhook-Signature`); o plano B só paga no mock e espera a reconsulta do polling. Testes do mock: `npx vitest run e2e` (rodam no `npm test`).
+- **Cadastro**: com `enable_confirmations = false` (padrão do `config.toml`) o teste cai direto em `/inicio`; com `true` (o job `e2e` do CI liga isso numa cópia efêmera) ele abre o email no Mailpit (`/api/v1`) e segue o link. Para testar o caminho do email local, mude a flag temporariamente.
+- **iPhone**: Chromium com o perfil do aparelho. WebKit real: `E2E_IPHONE_WEBKIT=1 npx playwright install webkit && npm run test:e2e -- --project=iphone-14`.
+- **Escrevendo testes**: dados próprios por teste (`createUser`, `createPublishedCourse` em `e2e/support/service.ts`, e-mails únicos), sem depender de ordem; prefira `getByRole`/`getByLabel` com o texto pt-BR real; use `visit()`/`expectNoHorizontalOverflow()` nas telas. Nunca `test.skip` para esconder falha.
+- **CI**: job `e2e` (depois de `ci`) em `.github/workflows/ci.yml`; em falha publica `playwright-report` e `test-results` (traces) como artifact. 1 retry no CI.
 
 ## Fluxo de trabalho
 1. Pegue uma tarefa `READY` no `MASTER_PLAN.md` (ou receba um bloco de delegação).

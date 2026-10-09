@@ -1,0 +1,5 @@
+.skel {
+  display: grid;
+  gap: var(--space-3);
+  width: min(26rem, 100%);
+}

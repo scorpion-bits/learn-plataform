@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 import { getPaymentsEnv } from '@/lib/env/server';
 
+import { DEFAULT_ABACATEPAY_API_BASE_URL, resolveAbacatePayBaseUrl } from './api-base-url';
 import { formatBrPhone, formatCpf } from './tax-id';
 
 /**
@@ -17,7 +18,27 @@ import { formatBrPhone, formatCpf } from './tax-id';
  *   contém a chave, o CPF, o payload enviado nem o texto devolvido pelo provedor.
  */
 
-const BASE_URL = 'https://api.abacatepay.com/v2';
+/**
+ * Base da API: a real, salvo `ABACATEPAY_API_BASE_URL` (só para o mock dos testes E2E,
+ * ADR-021; validada em `api-base-url.ts`). Lida a cada chamada, nunca no import.
+ */
+function baseUrl(key: string): string {
+  let url: string;
+  try {
+    url = resolveAbacatePayBaseUrl(process.env.ABACATEPAY_API_BASE_URL);
+  } catch {
+    // Sem o valor da env na mensagem.
+    throw new PaymentProviderError('provider_unavailable', 'ABACATEPAY_API_BASE_URL inválida.');
+  }
+  // Defesa extra: chave de produção nunca vai para um host diferente do oficial.
+  if (url !== DEFAULT_ABACATEPAY_API_BASE_URL && key.startsWith('abc_prod_')) {
+    throw new PaymentProviderError(
+      'provider_unavailable',
+      'ABACATEPAY_API_BASE_URL não é permitida com chave de produção.',
+    );
+  }
+  return url;
+}
 export const PROVIDER_TIMEOUT_MS = 10_000;
 
 export type PaymentProviderErrorCode =
@@ -221,6 +242,7 @@ async function request(
   classify?: ClassifyFailure,
 ) {
   const key = apiKey();
+  const base = baseUrl(key);
   const controller = new AbortController();
   // O timeout cobre a resposta inteira (headers + corpo).
   const timer = setTimeout(() => controller.abort(), PROVIDER_TIMEOUT_MS);
@@ -230,7 +252,7 @@ async function request(
   try {
     let response: Response;
     try {
-      response = await fetch(`${BASE_URL}${path}`, {
+      response = await fetch(`${base}${path}`, {
         method: init.method,
         headers: {
           Authorization: `Bearer ${key}`,

@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
+import { REASON_MAX, REASON_MIN } from './constants';
+
+export { REASON_MAX, REASON_MIN };
+
 export const PAGE_SIZE = 20;
 export const SEARCH_MAX = 100;
-export const REASON_MIN = 3;
-export const REASON_MAX = 500;
 
 /** `?q=` e `?pagina=` da lista: valores inválidos viram o padrão (nunca erro). */
 export function parseListParams(raw: { q?: unknown; pagina?: unknown }): {
