@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useActionState, useEffect, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 
 import { Button, Field, Input, Select, Textarea, useToast } from '@/components/ui';
 import type { ActionResult } from '@/lib/auth/actions';
@@ -47,6 +47,8 @@ export function CourseForm({ categories, course }: Props) {
     return isEdit ? updateCourse(formData) : createCourse(formData);
   }, null);
 
+  const formRef = useRef<HTMLFormElement>(null);
+
   useEffect(() => {
     if (!state) return;
     if (state.ok) {
@@ -63,6 +65,10 @@ export function CourseForm({ categories, course }: Props) {
       }
     } else {
       toast({ tone: 'error', title: 'Não foi possível salvar', description: state.error });
+      // O toast não rouba o foco: leva o teclado ao primeiro campo inválido.
+      requestAnimationFrame(() =>
+        formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(),
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- reage apenas a um novo resultado
   }, [state]);
@@ -71,7 +77,7 @@ export function CourseForm({ categories, course }: Props) {
   const err = (name: string) => errors[name]?.[0];
 
   return (
-    <form action={formAction} className={styles.form} noValidate>
+    <form ref={formRef} action={formAction} className={styles.form} noValidate>
       {course && <input type="hidden" name="id" value={course.id} />}
       {course && <input type="hidden" name="coverPath" value={coverPath} />}
 

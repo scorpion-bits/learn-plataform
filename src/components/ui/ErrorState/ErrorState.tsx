@@ -12,6 +12,8 @@ export interface ErrorStateProps {
   onRetry?: () => void;
   retryLabel?: string;
   retryPending?: boolean;
+  /** Nível do título; use 1 quando o estado de erro substitui a página inteira (error.tsx). */
+  headingLevel?: 1 | 2 | 3;
   className?: string;
 }
 
@@ -21,11 +23,13 @@ export function ErrorState({
   onRetry,
   retryLabel = 'Tentar novamente',
   retryPending,
+  headingLevel = 2,
   className,
 }: ErrorStateProps) {
+  const Heading = `h${headingLevel}` as const;
   return (
     <div className={cx(styles.error, className)} role="alert">
-      <h2 className={styles.title}>{title}</h2>
+      <Heading className={styles.title}>{title}</Heading>
       <p className={styles.message}>{message}</p>
       {onRetry ? (
         <Button variant="secondary" onClick={onRetry} pending={retryPending}>

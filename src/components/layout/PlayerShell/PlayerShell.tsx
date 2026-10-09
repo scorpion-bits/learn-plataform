@@ -107,7 +107,7 @@ export function PlayerShell({
         {outline}
       </aside>
       {hasActions && (
-        <div className={styles.actions} role="group" aria-label="Navegação da aula">
+        <div className={styles.actions} role="region" aria-label="Navegação da aula">
           <div className={styles.actionsInner}>
             {prev}
             {complete}

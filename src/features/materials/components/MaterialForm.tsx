@@ -78,6 +78,14 @@ export function MaterialForm({ courseId, lessonId, material, onDone, onCancel }:
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
+  // Após uma tentativa de envio inválida, leva o foco ao primeiro campo com erro (WCAG 3.3.1).
+  const focusErrorRef = useRef(false);
+  useEffect(() => {
+    if (!focusErrorRef.current) return;
+    focusErrorRef.current = false;
+    rootRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+  }, [errors]);
+
   function clear(field: FieldName) {
     setErrors((current) =>
       current[field] || current.form
@@ -141,6 +149,7 @@ export function MaterialForm({ courseId, lessonId, material, onDone, onCancel }:
         const key = String(issue.path[0] ?? '');
         (flat[key] ??= []).push(issue.message);
       }
+      focusErrorRef.current = true;
       setErrors(pickErrors(flat));
       return;
     }
@@ -178,6 +187,7 @@ export function MaterialForm({ courseId, lessonId, material, onDone, onCancel }:
       if (uploaded) void discardUpload({ lessonId, storagePath: uploaded.storagePath });
       setBusy({ state: 'idle' });
       const fields = pickErrors(result.fieldErrors);
+      focusErrorRef.current = true;
       setErrors(Object.keys(fields).length > 0 ? fields : { form: result.error });
       return;
     }

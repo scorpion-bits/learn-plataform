@@ -9,11 +9,13 @@ export const metadata: Metadata = {
 
 export default function DevAccountPage() {
   return (
-    <AccountView
-      demo
-      isAdmin
-      email="ana@exemplo.com"
-      profile={{ fullName: 'Ana Souza', phone: '11940028922', taxId: '11144477735' }}
-    />
+    <main id="conteudo">
+      <AccountView
+        demo
+        isAdmin
+        email="ana@exemplo.com"
+        profile={{ fullName: 'Ana Souza', phone: '11940028922', taxId: '11144477735' }}
+      />
+    </main>
   );
 }

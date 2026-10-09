@@ -41,7 +41,7 @@ export function LibraryCard({
             </Badge>
             {course.isCompleted ? <Badge tone="mint">Concluído</Badge> : null}
           </div>
-          <h3 className={styles.title}>{course.title}</h3>
+          <h2 className={styles.title}>{course.title}</h2>
           <p className={styles.count}>
             {course.completedCount} de {pluralLessons(course.lessonCount)} concluídas
           </p>

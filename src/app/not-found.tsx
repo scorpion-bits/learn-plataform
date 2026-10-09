@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { IsoBackdrop, Logo } from '@/components/brand';
+import { SkipLink } from '@/components/layout';
 import { Button } from '@/components/ui';
 
 import styles from './not-found.module.css';
@@ -15,6 +16,7 @@ export default function NotFound() {
   return (
     <>
       <IsoBackdrop variant="full" />
+      <SkipLink />
       <div className={styles.shell}>
         <header className={styles.header}>
           <Logo />
