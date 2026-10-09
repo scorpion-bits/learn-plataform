@@ -1,11 +1,10 @@
-import Image from 'next/image';
-
 import { ChamferCard, IsoCube } from '@/components/brand';
 import type { IsoCubeState, IsoCubeTone } from '@/components/brand';
 import { Button } from '@/components/ui';
 import { CourseCard } from '@/features/catalog/components/CourseCard';
 import type { CourseView } from '@/features/catalog/components/types';
 
+import { HeroMascot } from './HeroMascot';
 import styles from './LandingView.module.css';
 
 export interface LandingViewProps {
@@ -89,16 +88,7 @@ export function LandingView({ signedIn, courses }: LandingViewProps) {
 
         <div className={styles.stage} aria-hidden="true">
           <span className={styles.floor} />
-          <Image
-            className={styles.mascot}
-            src="/brand/logo-poster.png"
-            width={320}
-            height={426}
-            sizes="(max-width: 1023px) 240px, 340px"
-            alt=""
-            preload
-            fetchPriority="high"
-          />
+          <HeroMascot />
           {HERO_CUBES.map((cube, i) => (
             <span
               key={i}
