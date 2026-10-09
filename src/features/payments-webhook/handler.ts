@@ -407,9 +407,9 @@ async function resolveBillingId(ctx: Ctx, order: WebhookOrder): Promise<string> 
 }
 
 /** Reconsulta autenticada pela nossa chave. Recusa do provedor (4xx) é erro de dado. */
-async function checkStatus(ctx: Ctx, order: WebhookOrder, billingId: string) {
+async function checkCharge(ctx: Ctx, order: WebhookOrder, billingId: string) {
   try {
-    return (await ctx.deps.getPixStatus(billingId)).status;
+    return await ctx.deps.getPixStatus(billingId);
   } catch (error) {
     if (error instanceof PaymentProviderError && error.code === 'invalid_request') {
       throw new DataError('provider_check_rejected', order.id);
@@ -437,10 +437,16 @@ async function processCompleted(ctx: Ctx): Promise<string> {
   if (amount === undefined) throw new DataError('amount_mismatch', order.id);
 
   const billingId = await resolveBillingId(ctx, order);
-  const status = await checkStatus(ctx, order, billingId);
+  const remote = await checkCharge(ctx, order, billingId);
+  const status = remote.status;
   // PENDING = atraso do provedor: transitório (503, evento segue não processado).
   if (status === 'PENDING') throw new ProviderPendingError(order.id);
   if (status !== 'PAID') throw new DataError(`provider_status_${status.toLowerCase()}`, order.id);
+  // QA-002 (S-01): o valor do evento não é confiável sozinho (o segredo da URL pode vazar).
+  // Se a reconsulta informar o valor da cobrança, ele precisa bater com o do pedido.
+  if (remote.amountCents !== null && remote.amountCents !== order.amountCents) {
+    throw new DataError('amount_mismatch', order.id);
+  }
 
   // Único ponto que concede acesso.
   const result = await ctx.store.fulfillOrder({
@@ -466,7 +472,7 @@ async function processRefund(ctx: Ctx): Promise<string> {
 
   if (order.status === 'paid') {
     const billingId = await resolveBillingId(ctx, order);
-    const status = await checkStatus(ctx, order, billingId);
+    const { status } = await checkCharge(ctx, order, billingId);
     if (status !== 'REFUNDED') {
       throw new DataError(`provider_status_${status.toLowerCase()}`, order.id);
     }

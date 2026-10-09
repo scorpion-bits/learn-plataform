@@ -388,6 +388,41 @@ describe('transparent.completed', () => {
     expect(event()!.processing_error).toBe('fulfill_order: amount_mismatch');
   });
 
+  it('QA-002: reconsulta com valor ≠ do pedido → amount_mismatch, sem fulfill (evento forjado com valor do pedido)', async () => {
+    // Cobrança mais barata, mas o evento (forjado com o segredo vazado) diz o valor do pedido.
+    seedOrder({ status: 'failed', provider_billing_id: null });
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          data: { id: 'pix_char_cheap', status: 'PAID', amount: 100, expiresAt: null },
+          success: true,
+          error: null,
+        }),
+        { status: 200, headers: { 'content-type': 'application/json' } },
+      ),
+    );
+    const res = await run(payload('transparent.completed', {}, { id: 'pix_char_cheap' }));
+    expect(res).toEqual({ status: 200, body: { ok: true, result: 'amount_mismatch' } });
+    expect(fulfillCalls()).toHaveLength(0);
+    expect(event()!.processing_error).toBe('amount_mismatch');
+  });
+
+  it('reconsulta com o mesmo valor do pedido → fulfill', async () => {
+    seedOrder();
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          data: { id: BILLING, status: 'PAID', amount: 4990, expiresAt: null },
+          success: true,
+          error: null,
+        }),
+        { status: 200, headers: { 'content-type': 'application/json' } },
+      ),
+    );
+    const res = await run(payload('transparent.completed'));
+    expect(res.body.result).toBe('fulfilled');
+  });
+
   it('sem amount no payload → amount_mismatch sem chamar o provedor', async () => {
     seedOrder();
     const res = await run(payload('transparent.completed', {}, { amount: undefined }));
