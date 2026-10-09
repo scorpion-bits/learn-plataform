@@ -79,3 +79,17 @@ describe('resolveAuthRedirect', () => {
     ).toBeNull();
   });
 });
+
+describe('resolveAuthRedirect — code na raiz', () => {
+  it('encaminha ?code= da landing para o callback', () => {
+    expect(
+      resolveAuthRedirect({ pathname: '/', search: '?code=abc-123', isAuthenticated: false }),
+    ).toBe('/auth/callback?code=abc-123&next=/inicio');
+  });
+  it('não mexe na landing sem code nem em outras rotas com code', () => {
+    expect(resolveAuthRedirect({ pathname: '/', search: '', isAuthenticated: false })).toBeNull();
+    expect(
+      resolveAuthRedirect({ pathname: '/cursos', search: '?code=x', isAuthenticated: false }),
+    ).toBeNull();
+  });
+});

@@ -41,6 +41,13 @@ export function resolveAuthRedirect(input: {
 }): string | null {
   const { pathname, search, isAuthenticated } = input;
 
+  // Link de email que caiu na Site URL (redirect fora da allowlist do Supabase):
+  // encaminha o `code` PKCE para o callback em vez de ignorá-lo na landing.
+  if (pathname === '/') {
+    const code = new URLSearchParams(search).get('code');
+    if (code) return `/auth/callback?code=${encodeURIComponent(code)}&next=/inicio`;
+  }
+
   if (!isAuthenticated && isProtectedPath(pathname)) {
     const next = sanitizeNextPath(`${pathname}${search}`, '');
     return next ? `/entrar?next=${encodeURIComponent(next)}` : '/entrar';
