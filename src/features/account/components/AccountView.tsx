@@ -51,7 +51,7 @@ export function AccountView({
         </h2>
         <ul className={styles.shortcuts}>
           <li>
-            <TextLink href="/conta/pedidos">Meus pedidos e reembolso</TextLink>
+            <TextLink href="/conta/pedidos">Meus pedidos</TextLink>
           </li>
           {isAdmin ? (
             <li>

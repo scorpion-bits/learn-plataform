@@ -20,15 +20,13 @@ export function MyOrdersView({
     <div className={styles.page}>
       <header>
         <h1 className={styles.title}>Meus pedidos</h1>
-        <p className={styles.muted}>
-          Você pode pedir reembolso em até 7 dias após o pagamento (Código de Defesa do Consumidor).
-        </p>
+        <p className={styles.muted}>Histórico das suas compras.</p>
       </header>
 
       {orders.length === 0 ? (
         <EmptyState
           title="Nenhum pedido ainda"
-          description="Os cursos que você comprar aparecem aqui, com a opção de reembolso dentro do prazo."
+          description="Os cursos que você comprar aparecem aqui."
         />
       ) : (
         <ul className={styles.orderList}>
@@ -45,7 +43,6 @@ export function MyOrdersView({
                 </p>
                 {state.kind === 'eligible' ? (
                   <>
-                    <p className={styles.muted}>Prazo para pedir reembolso: {state.remaining}.</p>
                     <div className={styles.actions}>
                       <RequestRefundButton
                         orderId={o.id}
@@ -64,9 +61,6 @@ export function MyOrdersView({
                 ) : null}
                 {state.kind === 'refunded' ? (
                   <p className={styles.muted}>Reembolsado em {formatDate(o.refundedAt)}.</p>
-                ) : null}
-                {state.kind === 'window_expired' ? (
-                  <p className={styles.muted}>O prazo de 7 dias para pedir reembolso já passou.</p>
                 ) : null}
               </li>
             );

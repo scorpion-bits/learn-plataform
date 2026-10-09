@@ -58,7 +58,7 @@ export function RequestRefundButton({
 
   return (
     <>
-      <Button type="button" variant="secondary" onClick={() => setOpen(true)}>
+      <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(true)}>
         Solicitar reembolso
       </Button>
       <Dialog
