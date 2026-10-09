@@ -8,7 +8,7 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 7 (pagamentos) — compra, pedidos e reembolso prontos; falta teste PIX real (QA-004) |
-| Em andamento | `AUTH-004` (A04) — `/conta` dava 404 |
+| Em andamento | — (aguardando QA-004 com o produto) |
 | Próximas | `QA-004` (teste PIX real com o produto) · `UX-001..004` · `QA-001..003` · `ADMIN-008` |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
@@ -56,7 +56,7 @@
 | AUTH-001 | Proxy e sessão | P0 | DONE ✅ | A04 | Sonnet 5.5 |
 | AUTH-002 | DAL e guards | P0 | DONE ✅ | A04 | Sonnet 5.5 |
 | AUTH-003 | Telas de autenticação | P0 | DONE ✅ | A04 | Sonnet 5.5 |
-| AUTH-004 | Página "Minha conta" | P1 | IN PROGRESS | A04 | Sonnet 5.5 |
+| AUTH-004 | Página "Minha conta" | P1 | DONE ✅ | A04 | Sonnet 5.5 |
 | ADMIN-001 | Dashboard | P1 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-002 | Cursos: lista, criação, edição, publicação | P0 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-003 | Editor de ementa (módulos e aulas) | P0 | DONE ✅ | A05 | Sonnet 5.5 |

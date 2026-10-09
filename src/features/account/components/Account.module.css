@@ -1,0 +1,65 @@
+.page {
+  display: grid;
+  gap: var(--space-5);
+  width: min(40rem, 100%);
+}
+.title {
+  font-size: var(--s-2);
+}
+.muted {
+  color: var(--text-dim);
+  font-size: var(--s--1);
+}
+.section {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--hair-lit);
+  border-radius: var(--r-sm);
+  background: var(--ink-850);
+}
+.sectionTitle {
+  font-size: var(--s-1);
+}
+.form {
+  display: grid;
+  gap: var(--space-4);
+}
+.alert,
+.notice {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--coral);
+  border-radius: var(--r-sm);
+  background: var(--ink-850);
+  color: var(--text);
+  font-size: var(--s-0);
+}
+.notice {
+  border-color: var(--mint);
+}
+.alert:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.readonly {
+  color: var(--text-soft);
+  overflow-wrap: anywhere;
+}
+.shortcuts {
+  display: grid;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.shortcuts a {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  font-weight: 600;
+}
+.skel {
+  display: grid;
+  gap: var(--space-4);
+  width: min(40rem, 100%);
+}
