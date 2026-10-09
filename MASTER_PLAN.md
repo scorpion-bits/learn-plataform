@@ -9,9 +9,9 @@
 |---|---|
 | Fase atual | PHASE 9 (qualidade/lançamento) — MVP completo em produção; E2E verde no CI |
 | Em andamento | — · `QA-004` aguarda print de `payment_events` |
-| Próximas | `REL-001` (AbacatePay prod) · `REL-003` (jurídico + checklist) · aprovação visual |
+| Próximas | `REL-001` (AbacatePay prod, produto) · `QA-004` (print de `payment_events`) · `REL-003` checklist final |
 | Bloqueios | — |
-| Pendências do produto | aprovação visual dos componentes isométricos e shells |
+| Pendências do produto | ✅ visual aprovado · ✅ textos jurídicos aprovados (2026-10-09) · amanhã: AbacatePay produção (REL-001), "Secure password change" no Supabase, rate limit na Vercel |
 
 ---
 

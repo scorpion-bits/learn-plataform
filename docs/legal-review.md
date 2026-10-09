@@ -1,5 +1,7 @@
 # Pontos para revisão jurídica (REL-003)
 
+> **Status: aprovado pelo responsável em 2026-10-09.** Revisitar se os textos legais ou o fluxo de exclusão mudarem.
+
 Lista única do que o advogado deve validar antes do lançamento. Textos atuais: `/termos` e `/privacidade` (`src/app/(public)/termos/page.tsx`, `src/app/(public)/privacidade/page.tsx`). Dados da empresa: `src/config/company.ts`.
 
 ## Termos de uso
