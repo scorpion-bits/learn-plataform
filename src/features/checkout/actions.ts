@@ -8,6 +8,7 @@ import { getPublishedCourse } from '@/features/catalog/queries';
 import { ActionError, userAction } from '@/lib/auth/actions';
 import {
   createPixCharge,
+  getPixStatus,
   isPaymentsConfigured,
   PaymentProviderError,
 } from '@/lib/payments/abacatepay';
@@ -244,19 +245,68 @@ export const startCheckout = userAction(startCheckoutSchema, async (input, { use
   redirect(`/checkout/pedido/${order.id}`);
 });
 
+/** Intervalo mínimo entre reconsultas ao provedor por pedido (por instância; best-effort). */
+const PROVIDER_CHECK_INTERVAL_MS = 10_000;
+const lastProviderCheck = new Map<string, number>();
+
 /**
- * Polling da página do pedido: devolve só status e validade. Nunca concede
- * acesso (isso é do webhook → `fulfill_order()`); filtra pelo `user_id` da sessão
- * porque a RLS deixaria o admin ler pedidos de qualquer um.
+ * Plano B ao webhook: se o pedido segue `pending`, reconsulta a AbacatePay pela
+ * NOSSA chave e, só se ela disser `PAID` (e o valor bater, quando informado),
+ * concede via `fulfill_order()` — a mesma função idempotente do webhook.
+ * Falhas aqui nunca quebram o polling: o webhook continua sendo o caminho principal.
+ */
+async function reconcileWithProvider(order: {
+  id: string;
+  providerBillingId: string;
+  amountCents: number;
+}): Promise<void> {
+  const now = Date.now();
+  if (now - (lastProviderCheck.get(order.id) ?? 0) < PROVIDER_CHECK_INTERVAL_MS) return;
+  lastProviderCheck.set(order.id, now);
+  if (lastProviderCheck.size > 1000) lastProviderCheck.clear();
+
+  try {
+    const remote = await getPixStatus(order.providerBillingId);
+    if (remote.status !== 'PAID') return;
+    if (remote.amountCents !== null && remote.amountCents !== order.amountCents) {
+      logCheckoutError('reconcile amount mismatch', order.id, null);
+      return;
+    }
+    const { error } = await createServiceClient().rpc('fulfill_order', {
+      p_order_id: order.id,
+      p_provider_billing_id: order.providerBillingId,
+      p_amount_cents: order.amountCents,
+    });
+    if (error) logCheckoutError('reconcile fulfill', order.id, error);
+  } catch (error) {
+    logCheckoutError('reconcile check', order.id, error);
+  }
+}
+
+/**
+ * Polling da página do pedido: devolve status e validade, filtrando pelo `user_id`
+ * da sessão (a RLS deixaria o admin ler pedidos de qualquer um). Enquanto
+ * `pending`, reconsulta o provedor (ver `reconcileWithProvider`); o preço vem do banco.
  */
 export const getOrderStatus = userAction(orderStatusInputSchema, async ({ orderId }, { user }) => {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from('orders')
-    .select('status, expires_at')
-    .eq('id', orderId)
-    .eq('user_id', user.id)
-    .maybeSingle();
+  const read = () =>
+    supabase
+      .from('orders')
+      .select('status, expires_at, provider_billing_id, amount_cents')
+      .eq('id', orderId)
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+  let { data, error } = await read();
+  if (!error && data?.status === 'pending' && data.provider_billing_id) {
+    await reconcileWithProvider({
+      id: orderId,
+      providerBillingId: data.provider_billing_id,
+      amountCents: data.amount_cents,
+    });
+    ({ data, error } = await read());
+  }
   if (error) {
     logCheckoutError('read order status', orderId, error);
     throw new ActionError(GENERIC_ERROR);

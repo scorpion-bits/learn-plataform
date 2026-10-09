@@ -328,6 +328,9 @@ Comportamento, na ordem:
 
 Migration `20261009000007_fulfill_failed_orders.sql`: `fulfill_order` também aceita `failed → paid`.
 
+## Implementado — reconsulta no polling do aluno (plano B ao webhook)
+`getOrderStatus` (`src/features/checkout/actions.ts`): com o pedido `pending` e cobrança gravada, reconsulta `GET /transparents/check` pela nossa chave no máximo 1×/10 s por pedido (por instância). Só `PAID` (e valor igual a `orders.amount_cents`, quando informado) chama `fulfill_order()` — a mesma função idempotente do webhook. Motivo: no QA-004 o PIX foi pago e a tela não atualizou; o acesso não pode depender só da entrega do webhook. Falhas da reconsulta são logadas e não quebram o polling.
+
 ## Pendências (A CONFIRMAR em Dev mode / suporte)
 1. Presença do `id` de topo em `transparent.*` e o formato de `data.transparent.id` (`pix_char_…` ou `char_…`).
 2. Comportamento de `externalId` repetido em `/transparents/create`.
