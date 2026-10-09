@@ -8,8 +8,8 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 7 (pagamentos) — compra, pedidos e reembolso prontos; falta teste PIX real (QA-004) |
-| Em andamento | `QA-004` — compra PIX liberou o curso em produção; falta confirmar entrega do webhook (`payment_events`) |
-| Próximas | `QA-004` (teste PIX real com o produto) · `UX-001..004` · `QA-001..003` · `ADMIN-008` |
+| Em andamento | `UX-001`+`UX-003` (A06) · `QA-004` aguarda print de `payment_events` |
+| Próximas | `QA-001`+`QA-003` (E2E, mobile) · `UX-002` · `UX-004` · `ADMIN-008` · `DB-008` · `REL-001`/`REL-003` (produto) |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
 
@@ -79,9 +79,9 @@
 | PAY-004 | Página de status do pedido | P0 | DONE ✅ | A07 | Sonnet 5.5 |
 | PAY-005 | Reconciliação e expiração | P2 | DONE ✅ | A07 | Sonnet 5.5 |
 | PAY-006 | Solicitação e execução de reembolso | P1 | DONE ✅ | A07 | Sonnet 5.5 |
-| UX-001 | `loading.tsx`/skeletons por segmento, `error.tsx`, `not-found.tsx`, prefetch e transições | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |
+| UX-001 | `loading.tsx`/skeletons por segmento, `error.tsx`, `not-found.tsx`, prefetch e transições | P1 | IN PROGRESS | A06/A08 | Sonnet 5.5 |
 | UX-002 | Auditoria de acessibilidade (axe + teclado + leitor de tela) e correções | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |
-| UX-003 | Passe responsivo 360/390/768/1024/1440 em todas as telas | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |
+| UX-003 | Passe responsivo 360/390/768/1024/1440 em todas as telas | P1 | IN PROGRESS | A06/A08 | Sonnet 5.5 |
 | UX-004 | Performance: imagens (`next/image`), bundle analyzer, cache de leituras públicas | P2 | BACKLOG | A06/A08 | Haiku 5.5 |
 | QA-001 | Setup Playwright + integração no CI (Vitest já configurado no UI-002) | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |
 | QA-002 | Revisão de segurança adversarial (actions, rotas, RLS, storage, headers, secrets) | P0 | DONE ✅ | A06/A08 | **Opus 5.5** |
