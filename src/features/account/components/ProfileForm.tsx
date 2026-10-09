@@ -6,8 +6,8 @@ import { Button, Field, Input } from '@/components/ui';
 import { formatBrPhone, formatCpf } from '@/lib/payments/tax-id';
 
 import { updateProfile } from '../actions';
-import { IDLE_STATE } from '../schemas';
-import type { AccountFormState } from '../schemas';
+import { IDLE_STATE } from '../form-state';
+import type { AccountFormState } from '../form-state';
 import styles from './Account.module.css';
 
 async function submit(_prev: AccountFormState, formData: FormData): Promise<AccountFormState> {

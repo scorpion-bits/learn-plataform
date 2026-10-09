@@ -5,7 +5,7 @@ import type { KeyboardEvent } from 'react';
 
 import { Button, Input } from '@/components/ui';
 
-import { TITLE_MAX } from '../schemas';
+import { TITLE_MAX } from '../constants';
 import styles from './CurriculumEditor.module.css';
 
 interface Props {

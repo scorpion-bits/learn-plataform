@@ -5,7 +5,7 @@ import { useId, useState, useTransition } from 'react';
 import { Button, Dialog, Field, Select, Textarea, useToast } from '@/components/ui';
 
 import { grantCourse, removeAssignment, revokePurchase } from '../actions';
-import { REASON_MAX } from '../schemas';
+import { REASON_MAX } from '../constants';
 import styles from './Students.module.css';
 
 /** `demo`: vitrine — não chama a action, só simula o sucesso. */

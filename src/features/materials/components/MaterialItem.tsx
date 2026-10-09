@@ -10,7 +10,7 @@ import {
 
 import type { EditorMaterial } from '../queries';
 import { formatBytes, MATERIAL_TYPE_LABELS, VIDEO_PROVIDER_LABELS } from '../schemas';
-import { MaterialForm } from './MaterialForm';
+import { LazyMaterialForm } from './LazyMaterialForm';
 import styles from './MaterialsEditor.module.css';
 
 interface Props {
@@ -108,7 +108,7 @@ export function MaterialItem({
         </div>
       </div>
       {editing ? (
-        <MaterialForm
+        <LazyMaterialForm
           courseId={courseId}
           lessonId={lessonId}
           material={material}

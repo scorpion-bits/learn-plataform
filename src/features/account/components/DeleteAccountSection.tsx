@@ -6,7 +6,7 @@ import { useId, useState, useTransition } from 'react';
 import { Button, Dialog, Field, Input, useToast } from '@/components/ui';
 
 import { deleteMyAccount } from '../actions';
-import { sameEmail } from '../schemas';
+import { sameEmail } from '../form-state';
 import styles from './Account.module.css';
 
 /** Zona de perigo de /conta: exclusão da própria conta (LGPD, DB-008). */

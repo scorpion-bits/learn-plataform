@@ -4,7 +4,7 @@ import { useId, useRef, useState } from 'react';
 
 import { Button, IconButton, Input, Switch } from '@/components/ui';
 
-import { parseMinutes, secondsToMinutes } from '../schemas';
+import { parseMinutes, secondsToMinutes } from '../constants';
 import type { CurriculumLesson } from '../queries';
 import { ArrowDownIcon, ArrowUpIcon, PencilIcon, TrashIcon } from './icons';
 import styles from './CurriculumEditor.module.css';

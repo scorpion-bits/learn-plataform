@@ -5,7 +5,7 @@ import { useActionState, useRef } from 'react';
 import { Button, Field, Input, TextLink } from '@/components/ui';
 
 import { requestPasswordReset } from '../actions';
-import { IDLE_STATE } from '../schemas';
+import { IDLE_STATE } from '../form-state';
 import styles from './auth-form.module.css';
 import { useFocusOnError } from './useFocusOnError';
 

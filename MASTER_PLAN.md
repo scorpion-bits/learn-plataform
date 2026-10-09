@@ -9,7 +9,7 @@
 |---|---|
 | Fase atual | PHASE 7 (pagamentos) — compra, pedidos e reembolso prontos; falta teste PIX real (QA-004) |
 | Em andamento | `QA-001`+`QA-003` (A08) · `QA-004` aguarda print de `payment_events` |
-| Próximas | `UX-002` · `UX-004` (após UX-001/003) · `REL-001`/`REL-003` (produto) |
+| Próximas | `UX-002` · `REL-001`/`REL-003` (produto) |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
 
@@ -83,7 +83,7 @@
 | UX-001 | `loading.tsx`/skeletons por segmento, `error.tsx`, `not-found.tsx`, prefetch e transições | P1 | DONE ✅ | A06/A08 | Sonnet 5.5 |
 | UX-002 | Auditoria de acessibilidade (axe + teclado + leitor de tela) e correções | P1 | BACKLOG | A06/A08 | Sonnet 5.5 |
 | UX-003 | Passe responsivo 360/390/768/1024/1440 em todas as telas | P1 | DONE ✅ | A06/A08 | Sonnet 5.5 |
-| UX-004 | Performance: imagens (`next/image`), bundle analyzer, cache de leituras públicas | P2 | BACKLOG | A06/A08 | Haiku 5.5 |
+| UX-004 | Performance: imagens (`next/image`), bundle analyzer, cache de leituras públicas | P2 | DONE ✅ | A06/A08 | Haiku 5.5 |
 | QA-001 | Setup Playwright + integração no CI (Vitest já configurado no UI-002) | P1 | IN PROGRESS | A06/A08 | Sonnet 5.5 |
 | QA-002 | Revisão de segurança adversarial (actions, rotas, RLS, storage, headers, secrets) | P0 | DONE ✅ | A06/A08 | **Opus 5.5** |
 | QA-003 | E2E dos fluxos críticos (cadastro→compra mock→acesso→progresso; admin cria curso; admin atribui/revoga) — rodando também em perfis de celular (Pixel/iPhone) | P0 | IN PROGRESS | A06/A08 | Sonnet 5.5 |

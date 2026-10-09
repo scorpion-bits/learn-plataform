@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
-import { MIN_PASSWORD_LENGTH } from '@/features/auth/schemas';
+import { MIN_PASSWORD_LENGTH } from '@/features/auth/form-state';
 import { isValidCpf, normalizeBrPhone, onlyDigits } from '@/lib/payments/tax-id';
 
 export { MIN_PASSWORD_LENGTH };
+export { IDLE_STATE, sameEmail } from './form-state';
+export type { AccountFormState } from './form-state';
 const MAX_PASSWORD_LENGTH = 72; // limite do bcrypt usado pelo Supabase
 
 /** Campo opcional: vazio vira `null` (apaga o valor); preenchido segue a mesma regra do checkout. */
@@ -68,21 +70,3 @@ export const deleteAccountSchema = z.object({
     .min(1, 'Digite seu e-mail para confirmar.')
     .max(320, 'E-mail inválido.'),
 });
-
-/** Comparação de e-mail sem diferenciar maiúsculas/espaços. */
-export function sameEmail(a: string, b: string): boolean {
-  const norm = (v: string) => v.trim().toLowerCase();
-  return norm(a) !== '' && norm(a) === norm(b);
-}
-
-/** Estado das formas da página (consumido por `useActionState`). */
-export type AccountFormState =
-  | { status: 'idle' }
-  | {
-      status: 'error';
-      message: string;
-      fieldErrors?: Record<string, string[] | undefined>;
-    }
-  | { status: 'success'; message: string };
-
-export const IDLE_STATE: AccountFormState = { status: 'idle' };

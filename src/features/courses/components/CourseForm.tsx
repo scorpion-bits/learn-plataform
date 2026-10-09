@@ -7,7 +7,7 @@ import { Button, Field, Input, Select, Textarea, useToast } from '@/components/u
 import type { ActionResult } from '@/lib/auth/actions';
 
 import { createCourse, updateCourse } from '../actions';
-import { COURSE_LEVELS, LEVEL_LABELS, slugify } from '../schemas';
+import { COURSE_LEVELS, LEVEL_LABELS, slugify } from '../constants';
 import { CoverUploader } from './CoverUploader';
 import styles from './CourseForm.module.css';
 

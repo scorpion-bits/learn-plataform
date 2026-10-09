@@ -42,3 +42,40 @@ Prefetch: nenhum `<Link>` desativa o prefetch padrão. Pending: formulários de 
 - Itens de nav "Cursos"/"Ver fila" com 40-43px de largura (altura 44): aceitável.
 - "Sair" no UserMenu (form oculto) sem indicador de pending.
 - Rotas autenticadas reais precisam de revisão com Supabase local e sessão.
+
+## UX-004 — Desempenho
+
+Medição: `.next/diagnostics/route-bundle-stats.json` (First Load JS descomprimido, KB; o Next 16/Turbopack não imprime a coluna no `next build`) e Playwright/Chromium mobile (390px, 4x CPU, ~1,6 Mbps/150 ms RTT, mediana de 3) em `next start`. Lighthouse não está instalado.
+
+Já estavam corretos (nada a mudar): capas via `next/image` (`IsoCover`) com `sizes` por contexto e `priority` só nas 2 primeiras do catálogo/biblioteca e na capa do curso/continuar; único `<img>` cru é o QR PIX (data URL) e a miniatura de vídeo externa; fontes `next/font/local` latin, `display: 'swap'`, variáveis, sem Google Fonts.
+
+### First Load JS por rota (KB)
+| Rota | Antes | Depois | Δ |
+|---|---|---|---|
+| `/admin/cursos/[id]` | 905 | 546 | -359 |
+| `/admin/cursos/novo` | 887 | 529 | -359 |
+| `/admin/cursos/[id]/aulas/[lessonId]` | 899 | 641 | -258 |
+| `/admin/alunos/[id]`, `/admin/cursos` | 629 | 524 | -105 |
+| `/entrar`, `/cadastro`, `/recuperar-senha`, `/redefinir-senha` | 627-629 | 522-524 | -105 |
+| `/conta` | 619 | 512 | -107 |
+| `/`, `/cursos`, `/cursos/[slug]`, `/inicio`, `/minha-biblioteca` | 499-533 | igual | 0 |
+
+### Métricas de página (mobile throttled)
+| Página | FCP/LCP antes | FCP/LCP depois | JS transferido (raw) |
+|---|---|---|---|
+| `/dev/landing` | 1924 ms / 1924 ms | 1936 ms / 1936 ms | 541 KB -> 541 KB |
+| `/dev/catalog` | 1924 ms / 1924 ms | 1992 ms / 1992 ms | 541 KB -> 541 KB |
+CLS 0,000 em ambas. Diferenças são ruído: as rotas públicas já não carregavam zod/supabase; o ganho está nas telas com formulários e no admin.
+
+### Mudanças
+- Client Components importavam `schemas.ts` (que puxa zod, ~105 KB) só por constantes/helpers. Criados módulos sem zod, re-exportados pelos `schemas.ts` (server inalterado): `auth/form-state.ts`, `account/form-state.ts`, `courses/constants.ts`, `curriculum/constants.ts`, `students/constants.ts`.
+- `CoverUploader`: `supabase/browser` e `env/client` por `import()` ao enviar (-254 KB no editor de curso).
+- `MaterialForm` via `next/dynamic` (`LazyMaterialForm`, `ssr: false`, placeholder `aria-busy`) no editor de aulas.
+
+### Proposta (não implementada): leitura pública cacheável
+Catálogo (`/cursos`) e curso (`/cursos/[slug]`) são dinâmicos porque o mesmo componente lê sessão (posse/"já comprado"). Separar em: (1) `getPublicCatalog()`/`getPublicCourse(slug)` com cliente Supabase anônimo sem cookies (`createClient` do supabase-js com a publishable key, só dados que a RLS já libera a `anon`) dentro de `unstable_cache`/`"use cache"` com `cacheTag('catalog')` e `cacheLife` de minutos; (2) a parte do usuário (posse, CTA) como componente filho em `<Suspense>` lendo cookies, ou ilha client buscando `/api/me/ownership`; (3) `revalidateTag('catalog')` nas actions de curso (publicar, editar, capa) e em `fulfill_order` não é necessário. Riscos: nunca cachear nada com sessão; preço sempre do banco; validar que `anon` não enxerga rascunhos. Exige alterar `queries.ts` e actions (fora do escopo).
+
+### Pendências
+- `/` e `/cursos` carregam ~18 KB a mais que as telas `/dev/*` (shell/UserMenu/menus); candidato a `dynamic()` do DropdownMenu.
+- `materials/schemas.ts` ainda é importado por client (labels, `formatBytes`); o chunk de zod agora só entra com o `MaterialForm` lazy. Vale o mesmo split.
+- Lighthouse oficial e rotas autenticadas reais não medidos (sem Supabase local).
