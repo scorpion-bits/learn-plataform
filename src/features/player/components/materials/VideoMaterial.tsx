@@ -77,11 +77,7 @@ export function VideoMaterial({ provider, videoId, title }: VideoMaterialProps) 
       <span className={styles.playButton} aria-hidden="true">
         <PlayIcon />
       </span>
-      <span
-        className={styles.posterLabel}
-        aria-hidden="true"
-        data-label={embed.providerLabel}
-      />
+      <span className={styles.posterLabel} aria-hidden="true" data-label={embed.providerLabel} />
     </button>
   );
 }
