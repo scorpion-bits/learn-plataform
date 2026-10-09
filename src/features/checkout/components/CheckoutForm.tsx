@@ -6,7 +6,7 @@ import { Button, Field, Input, TextLink } from '@/components/ui';
 import { formatBrPhone, formatCpf } from '@/lib/payments/tax-id';
 
 import { startCheckout } from '../actions';
-import { CHECKOUT_IDLE, REFUND_WINDOW_DAYS } from '../model';
+import { CHECKOUT_IDLE } from '../model';
 import type { CheckoutFormState } from '../model';
 import styles from './Checkout.module.css';
 
@@ -108,8 +108,7 @@ export function CheckoutForm({
       </Field>
 
       <p className={styles.policy}>
-        Você tem {REFUND_WINDOW_DAYS} dias a partir da compra para pedir reembolso integral (CDC,
-        art. 49). Veja os <TextLink href="/termos">termos e a política de reembolso</TextLink>.
+        Ao comprar, você concorda com os <TextLink href="/termos">Termos de uso</TextLink>.
       </p>
 
       <Button type="submit" size="lg" fullWidth pending={pending}>

@@ -67,8 +67,9 @@ export default function TermosPage() {
         </p>
         <ul>
           <li>
-            Para pedir o reembolso, envie um e-mail para {company.email} com o assunto
-            &quot;Reembolso&quot; e o e-mail da sua conta.
+            Para pedir o reembolso, acesse <strong>Minha conta → Meus pedidos</strong> e use a opção
+            &quot;Solicitar reembolso&quot; no pedido, ou envie um e-mail para {company.email} com o
+            assunto &quot;Reembolso&quot; e o e-mail da sua conta.
           </li>
           <li>
             Após a confirmação do reembolso pelo provedor de pagamento, o{' '}
