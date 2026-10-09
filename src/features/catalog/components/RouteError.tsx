@@ -23,6 +23,7 @@ export function RouteError({
   return (
     <div className={styles.wrap}>
       <ErrorState
+        headingLevel={1}
         title={title}
         message="Não foi possível carregar agora. Verifique sua conexão e tente novamente."
         onRetry={reset}

@@ -8,7 +8,7 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 9 (qualidade/lançamento) — MVP completo em produção; E2E verde no CI |
-| Em andamento | `UX-002` (A03) · `QA-004` aguarda print de `payment_events` |
+| Em andamento | — · `QA-004` aguarda print de `payment_events` |
 | Próximas | `REL-001` (AbacatePay prod) · `REL-003` (jurídico + checklist) · aprovação visual |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
@@ -81,7 +81,7 @@
 | PAY-005 | Reconciliação e expiração | P2 | DONE ✅ | A07 | Sonnet 5.5 |
 | PAY-006 | Solicitação e execução de reembolso | P1 | DONE ✅ | A07 | Sonnet 5.5 |
 | UX-001 | `loading.tsx`/skeletons por segmento, `error.tsx`, `not-found.tsx`, prefetch e transições | P1 | DONE ✅ | A06/A08 | Sonnet 5.5 |
-| UX-002 | Auditoria de acessibilidade (axe + teclado + leitor de tela) e correções | P1 | IN PROGRESS | A06/A08 | Sonnet 5.5 |
+| UX-002 | Auditoria de acessibilidade (axe + teclado + leitor de tela) e correções | P1 | DONE ✅ | A06/A08 | Sonnet 5.5 |
 | UX-003 | Passe responsivo 360/390/768/1024/1440 em todas as telas | P1 | DONE ✅ | A06/A08 | Sonnet 5.5 |
 | UX-004 | Performance: imagens (`next/image`), bundle analyzer, cache de leituras públicas | P2 | DONE ✅ | A06/A08 | Haiku 5.5 |
 | QA-001 | Setup Playwright + integração no CI (Vitest já configurado no UI-002) | P1 | DONE ✅ | A06/A08 | Sonnet 5.5 |

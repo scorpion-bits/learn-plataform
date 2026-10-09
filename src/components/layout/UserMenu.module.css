@@ -12,6 +12,9 @@
   font-size: 0.8rem;
   font-weight: 700;
 }
+.avatar::before {
+  content: attr(data-initials);
+}
 .name {
   max-width: 9ch;
   overflow: hidden;

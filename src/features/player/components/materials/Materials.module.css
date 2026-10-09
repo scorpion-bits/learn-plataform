@@ -88,6 +88,9 @@
   font-family: var(--font-mono);
   font-size: var(--s--1);
 }
+.posterLabel::before {
+  content: attr(data-label);
+}
 .notice {
   padding: var(--space-4);
   border: 1px dashed var(--hair-lit);

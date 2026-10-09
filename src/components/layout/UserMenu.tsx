@@ -41,9 +41,12 @@ export function UserMenu({ user, isAdmin, extraItems = [] }: UserMenuProps) {
         className={styles.menu}
         trigger={
           <>
-            <span className={styles.avatar} aria-hidden="true">
-              {initials(user.name)}
-            </span>
+            {/* Iniciais via CSS (data-initials): texto decorativo no DOM quebraria "rótulo no nome" (WCAG 2.5.3). */}
+            <span
+              className={styles.avatar}
+              aria-hidden="true"
+              data-initials={initials(user.name)}
+            />
             <span className={styles.name}>{user.name.split(' ')[0]}</span>
           </>
         }

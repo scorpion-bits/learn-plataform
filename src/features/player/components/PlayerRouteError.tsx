@@ -22,6 +22,7 @@ export function PlayerRouteError({
     <div className={styles.screen}>
       <div className={styles.screenBody}>
         <ErrorState
+        headingLevel={1}
           title="Não foi possível abrir a aula"
           message="Verifique sua conexão e tente novamente. Seu progresso está salvo."
           onRetry={reset}
