@@ -20,7 +20,18 @@ import { formatBrPhone, formatCpf } from './tax-id';
 const BASE_URL = 'https://api.abacatepay.com/v2';
 export const PROVIDER_TIMEOUT_MS = 10_000;
 
-export type PaymentProviderErrorCode = 'provider_unavailable' | 'invalid_request' | 'unauthorized';
+export type PaymentProviderErrorCode =
+  | 'provider_unavailable'
+  | 'invalid_request'
+  | 'unauthorized'
+  /** Reembolso: saldo da conta insuficiente (`INSUFFICIENT_FUNDS`). */
+  | 'insufficient_funds'
+  /** Reembolso: transação em disputa (`TRANSACTION_UNDER_DISPUTE`). */
+  | 'under_dispute'
+  /** Reembolso: a transação não pode ser reembolsada agora. */
+  | 'not_refundable'
+  /** Reembolso: a cobrança já foi reembolsada (a API é idempotente). */
+  | 'already_refunded';
 
 export class PaymentProviderError extends Error {
   readonly code: PaymentProviderErrorCode;
@@ -101,6 +112,13 @@ export interface PixStatusResult {
   billingId: string;
   status: PixStatus;
   expiresAt: string | null;
+  /** Valor em centavos, só se o provedor informar (a doc do `check` não garante). */
+  amountCents: number | null;
+}
+
+export interface PixRefundResult {
+  /** `true` se a cobrança já estava reembolsada (a API é idempotente: tratar como sucesso). */
+  alreadyRefunded: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -139,10 +157,11 @@ const checkDataSchema = z.object({
   id: billingIdSchema,
   status: z.string(),
   expiresAt: isoDate,
+  amount: z.number().int().positive().optional(),
 });
 
 const envelopeSchema = z.object({
-  data: z.unknown(),
+  data: z.unknown().optional(),
   success: z.boolean().optional(),
   error: z.unknown().optional(),
 });
@@ -192,7 +211,14 @@ function errorForStatus(status: number): PaymentProviderError {
   );
 }
 
-async function request(path: string, init: { method: 'GET' | 'POST'; body?: unknown }) {
+/** Traduz a recusa do provedor (status + corpo JSON, se houver) em erro tipado. */
+type ClassifyFailure = (status: number, body: unknown) => PaymentProviderError | undefined;
+
+async function request(
+  path: string,
+  init: { method: 'GET' | 'POST'; body?: unknown },
+  classify?: ClassifyFailure,
+) {
   const key = apiKey();
   const controller = new AbortController();
   // O timeout cobre a resposta inteira (headers + corpo).
@@ -223,7 +249,17 @@ async function request(path: string, init: { method: 'GET' | 'POST'; body?: unkn
       );
     }
 
-    if (!response.ok) throw errorForStatus(response.status);
+    if (!response.ok) {
+      let failureBody: unknown;
+      if (classify) {
+        try {
+          failureBody = await response.json();
+        } catch {
+          failureBody = undefined;
+        }
+      }
+      throw classify?.(response.status, failureBody) ?? errorForStatus(response.status);
+    }
 
     let json: unknown;
     try {
@@ -244,10 +280,13 @@ async function request(path: string, init: { method: 'GET' | 'POST'; body?: unkn
       (envelope.data.error != null && envelope.data.error !== '')
     ) {
       // 2xx com `success: false`: requisição recusada pela regra do provedor.
-      throw new PaymentProviderError(
-        'invalid_request',
-        'AbacatePay recusou a requisição.',
-        response.status,
+      throw (
+        classify?.(response.status, envelope.data) ??
+        new PaymentProviderError(
+          'invalid_request',
+          'AbacatePay recusou a requisição.',
+          response.status,
+        )
       );
     }
     return envelope.data.data;
@@ -334,5 +373,65 @@ export async function getPixStatus(billingId: string): Promise<PixStatusResult> 
     billingId: parsed.data.id,
     status: toPixStatus(parsed.data.status),
     expiresAt: parsed.data.expiresAt ?? null,
+    amountCents: parsed.data.amount ?? null,
   };
+}
+
+/** Lê só o texto de erro do corpo (nunca é copiado para mensagens ou logs). */
+function failureText(body: unknown): string {
+  try {
+    return JSON.stringify(body ?? '').toUpperCase();
+  } catch {
+    return '';
+  }
+}
+
+const classifyRefundFailure: ClassifyFailure = (status, body) => {
+  const text = failureText(body);
+  const make = (code: PaymentProviderErrorCode, message: string) =>
+    new PaymentProviderError(code, message, status);
+  if (text.includes('JÁ FOI REEMBOLSADA') || text.includes('JA FOI REEMBOLSADA')) {
+    return make('already_refunded', 'Cobrança já reembolsada.');
+  }
+  if (text.includes('INSUFFICIENT_FUNDS')) {
+    return make('insufficient_funds', 'Saldo insuficiente na AbacatePay para o reembolso.');
+  }
+  if (text.includes('TRANSACTION_UNDER_DISPUTE')) {
+    return make('under_dispute', 'Transação em disputa.');
+  }
+  if (text.includes('TRANSACTION_NOT_REFUNDABLE') || text.includes('REFUND_REQUEST_FAILED')) {
+    return make('not_refundable', 'Transação não reembolsável.');
+  }
+  if (text.includes('LOCK_NOT_ACQUIRED')) {
+    return make('provider_unavailable', 'Reembolso em andamento na AbacatePay.');
+  }
+  return undefined;
+};
+
+/**
+ * Reembolso total (`POST /v2/transparents/refund`, permissão `REFUND:CREATE`).
+ * NÃO altera o pedido: o acesso só cai quando o webhook `refunded` chegar.
+ * "Esta cobrança já foi reembolsada." vira `alreadyRefunded: true`.
+ * Lança `PaymentProviderError` (`insufficient_funds`, `under_dispute`, `not_refundable`…).
+ */
+export async function refundPixCharge(
+  billingId: string,
+  reason = 'Reembolso (CDC art. 49)',
+): Promise<PixRefundResult> {
+  if (!billingIdSchema.safeParse(billingId).success) {
+    throw new PaymentProviderError('invalid_request', 'Id de cobrança inválido.');
+  }
+  try {
+    await request(
+      '/transparents/refund',
+      { method: 'POST', body: { id: billingId, reason: reason.slice(0, 140) } },
+      classifyRefundFailure,
+    );
+    return { alreadyRefunded: false };
+  } catch (error) {
+    if (error instanceof PaymentProviderError && error.code === 'already_refunded') {
+      return { alreadyRefunded: true };
+    }
+    throw error;
+  }
 }

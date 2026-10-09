@@ -11,6 +11,7 @@ import {
   createPixCharge,
   getPixStatus,
   isPaymentsConfigured,
+  refundPixCharge,
 } from './abacatepay';
 
 const KEY = 'abc_dev_FAKE_KEY_for_tests';
@@ -225,6 +226,7 @@ describe('getPixStatus', () => {
       billingId: 'pix_char_abc123',
       status: 'PAID',
       expiresAt: '2026-03-04T15:48:59.876Z',
+      amountCents: null,
     });
     const [url, init] = fetchMock.mock.calls[0]! as [string, RequestInit];
     expect(url).toBe('https://api.abacatepay.com/v2/transparents/check?id=pix_char_abc123');
@@ -247,5 +249,45 @@ describe('getPixStatus', () => {
   it('401 -> unauthorized', async () => {
     fetchMock.mockResolvedValue(json({ error: 'Insufficient permissions' }, 401));
     await expectCode(getPixStatus('pix_char_abc123'), 'unauthorized');
+  });
+});
+
+describe('refundPixCharge', () => {
+  const ok = { data: { id: 'tran_1', status: 'COMPLETE' }, success: true, error: null };
+
+  it('chama POST /transparents/refund com id e motivo', async () => {
+    fetchMock.mockResolvedValue(json(ok));
+    expect(await refundPixCharge('pix_char_abc123')).toEqual({ alreadyRefunded: false });
+    const [url, init] = fetchMock.mock.calls[0]! as [string, RequestInit];
+    expect(url).toBe('https://api.abacatepay.com/v2/transparents/refund');
+    expect(init.method).toBe('POST');
+    expect(JSON.parse(init.body as string)).toMatchObject({ id: 'pix_char_abc123' });
+  });
+
+  it('INSUFFICIENT_FUNDS -> código próprio (HTTP 400 e 2xx com success:false)', async () => {
+    fetchMock.mockResolvedValueOnce(json({ success: false, error: 'INSUFFICIENT_FUNDS' }, 400));
+    const err = await expectCode(refundPixCharge('pix_char_abc123'), 'insufficient_funds');
+    expect(err.message).not.toContain('INSUFFICIENT_FUNDS');
+    fetchMock.mockResolvedValueOnce(json({ success: false, error: 'INSUFFICIENT_FUNDS' }));
+    await expectCode(refundPixCharge('pix_char_abc123'), 'insufficient_funds');
+  });
+
+  it('cobrança já reembolsada vira sucesso idempotente', async () => {
+    fetchMock.mockResolvedValue(
+      json({ success: false, error: 'Esta cobrança já foi reembolsada.' }, 400),
+    );
+    expect(await refundPixCharge('pix_char_abc123')).toEqual({ alreadyRefunded: true });
+  });
+
+  it('disputa, não reembolsável, 401 e id inválido', async () => {
+    fetchMock.mockResolvedValueOnce(json({ error: 'TRANSACTION_UNDER_DISPUTE' }, 400));
+    await expectCode(refundPixCharge('pix_char_abc123'), 'under_dispute');
+    fetchMock.mockResolvedValueOnce(json({ error: 'TRANSACTION_NOT_REFUNDABLE' }, 400));
+    await expectCode(refundPixCharge('pix_char_abc123'), 'not_refundable');
+    fetchMock.mockResolvedValueOnce(json({ error: 'x' }, 401));
+    await expectCode(refundPixCharge('pix_char_abc123'), 'unauthorized');
+    fetchMock.mockClear();
+    await expectCode(refundPixCharge('../x'), 'invalid_request');
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

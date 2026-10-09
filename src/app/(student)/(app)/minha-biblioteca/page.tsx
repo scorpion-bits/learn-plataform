@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import { TextLink } from '@/components/ui';
 import { LibraryView } from '@/features/library/components/LibraryView';
 import { DEFAULT_TAB, parseTab } from '@/features/library/model';
 import type { LibraryTab } from '@/features/library/model';
@@ -17,5 +18,12 @@ const tabHref = (tab: LibraryTab) =>
 export default async function LibraryPage({ searchParams }: { searchParams: SearchParams }) {
   await requireUser();
   const [{ aba }, courses] = await Promise.all([searchParams, getLibrary()]);
-  return <LibraryView courses={courses} tab={parseTab(aba)} tabHref={tabHref} />;
+  return (
+    <>
+      <LibraryView courses={courses} tab={parseTab(aba)} tabHref={tabHref} />
+      <p style={{ textAlign: 'center', paddingBottom: 'var(--space-5)' }}>
+        <TextLink href="/conta/pedidos">Meus pedidos e reembolso</TextLink>
+      </p>
+    </>
+  );
 }
