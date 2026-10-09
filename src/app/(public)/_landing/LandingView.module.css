@@ -97,12 +97,39 @@
   border: 0;
 }
 
-.mascot {
+.mascotWrap {
   position: relative;
+  display: block;
   width: 15rem;
   max-width: 70%;
-  height: auto;
+  line-height: 0;
   filter: drop-shadow(0 var(--space-5) var(--space-6) var(--glow-blue));
+}
+
+.mascot {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: opacity 0.5s var(--ease-io);
+}
+
+/* vídeo por cima do poster, mesma caixa (mesma proporção 640x838): sem salto de layout */
+.mascotVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-io);
+  pointer-events: none;
+}
+
+.mascotVideo[data-on] {
+  opacity: 1;
+}
+
+.mascot[data-hidden] {
+  opacity: 0;
 }
 
 .floater {
@@ -125,7 +152,7 @@
   animation: none;
 }
 
-:global([data-lite]) .mascot {
+:global([data-lite]) .mascotWrap {
   filter: none;
 }
 
@@ -138,7 +165,7 @@
     min-height: 26rem;
   }
 
-  .mascot {
+  .mascotWrap {
     width: 21rem;
   }
 }

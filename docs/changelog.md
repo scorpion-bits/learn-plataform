@@ -5,6 +5,7 @@ Uma linha por tarefa concluída: resumo, decisões, arquivos. Mais recente prime
 
 | data | tarefa | agente | resultado | notas |
 |---|---|---|---|---|
+| 2026-10-09 | Mascote animado | orquestrador | DONE | Pedido do produto (logo borrada): `logo-anim.webm` do site recortado e reencodado (4 MB→1 MB, 640x838, VP9+alpha, sem áudio) + poster 2x do quadro 0. `HeroMascot` toca o vídeo só onde há alpha em WebM (critério do site da marca); iPhone/Safari, modo leve, saveData e 2g ficam no poster. Pausa fora da tela. |
 | 2026-10-09 | Aprovações do produto | produto | DONE | Visual (componentes isométricos e telas) aprovado; Termos/Privacidade e `docs/legal-review.md` aprovados. Pendente do produto: AbacatePay produção, Secure password change, rate limit (agendados). |
 | 2026-10-09 | UX-002 | A03 (Sonnet 5.5) | DONE | axe-core em vitrines e públicas (390/1440): 0 critical; serious corrigidos (nome acessível do menu do usuário e do poster de vídeo); moderate corrigidos (landmark do player, ordem de headings, h1 em erros de rota, skip link no 404); foco no 1º campo inválido em CourseForm/MaterialForm. Contraste ok sem mudar tokens. `docs/a11y-review.md`. Pendente: leitor de tela real. Aprovado. |
 | 2026-10-09 | QA-001 + QA-003 | A08 (Sonnet 5.5) + orquestrador | DONE | Playwright (ADR-021) com Supabase local + mock AbacatePay no CI, 42 testes (desktop/Pixel 7/iPhone 14). 1ª rodada 34/42 → corrigidos: `/auth/callback` com `Location` relativo (host trocado perdia a sessão), 2 specs. 2ª rodada 42/42. PR #5 mesclado. |

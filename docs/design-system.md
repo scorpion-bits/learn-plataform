@@ -68,7 +68,7 @@ Modo leve: `<html data-lite="1">` definido antes da pintura (`src/app/lite-mode-
 Link de prosa (sublinhado, o reset remove), Button (variantes primary/secondary/ghost/danger; estado `pending` com spinner e `aria-busy`, desabilita clique duplo), IconButton, Field (label + input + hint + erro, `aria-describedby`), Input, Textarea, Select nativo estilizado, Checkbox/Switch, Badge (origem: Comprado/Atribuído; estado: Rascunho/Publicado), Tabs, Dialog (`<dialog>`), Drawer (mobile), Toast (região `aria-live`), Skeleton, Spinner, EmptyState (ilustração com cubos), ErrorState (com "Tentar novamente"), Pagination, Table (admin, vira lista de cards < 720px), DropdownMenu.
 
 ## 6. Layouts
-- **Público/aluno**: `Dock` flutuante; conteúdo até 1180px; hero com cubos/escorpião (usar `logo-poster.png`; o `.webm` de 4 MB só na landing, com poster e `preload="none"`).
+- **Público/aluno**: `Dock` flutuante; conteúdo até 1180px; hero com cubos/escorpião: `HeroMascot` mostra `mascot-poster.png` (2x) e troca por `mascot.webm` (VP9+alpha, recortado, ~1 MB) só onde o navegador suporta alpha em WebM — Safari/iPhone, modo leve, economia de dados e 2g ficam no poster (`_landing/mascot-anim.ts`).
 - **Player**: tela cheia em 3 zonas — topo fino (curso + progresso em cubos + sair), conteúdo central (máx. 960px), ementa lateral direita recolhível (drawer bottom-sheet no mobile). Barra inferior fixa no mobile com Anterior / Concluir / Próxima.
 - **Admin**: sidebar à esquerda (colapsa em ícones < 1100px, vira drawer < 720px), header com breadcrumbs, conteúdo denso. Mesmos tokens, malha só no header.
 
