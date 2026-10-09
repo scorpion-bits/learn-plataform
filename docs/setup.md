@@ -14,6 +14,9 @@ Guia passo a passo para o responsável do projeto. Leva ~30 min. Nenhuma chave s
    4. `supabase/migrations/20261008000004_storage.sql`
    5. `supabase/migrations/20261009000005_admin_metrics.sql`
    6. `supabase/migrations/20261009000006_admin_student_by_id.sql`
+   7. `supabase/migrations/20261009000007_fulfill_failed_orders.sql`
+
+   > Sempre que surgir um arquivo novo nessa pasta, rode **só ele** (os anteriores já estão aplicados). Use o botão *Copy raw file* do GitHub para não truncar a colagem.
 
    **Opção B — pelo terminal (recomendado para atualizações futuras):**
    ```bash
@@ -61,10 +64,28 @@ Guia passo a passo para o responsável do projeto. Leva ~30 min. Nenhuma chave s
 ## 3. AbacatePay
 
 1. Use o **Dev mode** e crie uma chave com as permissões `TRANSPARENT:CREATE`, `TRANSPARENT:READ` e `REFUND:CREATE` → coloque em `ABACATEPAY_API_KEY` na Vercel.
-2. **Webhook** (configurar quando o PAY-003 estiver pronto): URL `https://<sua-url>/api/webhooks/abacatepay?webhookSecret=<o mesmo ABACATEPAY_WEBHOOK_SECRET>`, eventos `transparent.completed`, `transparent.refunded`, `transparent.disputed`, `transparent.lost`.
+2. **Webhook** (painel AbacatePay → Webhooks, no Dev mode): URL `https://<sua-url>/api/webhooks/abacatepay?webhookSecret=<o mesmo ABACATEPAY_WEBHOOK_SECRET>`, eventos `transparent.completed`, `transparent.refunded`, `transparent.disputed`, `transparent.lost`.
 3. Para produção: chave `abc_prod_…`, CNPJ verificado e site no ar com termos/privacidade (já existem em `/termos` e `/privacidade`).
 
-## 4. Rodar no seu computador (opcional)
+## 4. Teste de compra PIX ponta a ponta (Dev mode, QA-004)
+
+Pré-requisitos: passos 1–3 feitos, deploy na Vercel no ar, você é admin.
+
+1. **Admin → Cursos → Novo**: crie um curso com preço (ex. R$ 10,00), um módulo e uma aula com um vídeo. Publique.
+2. Em outra janela anônima, **cadastre um aluno de teste** (outro email) e confirme o email.
+3. Como aluno, abra o curso em `/cursos` → **Comprar** → informe CPF de teste → a página do pedido mostra o QR e o copia-e-cola.
+4. **Simule o pagamento** no Dev mode: pelo painel da AbacatePay (cobrança → simular pagamento) ou pelo seu terminal (a chave fica só no seu computador):
+   ```bash
+   curl -X POST "https://api.abacatepay.com/v2/transparents/simulate-payment" \
+     -H "Authorization: Bearer $ABACATEPAY_API_KEY" -H "Content-Type: application/json" \
+     -d '{"id":"<id da cobrança, pix_char_…>"}'
+   ```
+   O id aparece no painel da AbacatePay e na coluna `provider_charge_id` da tabela `orders` no Supabase.
+5. Em até ~5 s a página do pedido deve virar **"Pagamento confirmado"** e o curso aparecer em **Minha biblioteca**. Abra uma aula.
+6. Confira no Supabase (*Table Editor*): `orders.status = paid`, uma linha em `enrollments` com `source = purchase`, eventos em `payment_events`.
+7. **Anote e me envie (sem chaves!)**: prints das telas e, se algo falhar, o conteúdo de `payment_events.processing_error` e o log da função na Vercel (*Deployments → Functions*). Isso fecha os itens "A CONFIRMAR" de `docs/payments.md`.
+
+## 5. Rodar no seu computador (opcional)
 ```bash
 npm install
 cp .env.example .env.local   # preencha com os mesmos valores (pode usar outro projeto Supabase de dev)
