@@ -18,7 +18,8 @@ test.describe('visitante', () => {
     await page.getByRole('link', { name: course.title }).first().click();
     await expect(page).toHaveURL(new RegExp(`/cursos/${course.slug}$`));
     await expect(page.getByRole('heading', { level: 1, name: course.title })).toBeVisible();
-    await expect(page.getByText('R$').first()).toBeVisible();
+    // O preço aparece no card lateral (desktop) e na barra fixa (celular): vale o visível.
+    await expect(page.getByText('R$').locator('visible=true').first()).toBeVisible();
     await expectNoHorizontalOverflow(page, `/cursos/${course.slug}`);
 
     // Visitante: o CTA de compra manda para o login, voltando ao curso depois.

@@ -48,7 +48,7 @@ test('admin cria curso, módulo, aula com texto, envia capa e publica; aparece n
     await page.getByRole('link', { name: `Materiais da aula "${lessonTitle}" (0)` }).click();
     await expect(page.getByRole('heading', { level: 1, name: lessonTitle })).toBeVisible();
     await page.getByLabel('Tipo de material').selectOption({ label: 'Texto' });
-    await page.getByLabel(/^Texto \(markdown\)/).fill(`# Bem-vindo\n\n${lessonText}`);
+    await page.getByLabel(/^Texto \(markdown\)/).fill(`${lessonText}\n\n## Bem-vindo`);
     await page.getByRole('button', { name: 'Adicionar material' }).click();
     await expect(page.getByRole('list', { name: 'Materiais da aula' })).toBeVisible();
     await expect(page.getByText(lessonText).first()).toBeVisible();
