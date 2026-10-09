@@ -16,6 +16,8 @@ Guia passo a passo para o responsável do projeto. Leva ~30 min. Nenhuma chave s
    6. `supabase/migrations/20261009000006_admin_student_by_id.sql`
    7. `supabase/migrations/20261009000007_fulfill_failed_orders.sql`
    8. `supabase/migrations/20261009000008_lessons_course_fkey.sql`
+   9. `supabase/migrations/20261009000009_account_deletion.sql`
+   10. `supabase/migrations/20261009000010_course_students.sql`
 
    > Sempre que surgir um arquivo novo nessa pasta, rode **só ele** (os anteriores já estão aplicados). Use o botão *Copy raw file* do GitHub para não truncar a colagem.
 
