@@ -80,7 +80,7 @@ Pré-requisitos: passos 1–3 feitos, deploy na Vercel no ar, você é admin.
      -H "Authorization: Bearer $ABACATEPAY_API_KEY" -H "Content-Type: application/json" \
      -d '{"id":"<id da cobrança, pix_char_…>"}'
    ```
-   O id aparece no painel da AbacatePay e na coluna `provider_charge_id` da tabela `orders` no Supabase.
+   O id aparece no painel da AbacatePay e na coluna `provider_billing_id` da tabela `orders` no Supabase.
 5. Em até ~5 s a página do pedido deve virar **"Pagamento confirmado"** e o curso aparecer em **Minha biblioteca**. Abra uma aula.
 6. Confira no Supabase (*Table Editor*): `orders.status = paid`, uma linha em `enrollments` com `source = purchase`, eventos em `payment_events`.
 7. **Anote e me envie (sem chaves!)**: prints das telas e, se algo falhar, o conteúdo de `payment_events.processing_error` e o log da função na Vercel (*Deployments → Functions*). Isso fecha os itens "A CONFIRMAR" de `docs/payments.md`.
