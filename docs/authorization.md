@@ -29,7 +29,7 @@ Anônimo: catálogo e páginas de curso publicados, ementa pública, materiais d
 | storage `course-covers` | leitura pela URL pública do bucket (sem policy SELECT; não lista) | idem | ALL |
 | storage `course-content` | — | — (signed URL do servidor) | ALL |
 
-Implementação: `supabase/migrations/20261008000003_rls_functions.sql` (grants mínimos por tabela/coluna + policies por papel; funções em `docs/database.md` §4). Pontos que um atacante tentaria e o banco bloqueia: escrita em `user_roles` (só service role/`grant-admin.sql`), `role` no metadata do cadastro (ignorado), UPDATE de colunas de `profiles` fora de `full_name/avatar_url/tax_id/phone`, qualquer escrita em `orders`/`payment_events` por `authenticated`, `fulfill_order`/`refund_order` (só `service_role`), progresso em curso sem acesso ou em nome de outro usuário.
+Implementação: `supabase/migrations/20261008000003_rls_functions.sql` (grants mínimos por tabela/coluna + policies por papel; funções em `docs/database.md` §4). Pontos que um atacante tentaria e o banco bloqueia: escrita em `user_roles` (só service role/`grant-admin.sql`), `role` no metadata do cadastro (ignorado), UPDATE de colunas de `profiles` fora de `full_name/avatar_url/tax_id/phone`, qualquer escrita em `orders`/`payment_events` por `authenticated`, `fulfill_order`/`refund_order`/`anonymize_user` (só `service_role`), edição de perfil já excluído (`deleted_at`), progresso em curso sem acesso ou em nome de outro usuário.
 
 ## Checklist "usuário malicioso" (aplicar a toda feature)
 - [ ] Chamando a REST do Supabase direto com a publishable key e meu JWT, consigo ler/escrever algo fora do meu escopo?

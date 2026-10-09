@@ -60,6 +60,21 @@ export const changePasswordSchema = z
     message: 'As senhas não conferem.',
   });
 
+/** Exclusão de conta: o titular digita o próprio e-mail (comparado no servidor com o da sessão). */
+export const deleteAccountSchema = z.object({
+  email: z
+    .string({ error: 'Digite seu e-mail para confirmar.' })
+    .trim()
+    .min(1, 'Digite seu e-mail para confirmar.')
+    .max(320, 'E-mail inválido.'),
+});
+
+/** Comparação de e-mail sem diferenciar maiúsculas/espaços. */
+export function sameEmail(a: string, b: string): boolean {
+  const norm = (v: string) => v.trim().toLowerCase();
+  return norm(a) !== '' && norm(a) === norm(b);
+}
+
 /** Estado das formas da página (consumido por `useActionState`). */
 export type AccountFormState =
   | { status: 'idle' }

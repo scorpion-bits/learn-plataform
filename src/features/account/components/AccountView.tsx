@@ -3,6 +3,7 @@ import { signOut } from '@/features/auth/actions';
 
 import type { AccountProfile } from '../queries';
 import styles from './Account.module.css';
+import { DeleteAccountSection } from './DeleteAccountSection';
 import { PasswordForm } from './PasswordForm';
 import { ProfileForm } from './ProfileForm';
 
@@ -66,6 +67,8 @@ export function AccountView({
           Sair da conta
         </Button>
       </form>
+
+      <DeleteAccountSection email={email} isAdmin={isAdmin} demo={demo} />
     </div>
   );
 }

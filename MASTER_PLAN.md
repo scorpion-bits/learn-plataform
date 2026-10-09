@@ -8,7 +8,7 @@
 | item | estado |
 |---|---|
 | Fase atual | PHASE 7 (pagamentos) — compra, pedidos e reembolso prontos; falta teste PIX real (QA-004) |
-| Em andamento | `QA-001`+`QA-003` (A08) · `DB-008` (A02) · `ADMIN-008` (A05) · `QA-004` aguarda print de `payment_events` |
+| Em andamento | `QA-001`+`QA-003` (A08) · `QA-004` aguarda print de `payment_events` |
 | Próximas | `UX-002` · `UX-004` (após UX-001/003) · `REL-001`/`REL-003` (produto) |
 | Bloqueios | — |
 | Pendências do produto | aprovação visual dos componentes isométricos e shells |
@@ -45,7 +45,7 @@
 | DB-005 | Testes de RLS (pgTAP) | P0 | DONE ✅ | A02 | Sonnet 5.5 |
 | DB-006 | Métricas do admin | P1 | DONE ✅ | A02 | Sonnet 5.5 |
 | DB-007 | Seed de desenvolvimento | P2 | DONE ✅ | A02 | Haiku 5.5 |
-| DB-008 | Exclusão de conta e anonimização (LGPD) | P2 | IN PROGRESS | A02 | Opus 5.5 |
+| DB-008 | Exclusão de conta e anonimização (LGPD) | P2 | DONE ✅ | A02 | Opus 5.5 |
 | DB-009 | Função `admin_student_by_id` (email no perfil do aluno) | P1 | DONE ✅ | A02 | Sonnet 5.5 |
 | UI-001 | Tokens, fontes, base e assets de marca | P0 | DONE ✅ | A03 | Sonnet 5.5 |
 | UI-002 | Primitivas de UI | P0 | DONE ✅ | A03 | Sonnet 5.5 |
@@ -64,7 +64,7 @@
 | ADMIN-005 | Alunos: lista e busca | P1 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-006 | Perfil do aluno e atribuições | P0 | DONE ✅ | A05 | Sonnet 5.5 |
 | ADMIN-007 | Pedidos | P1 | DONE ✅ | A05 | Sonnet 5.5 |
-| ADMIN-008 | Alunos do curso | P2 | IN PROGRESS | A05 | Sonnet 5.5 |
+| ADMIN-008 | Alunos do curso | P2 | DONE ✅ | A05 | Sonnet 5.5 |
 | STUDENT-001 | Landing page | P1 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-002 | Catálogo público | P0 | DONE ✅ | A06 | Sonnet 5.5 |
 | STUDENT-003 | Página pública do curso | P0 | DONE ✅ | A06 | Sonnet 5.5 |

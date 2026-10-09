@@ -42,9 +42,10 @@ courses
 | avatar_url | text | |
 | tax_id | text | CPF só dígitos; preenchido no checkout |
 | phone | text | |
+| deleted_at | timestamptz | conta excluída pelo titular (DB-008); só `anonymize_user()` preenche |
 | created_at / updated_at | timestamptz | |
 
-Email **não** é duplicado (vem de `auth.users`; admin lê via view `admin_students` com security definer/service). Usuário só pode atualizar `full_name`, `avatar_url`, `tax_id`, `phone` (column-level `GRANT UPDATE`).
+Email **não** é duplicado (vem de `auth.users`; admin lê via view `admin_students` com security definer/service). Usuário só pode atualizar `full_name`, `avatar_url`, `tax_id`, `phone` (column-level `GRANT UPDATE`). Perfil com `deleted_at` não é editável (policy `profiles_update_own` exige `deleted_at is null`).
 
 ### user_roles
 `user_id uuid → auth.users`, `role app_role ('admin','student')`, PK `(user_id, role)`. Sem INSERT/UPDATE/DELETE para `authenticated`. Admin concedido por script (`supabase/scripts/grant-admin.sql`) ou service role.
@@ -132,7 +133,7 @@ Nota: cursos gratuitos estão **fora do MVP** (não antecipamos `source='free'`)
 | created_at / updated_at | timestamptz | |
 | índice parcial | `(user_id, course_id) where status='pending'` unique | evita pedidos pendentes duplicados |
 
-Sem `checkout_url`: usamos o Checkout Transparente PIX (QR na nossa página). Disputas (`transparent.disputed`) **não** mudam `order_status` — ficam só em `payment_events`; disputa perdida (`transparent.lost`) vira `refunded`. `user_id`/`course_id` são `on delete restrict` (registro financeiro: comprador e curso vendido não podem ser apagados — exclusão de conta de comprador exige processo próprio de anonimização, a definir).
+Sem `checkout_url`: usamos o Checkout Transparente PIX (QR na nossa página). Disputas (`transparent.disputed`) **não** mudam `order_status` — ficam só em `payment_events`; disputa perdida (`transparent.lost`) vira `refunded`. `user_id`/`course_id` são `on delete restrict` (registro financeiro: comprador e curso vendido não podem ser apagados — exclusão de conta é por anonimização: `anonymize_user()` + soft delete no Auth, ver §4.1).
 
 ### payment_events
 `id`, `provider`, `provider_event_id text not null unique`, `event_type`, `order_id → orders null (on delete restrict)`, `payload jsonb`, `received_at`, `processed_at`, `processing_error`. Apenas service role escreve; admin lê.
@@ -162,12 +163,21 @@ Implementadas em `supabase/migrations/20261008000003_rls_functions.sql` (DB-003)
 | `admin_record_manual_sale(p_user_id, p_course_id, p_amount_cents default preço)` | security definer + `is_admin()` | authenticated | cria `orders(manual, paid)` + `enrollment(purchase)` atomicamente. Exceções: `42501`, `P0002` curso inexistente, `22023` não publicado/valor inválido, `23505` já tem compra ativa |
 | `admin_students(p_search, p_limit, p_offset)` | stable, security definer + `is_admin()` | authenticated | substitui a view `admin_students` (não expõe `auth.users`): perfil + email + `is_admin` + matrículas ativas + total gasto (`paid`) + último pedido + `total_count`. Busca literal (sem curingas) em email/nome; `limit` 1–200 |
 | `admin_student_by_id(p_user_id)` | stable, security definer + `is_admin()` | authenticated | uma linha de `admin_students` (sem `total_count`) para o perfil do aluno; 0 linhas se o id não existe; 42501 para não-admin |
+| `anonymize_user(p_user_id)` | security definer | **só service_role** | **DB-008.** Exclusão de conta pelo titular (action `deleteMyAccount`). Ver §4.1. Retorna `anonymized` · `already_anonymized` · `not_found` · `is_admin` · `refund_pending` · `payment_pending` |
 | `reorder_modules(p_course_id, ids[])` / `reorder_lessons(p_module_id, ids[])` / `reorder_materials(p_lesson_id, ids[])` | security invoker + `is_admin()` | authenticated | recebe a lista **completa** na nova ordem (positions `0..n-1`); `22023` se faltar/repetir/for de outro pai |
 | `admin_dashboard_metrics(p_from, p_to)` | stable, security definer + `is_admin()` | authenticated | **DB-006.** Uma linha de KPIs do período `[p_from, p_to)`: `revenue_cents` (vendas − estornos), `sales_count`, `avg_ticket_cents` (vendas brutas ÷ nº de vendas; 0 sem vendas), `students_total`/`students_new` (perfis sem papel admin), `enrollments_purchase`/`enrollments_admin_grant` (concedidas no período e ainda ativas), `refunds_count`, `pending_refund_requests` (fila atual: `paid` com `refund_requested_at`, independe do período) |
 | `admin_revenue_by_day(p_from, p_to)` | stable, security definer + `is_admin()` | authenticated | **DB-006.** `(day date, revenue_cents bigint, sales int)` por dia em `America/Sao_Paulo`, dias sem venda = 0 (`generate_series`); receita líquida do dia (pode ser negativa); soma dos dias = `revenue_cents` das métricas |
 | `admin_top_courses(p_from, p_to, p_limit default 5)` | stable, security definer + `is_admin()` | authenticated | **DB-006.** `(course_id, slug, title, sales, revenue_cents)` ordenado por receita líquida; `p_limit` limitado a 1–50 |
 
 **Métricas (DB-006).** *Venda* = pedido `paid` ou `refunded` com `paid_at` no período (inclui venda manual); *estorno* = pedido `refunded` com `refunded_at` no período. Intervalo `p_to` exclusivo; `p_to > p_from` e no máximo 366 dias, senão `22023`; não-admin `42501`. Helper interno `admin_metrics_check_range` (sem grants). Índices: `orders_paid_at_idx` (existente) e `orders_refunded_at_idx` (novo). Migration `20261009000005_admin_metrics.sql`; teste `supabase/tests/08_admin_metrics.test.sql`.
+
+### 4.1 Exclusão de conta (DB-008, LGPD)
+`orders.user_id` é `on delete restrict`, então a linha de `auth.users` de quem comprou **não pode** ser apagada (hard delete). Fluxo da Server Action `deleteMyAccount` (`src/features/account/actions.ts` + `deletion.ts`, service role):
+1. Guard (`userAction`) → o usuário digita o próprio e-mail (comparado com o da sessão) → admin recusado (`user_roles`).
+2. `anonymize_user(uid)`: trava perfil e pedidos (`for update`); recusa `is_admin`, `refund_pending` (pedido `paid` com `refund_requested_at` e sem `refunded_at`) e `payment_pending` (pedido `pending` com cobrança criada e `expires_at` no futuro ou nulo). Senão: `profiles.full_name = 'Conta excluída'`, `tax_id`/`phone`/`avatar_url` nulos, `deleted_at` (mantém o original na repetição); revoga matrículas ativas (`revoked_by` = o titular, `revoke_reason = 'account_deleted'`); apaga `lesson_progress`. **Não** toca `orders`/`payment_events`/`user_roles`. Idempotente.
+3. Auth Admin: remove cada chave de `user_metadata` (o GoTrue faz merge; chave `null` = remover), `ban_duration = 876000h` e `deleteUser(id, true)` (soft delete: `auth.users.deleted_at`, email/telefone ofuscados, senha, identidades, MFA e sessões removidos; a linha fica como chave pseudônima de `orders`/`enrollments`).
+4. `signOut({ scope: 'local' })` (cookies) → toast e volta para `/`.
+Se o passo 3 falhar, o usuário continua logado e pode repetir (o passo 2 devolve `already_anonymized`). Migration `20261009000009_account_deletion.sql`; teste `supabase/tests/11_account_deletion.test.sql`.
 
 Erros de regra de negócio nas funções chamadas pelo app (`request_refund`, `fulfill_order`, `refund_order`) são **códigos de resultado** (text), não exceções — a action/webhook mapeia para pt-BR e `fulfill_order`/`refund_order` gravam `payment_events.processing_error`.
 
